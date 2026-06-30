@@ -1,0 +1,7 @@
+node_modules
+.next
+out
+build
+next-env.d.ts
+package-lock.json
+stitch_wapike_experience_discovery_platform

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Curated Picnics | Wapike</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#ffb876",
+                      "on-primary-container": "#828c83",
+                      "error-container": "#ffdad6",
+                      "on-secondary-container": "#774200",
+                      "surface": "#f9f9ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#e7eefe",
+                      "on-background": "#151c27",
+                      "surface-tint": "#576159",
+                      "background": "#f9f9ff",
+                      "surface-container-high": "#e2e8f8",
+                      "primary": "#050d08",
+                      "on-tertiary-fixed-variant": "#494642",
+                      "primary-fixed-dim": "#bfc9c0",
+                      "on-surface-variant": "#434844",
+                      "surface-dim": "#d3daea",
+                      "on-secondary": "#ffffff",
+                      "surface-variant": "#dce2f3",
+                      "secondary": "#8b500a",
+                      "primary-container": "#1b241e",
+                      "inverse-primary": "#bfc9c0",
+                      "on-surface": "#151c27",
+                      "tertiary-container": "#23221e",
+                      "on-secondary-fixed-variant": "#6b3b00",
+                      "surface-bright": "#f9f9ff",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#dce2f3",
+                      "on-secondary-fixed": "#2d1600",
+                      "tertiary": "#0d0c09",
+                      "secondary-container": "#ffb065",
+                      "on-tertiary-container": "#8c8984",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#ffdcc0",
+                      "outline-variant": "#c4c8c2",
+                      "on-error": "#ffffff",
+                      "outline": "#747874",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2a313d",
+                      "surface-container-low": "#f0f3ff",
+                      "on-primary-fixed": "#151e18",
+                      "on-primary-fixed-variant": "#404942",
+                      "tertiary-fixed": "#e6e2dc",
+                      "tertiary-fixed-dim": "#cac6c0",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#ebf1ff",
+                      "primary-fixed": "#dbe5db",
+                      "on-tertiary-fixed": "#1d1b18"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "base": "8px",
+                      "margin-desktop": "40px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Playfair Display"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "display-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "caption": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          body {
+              background-color: #f9f9ff;
+              color: #151c27;
+          }
+          
+          .glass-panel {
+              background: rgba(255, 255, 255, 0.7);
+              backdrop-filter: blur(12px);
+              -webkit-backdrop-filter: blur(12px);
+              border: 1px solid rgba(255, 255, 255, 0.3);
+          }
+
+          .soft-shadow {
+              box-shadow: 0px 10px 30px rgba(27, 36, 30, 0.04);
+          }
+      </style>
+</head>
+<body class="font-body-md text-body-md bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="bg-surface/90 dark:bg-primary/90 backdrop-blur-md docked full-width top-0 sticky z-50">
+<div class="max-w-container-max mx-auto px-margin-desktop flex justify-between items-center h-20">
+<div class="font-display-lg text-display-lg text-primary dark:text-primary-fixed">
+                Wapike
+            </div>
+<nav class="hidden md:flex gap-8 items-center h-full">
+<a class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1 flex flex-col h-full justify-center transition-all active:scale-95" href="#">Categories</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 flex flex-col h-full justify-center transition-all active:scale-95" href="#">AI Assistant</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 flex flex-col h-full justify-center transition-all active:scale-95" href="#">About</a>
+</nav>
+<button class="hidden md:flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md uppercase tracking-wider px-6 py-3 rounded hover:bg-surface-tint transition-colors">
+                Sign In
+            </button>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative w-full h-[614px] md:h-[716px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="A breathtaking, cinematic wide shot of a luxury picnic setup overlooking a serene Kenyan landscape, perhaps a rift valley or a calm lake at golden hour. The scene features a low wooden table adorned with fine linen, crystal glasses, and a decadent charcuterie board. The lighting is warm, bathed in the soft, glowing light of the setting sun. The aesthetic is premium, high-end travel magazine, conveying tranquility and curated perfection." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuChB5K-14pKdS82Sr8nW0lKfUawMfAdPXc4_ydqNRs8X4w6JCfhUcUp1NdQwIBUu-RTqZfuKIVQ_ZLKgapQ205MyQJM4Nhr1xrjH3X5-o2sCFVBFDvPoOrk6dUSSgKHFhhkBJaxPXdi57JYwGgkGFKjLKkgbEim4bYR6uxkTPV8YsfYVsWOzW-UPiuIFan4t2FQjF_pmPUcyciYcyi6zrioiIM2XJ9JzenFoJzvK3ZN511PwHZ9GlBbkn8sVJN-kuMTufrMQ5K1bsY')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto mt-20">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-4">Curated Picnic Experiences</h1>
+<p class="font-body-lg text-body-lg text-on-primary/90 max-w-2xl mx-auto mb-8">Discover breathtaking locations and bespoke setups for an unforgettable afternoon in nature's lap.</p>
+</div>
+</section>
+<!-- Main Content Layout -->
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-[64px] md:py-[80px]">
+<div class="flex flex-col lg:flex-row gap-gutter">
+<!-- Sidebar Filters -->
+<aside class="w-full lg:w-1/4 flex-shrink-0">
+<div class="sticky top-28 bg-surface-container-lowest p-6 rounded-lg soft-shadow">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-sm text-headline-sm text-primary">Refine Search</h2>
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">tune</span>
+</div>
+<!-- Filter Group 1 -->
+<div class="mb-6 border-b border-surface-variant pb-6">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-4">Location Vibe</h3>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 rounded border border-outline flex items-center justify-center group-hover:border-primary transition-colors">
+<div class="w-3 h-3 bg-primary rounded-sm hidden"></div>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Lakeside Serenity</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 rounded border border-outline flex items-center justify-center group-hover:border-primary transition-colors">
+<div class="w-3 h-3 bg-primary rounded-sm hidden"></div>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Forest Canopy</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 rounded border border-outline flex items-center justify-center group-hover:border-primary transition-colors">
+<div class="w-3 h-3 bg-primary rounded-sm hidden"></div>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Open Savannah</span>
+</label>
+</div>
+</div>
+<!-- Filter Group 2 -->
+<div class="mb-6 border-b border-surface-variant pb-6">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-4">Amenities</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-2 bg-surface-container hover:bg-surface-dim text-on-surface rounded-full font-label-md text-label-md cursor-pointer transition-colors border border-transparent hover:border-outline-variant">Setup Included</span>
+<span class="px-4 py-2 bg-surface-container hover:bg-surface-dim text-on-surface rounded-full font-label-md text-label-md cursor-pointer transition-colors border border-transparent hover:border-outline-variant">BBQ Facilities</span>
+<span class="px-4 py-2 bg-primary text-on-primary rounded-full font-label-md text-label-md cursor-pointer transition-colors border border-primary">Family Friendly</span>
+<span class="px-4 py-2 bg-surface-container hover:bg-surface-dim text-on-surface rounded-full font-label-md text-label-md cursor-pointer transition-colors border border-transparent hover:border-outline-variant">Couples</span>
+</div>
+</div>
+<button class="w-full py-3 bg-primary text-on-primary font-label-md text-label-md rounded hover:bg-surface-tint transition-colors">
+                            Apply Filters
+                        </button>
+</div>
+</aside>
+<!-- Grid Content -->
+<div class="w-full lg:w-3/4">
+<div class="flex items-center justify-between mb-8">
+<span class="font-body-md text-body-md text-on-surface-variant">Showing 12 curated experiences</span>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Sort by:</span>
+<select class="bg-transparent border-none font-label-md text-label-md text-primary focus:ring-0 cursor-pointer outline-none">
+<option>Recommended</option>
+<option>Price: Low to High</option>
+<option>Price: High to Low</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Card 1 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow hover:shadow-lg transition-shadow duration-300">
+<div class="relative w-full aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out" data-alt="A beautifully styled picnic setup at the edge of a calm, reflective lake. The setup includes plush cushions in earthy tones, a low rustic table with fresh fruits, artisanal cheeses, and a chilled bottle of wine. The light is soft and diffused, creating a serene, high-end editorial feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdLZTjclx9zBBFrcasZUPpuXmI3k3BJ0J0voDug5zib2wlk-bUYJLWQ7oypTGkxxa1Yz1qBZVI6clnUYcHkmYLoaRZpFZbIPtxl3mS-Ag3P6jxjEYcGGONCB_1fzYQPZ7A0PrtnaDN39jn0oAT2QTi-po1cgmYpa-DP2ZezRX2FjJj5hxBCTsHA9-TUx25Myw9dPfa9hHDy1vQyHxmx-nTA1bgcdkX46swdOfIbdArKcRJoDSgxfTJch2EfhcY7JuxeE797NNMbFE"/>
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur rounded-full p-2 flex items-center justify-center cursor-pointer hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</div>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="px-3 py-1 bg-surface-container/90 backdrop-blur text-primary rounded-full font-caption text-caption">Lakeside</span>
+<span class="px-3 py-1 bg-surface-container/90 backdrop-blur text-primary rounded-full font-caption text-caption">Setup Included</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-primary group-hover:text-secondary transition-colors line-clamp-1">Oloiden Lake Escape</h3>
+<div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded">
+<span class="material-symbols-outlined text-secondary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md text-primary">4.9</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">location_on</span>
+<span class="font-body-md text-body-md">Naivasha, Rift Valley</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6">A secluded lakeside spot perfect for couples. Includes full luxury setup, premium hamper, and dedicated service.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant">From</span>
+<div class="font-headline-sm text-headline-sm text-primary">$120 <span class="font-body-md text-body-md text-on-surface-variant font-normal">/couple</span></div>
+</div>
+<button class="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded hover:bg-surface-tint transition-colors">
+                                        Details
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow hover:shadow-lg transition-shadow duration-300">
+<div class="relative w-full aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out" data-alt="A family-friendly picnic setting in a lush, dense forest clearing. Sunlight filters through the tall canopy, dappling the ground. There are comfortable blankets spread out, a rustic barbecue setup slightly offset, and a spacious area for kids to play. The mood is joyful, relaxed, and intimately connected to nature, captured with premium photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcT7QIZP9ghAvivoSFcSvB4KvNzMqzLS0-F6ryO-EenCYkZE1Ykmw-eAJTT0kI1kcDPadfNH8dOuMO77PPxFMttxhy040fbKgW1FOJn0pF2c2d3jYp0hLfam2Sfan_DT6rktJ31aZ3q7C0yrKN6dQsd8aNRVkSpTnhkFpOhtqQlDWg7pWToRdams_veDtK0mQDrv3rfFBeLisHPtSwP9H1ERK5qatTH3s1LsbffKB_vtG08c4ypeXBoI1mMGjoAVx8oc6ARcFAMW0"/>
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur rounded-full p-2 flex items-center justify-center cursor-pointer hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</div>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="px-3 py-1 bg-surface-container/90 backdrop-blur text-primary rounded-full font-caption text-caption">Forest</span>
+<span class="px-3 py-1 bg-surface-container/90 backdrop-blur text-primary rounded-full font-caption text-caption">Family</span>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-primary group-hover:text-secondary transition-colors line-clamp-1">Karura Canopy Feast</h3>
+<div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded">
+<span class="material-symbols-outlined text-secondary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md text-primary">4.7</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant mb-4">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">location_on</span>
+<span class="font-body-md text-body-md">Nairobi, Kenya</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6">Escape the city beneath ancient trees. Excellent spot for larger groups with dedicated BBQ facilities nearby.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant">From</span>
+<div class="font-headline-sm text-headline-sm text-primary">$45 <span class="font-body-md text-body-md text-on-surface-variant font-normal">/group</span></div>
+</div>
+<button class="px-6 py-2 border border-primary text-primary font-label-md text-label-md rounded hover:bg-surface-container transition-colors">
+                                        Details
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center">
+<button class="px-8 py-3 border border-outline text-primary font-label-md text-label-md uppercase tracking-wider rounded hover:bg-surface-container transition-colors flex items-center gap-2">
+                            Load More Experiences
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-primary-container full-width py-20 mt-auto border-t border-surface-variant">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="col-span-1 md:col-span-1">
+<div class="font-display-lg text-display-lg text-primary mb-6">
+                    Wapike
+                </div>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant mb-4">Curating the finest outdoor experiences across breathtaking landscapes.</p>
+</div>
+<div class="col-span-1 md:col-span-2 grid grid-cols-2 gap-8">
+<div>
+<h4 class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed-dim mb-4">Social</h4>
+<ul class="space-y-3">
+<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Instagram</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Twitter</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">TikTok</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed-dim mb-4">Legal</h4>
+<ul class="space-y-3">
+<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Privacy Policy</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Terms</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Newsletter Signup</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop mt-12 pt-8 border-t border-surface-variant text-center md:text-left">
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant">© 2024 Wapike. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,12 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Env files (each app also ignores its own)
+.env
+.env.local
+
+# Node / Python artifacts are ignored within frontend/ and backend/

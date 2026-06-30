@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wapike - Restaurants</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "surface-container": "#e7eefe",
+                        "surface-tint": "#576159",
+                        "on-tertiary-fixed": "#1d1b18",
+                        "primary-fixed-dim": "#bfc9c0",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#050d08",
+                        "outline-variant": "#c4c8c2",
+                        "primary-container": "#1b241e",
+                        "tertiary-fixed": "#e6e2dc",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#0d0c09",
+                        "surface-bright": "#f9f9ff",
+                        "primary-fixed": "#dbe5db",
+                        "inverse-primary": "#bfc9c0",
+                        "tertiary-fixed-dim": "#cac6c0",
+                        "on-surface": "#151c27",
+                        "on-primary-fixed-variant": "#404942",
+                        "surface-dim": "#d3daea",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-fixed-variant": "#6b3b00",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-container": "#8c8984",
+                        "on-secondary-fixed": "#2d1600",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#494642",
+                        "surface-container-highest": "#dce2f3",
+                        "surface-container-high": "#e2e8f8",
+                        "error-container": "#ffdad6",
+                        "on-background": "#151c27",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "outline": "#747874",
+                        "on-secondary-container": "#774200",
+                        "inverse-on-surface": "#ebf1ff",
+                        "surface-variant": "#dce2f3",
+                        "secondary-container": "#ffb065",
+                        "on-surface-variant": "#434844",
+                        "secondary": "#8b500a",
+                        "on-primary-container": "#828c83",
+                        "on-primary-fixed": "#151e18",
+                        "secondary-fixed-dim": "#ffb876",
+                        "tertiary-container": "#23221e",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "secondary-fixed": "#ffdcc0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"],
+                        "display-lg": ["Playfair Display", "serif"],
+                        "display-lg-mobile": ["Playfair Display", "serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-sm": ["Playfair Display", "serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-md": ["Playfair Display", "serif"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<header class="w-full top-0 sticky z-50 bg-surface/90 backdrop-blur-md border-none shadow-none">
+<nav class="max-w-container-max mx-auto px-margin-desktop flex justify-between items-center h-20">
+<div class="flex items-center gap-12">
+<a class="font-display-lg text-display-lg text-primary hover:text-secondary transition-colors duration-300" href="#">Wapike</a>
+<ul class="hidden md:flex items-center gap-8 font-label-md text-label-md uppercase tracking-wider">
+<li class="cursor-pointer transition-all active:scale-95 text-primary font-bold border-b-2 border-primary pb-1">Categories</li>
+<li class="cursor-pointer transition-all active:scale-95 text-on-surface-variant hover:text-secondary transition-colors duration-300 pb-1">AI Assistant</li>
+<li class="cursor-pointer transition-all active:scale-95 text-on-surface-variant hover:text-secondary transition-colors duration-300 pb-1">About</li>
+</ul>
+</div>
+<div class="flex items-center gap-6">
+<button class="hidden md:flex items-center justify-center font-label-md text-label-md uppercase tracking-wider text-primary hover:text-secondary transition-colors duration-300 cursor-pointer transition-all active:scale-95">Sign In</button>
+<button class="md:hidden flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="min-h-screen">
+<!-- Page Header -->
+<section class="max-w-container-max mx-auto px-margin-desktop pt-16 pb-8 md:pt-24 md:pb-12">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-4">Restaurants</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">From fine dining to hidden local gems. Discover curated culinary experiences that blend modern elegance with authentic heritage.</p>
+</section>
+<!-- Filter Bar -->
+<section class="sticky top-20 z-40 bg-surface/95 backdrop-blur-md py-4 border-b border-surface-dim mb-12">
+<div class="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row md:items-center gap-4 md:gap-8 justify-between">
+<!-- Cuisine Filter (Pills) -->
+<div class="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide w-full md:w-auto">
+<span class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap pr-2">Cuisine:</span>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-colors whitespace-nowrap">All</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-container-highest text-on-surface hover:bg-surface-dim transition-colors font-label-md text-label-md whitespace-nowrap">Fine Dining</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-container-highest text-on-surface hover:bg-surface-dim transition-colors font-label-md text-label-md whitespace-nowrap">Casual</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-container-highest text-on-surface hover:bg-surface-dim transition-colors font-label-md text-label-md whitespace-nowrap">Rooftop</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-container-highest text-on-surface hover:bg-surface-dim transition-colors font-label-md text-label-md whitespace-nowrap">Buffet</button>
+</div>
+<!-- Secondary Filters (Dropdown Triggers) -->
+<div class="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant bg-surface text-on-surface hover:bg-surface-container-low transition-colors font-label-md text-label-md whitespace-nowrap">
+                        Price Range
+                        <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant bg-surface text-on-surface hover:bg-surface-container-low transition-colors font-label-md text-label-md whitespace-nowrap">
+                        Seating
+                        <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant bg-surface text-on-surface hover:bg-surface-container-low transition-colors font-label-md text-label-md whitespace-nowrap">
+                        Occasion
+                        <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Restaurant Grid -->
+<section class="max-w-container-max mx-auto px-margin-desktop pb-24">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Card 1 -->
+<article class="group flex flex-col gap-4">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A striking high-resolution photograph of a luxury fine dining restaurant interior set in Nairobi, Kenya. The scene features elegant table settings with crisp white linens and crystal glassware, illuminated by soft, warm amber lighting. Subtle African heritage elements, like intricate carved wood partitions and muted earth-toned textiles, blend seamlessly with modern minimalist architecture. The mood is sophisticated, calm, and exclusive, capturing the essence of premium hospitality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3uGNaCRnLocPuLLlSXsXSLx8a3NRkr4pd4zHB2geNev9iStJ1ktKl-7vreQlTaLipDCzqY1KVdQVKGu30uWX6YWytUausKGBE-PPcfoWB3j4I8pqpw0P0GFLQGr4bf30IFrZ-fCJpNMOFUW-edeosnUTEpC5tEL62awx2fYDJ2uUHYXoBGTrg6iLAbyypxc4b_dBAu9M6TfW3j7LUoOpyvV0SubbH-4UMfZftfESrRlYhuUCagwktUhZIYL60qo8MVAOEnLFECL8"/>
+<div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-start gap-4">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">The Savannah Room</h2>
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-1 rounded-md shrink-0">
+<span class="material-symbols-outlined icon-filled text-secondary text-[14px]">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.9</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-caption text-caption text-on-surface-variant uppercase tracking-wide">
+<span>Fine Dining</span>
+<span>•</span>
+<span>$$$$</span>
+<span>•</span>
+<span>Nairobi City</span>
+</div>
+<div class="mt-2">
+<button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-surface-tint transition-colors active:scale-[0.98]">Book Now</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="group flex flex-col gap-4">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A breathtaking view from a high-end rooftop restaurant at twilight. The modern outdoor terrace features sleek, low-profile lounge seating in muted gray tones, surrounding low fire pits. In the background, a panoramic city skyline is illuminated against a deep indigo and vibrant orange sunset sky. The lighting is ambient and romantic, highlighting the premium minimalist design and airy, breathable atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmxnfjJuD-pY8jqD7eMz_Nnace5MOaJGOHvszOdRY_cktFb1ZUA7xYlOrywawfGqSjJHxBBy6ax8oDMelt7GVt_Ab3-z5M74kt1UiIbb5QHWE1YiH6oGmS9frUoFqlTYu7p1U4twC8_73_wT75xcsn1wjMREkiNvhxY_Oig-v3EfLECGkBXFeltIH4aeiwN7wHf_933u8Zocn_itZwlox2gmmbw1y3rAsYgr-8Qg9_rfYijIaRHyBVTKis_QfEeLw8grmAuz-oP3k"/>
+<div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-start gap-4">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">Altitude Lounge</h2>
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-1 rounded-md shrink-0">
+<span class="material-symbols-outlined icon-filled text-secondary text-[14px]">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.7</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-caption text-caption text-on-surface-variant uppercase tracking-wide">
+<span>Rooftop • Fusion</span>
+<span>•</span>
+<span>$$$</span>
+<span>•</span>
+<span>Westlands</span>
+</div>
+<div class="mt-2">
+<button class="w-full py-3 rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors active:scale-[0.98]">Details</button>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="group flex flex-col gap-4">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An inviting outdoor seating area of a coastal seafood restaurant. The design embraces natural sophistication with light wood decking, woven rattan chairs, and minimalist white canvas shade sails overhead. The tables are set simply with pristine white plates and minimalist cutlery. Sunlight filters softly through the canopy, creating dappled shadows that enhance the calm, airy, and premium vacation vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7aDgG-uJgrt6j6IHbaiYVZ05eYeg4I8zzdSMGFxuXLhPt1WCDEUKpzX9PzSdE2XpL7zyvbVcxpx-9KUtBCOBN-GwWHoYehllGfFwbpPyqx6u9pVuHWmqR7An4iTyUU3U_SUZ0dlODcDufiAkdGfRXiTcCisfDptM3YkpfoUcHJbtmsf33Scuo9nLQdrBQDXaiPnuMAN93U3PjZgS1v6T_RFbofUCw5BUzXT_kZIlQoloBhYTGttFKawKaehl2tqHrpudKbmdyiDg"/>
+<div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-start gap-4">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">Ocean Drift</h2>
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-1 rounded-md shrink-0">
+<span class="material-symbols-outlined icon-filled text-secondary text-[14px]">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.8</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-caption text-caption text-on-surface-variant uppercase tracking-wide">
+<span>Seafood</span>
+<span>•</span>
+<span>$$$</span>
+<span>•</span>
+<span>Mombasa</span>
+</div>
+<div class="mt-2">
+<button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-surface-tint transition-colors active:scale-[0.98]">Book Now</button>
+</div>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="group flex flex-col gap-4">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up shot of a beautifully plated modern fusion dish resting on a matte dark ceramic plate. The culinary creation features vibrant micro-greens, carefully placed edible flowers, and a perfectly seared cut of meat, surrounded by artistic swooshes of colorful purees. The lighting is moody and dramatic, focusing tightly on the texture and precision of the food, embodying a high-end, editorial dining aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUqFfxKM5tQgzgvUFAkZTLsrcOnwKbDA7d1kWD87j5yJelwgKPRfNGG7Tl8Rs6LyDHVao00EgTDF6r03u5t-DjzIFUkPKnuje_18sHeS7w_RcV3oke41cwVTOwLTfFXDRaiB4oBDWRgRFLKpdv2oL8d4jmTKc2k0HoLoo26k-Ihez9VuJ_E4yl8WNPzVJBBdYEVkI9O1SgcW_QCOVG8t2lHSEl94q07AuglOzoyJM_olkBoqQ5ZmWuX6dTqN0yUYKgLbvjzEHU1Lg"/>
+<div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-start gap-4">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">Atelier 42</h2>
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-1 rounded-md shrink-0">
+<span class="material-symbols-outlined icon-filled text-secondary text-[14px]">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.9</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-caption text-caption text-on-surface-variant uppercase tracking-wide">
+<span>Tasting Menu</span>
+<span>•</span>
+<span>$$$$</span>
+<span>•</span>
+<span>Karen</span>
+</div>
+<div class="mt-2">
+<button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-surface-tint transition-colors active:scale-[0.98]">Book Now</button>
+</div>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="group flex flex-col gap-4">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A cozy, hidden local gem cafe interior during early morning. Natural light floods in through large crittall windows, highlighting raw concrete walls and lush green potted plants. The furniture consists of minimalist light oak tables and vintage-inspired leather chairs. The atmosphere is relaxed, breathable, and quietly sophisticated, reflecting a modern urban retreat." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCy5W_EsDzIeaj3VKoZ8KQ9BN7b2KZ-izPWgL4wShgTdOW_PuDL39trEp-X5OPKpEw1fjwiCfB0BQQPAhU086pqCksP6DzxLOEKZtjssibOiZzIQtsvGIC-NhKqzf3KSiufpXHMcVkeexYaHnn8nkt_aC7IQmYmxWtRvGG611YCm3SamaYU7z1DGkDjAhe_f6mrRo9aQDugUFJaMYURssFtbF5mK9f7XPqIajVDmc54yoSF-a17hpOsOueKQvANPynEP3znt3Yus4Y"/>
+<div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-start gap-4">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">The Greenhouse</h2>
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-1 rounded-md shrink-0">
+<span class="material-symbols-outlined icon-filled text-secondary text-[14px]">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.6</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-caption text-caption text-on-surface-variant uppercase tracking-wide">
+<span>Casual • Cafe</span>
+<span>•</span>
+<span>$$</span>
+<span>•</span>
+<span>Kilimani</span>
+</div>
+<div class="mt-2">
+<button class="w-full py-3 rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors active:scale-[0.98]">Details</button>
+</div>
+</div>
+</article>
+<!-- Card 6 -->
+<article class="group flex flex-col gap-4">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An exclusive outdoor dining experience set in a pristine wilderness landscape at dusk. A single, elegantly dressed long table sits under the open sky, illuminated by subtle brass lanterns and soft candlelight. The surrounding environment features silhouettes of acacia trees against a deep purple twilight sky. The design conveys luxury, natural sophistication, and an unforgettable premium heritage experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyYStqhvB_9krzEPkvF-gFPupGDHCQZ4b_J8HCCkoIELMJt3_FKF5n3-QgJojCmPvcLUDqwshAoZ77g8On5fwqZApmL9y03h-1G17VxSu5uBWKwwdepGXI-xMr93SPELLew6GBF2gF64Bd4_QN64cOFs2fHzbcQn733f_29U1ja-kSQVNM-f9nZK358CiLTeYAZDN6DymwKzoERuHNmEfUSW3QsFlSkjDbFcAHgowG-DylLIGmRzQqCFSfWFg7MUM-jeK8UUYq1KM"/>
+<div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-start gap-4">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">Mara Under Canvas</h2>
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-1 rounded-md shrink-0">
+<span class="material-symbols-outlined icon-filled text-secondary text-[14px]">star</span>
+<span class="font-label-md text-label-md text-on-surface">5.0</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-caption text-caption text-on-surface-variant uppercase tracking-wide">
+<span>Experience</span>
+<span>•</span>
+<span>$$$$</span>
+<span>•</span>
+<span>Masai Mara</span>
+</div>
+<div class="mt-2">
+<button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-surface-tint transition-colors active:scale-[0.98]">Book Now</button>
+</div>
+</div>
+</article>
+</div>
+<!-- Load More -->
+<div class="mt-16 flex justify-center">
+<button class="px-8 py-3 rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors active:scale-[0.98]">Load More Experiences</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest w-full py-20 border-t border-surface-dim">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="col-span-1 md:col-span-1 flex flex-col gap-6">
+<span class="font-display-lg text-display-lg text-primary">Wapike</span>
+<p class="font-body-md text-body-md text-on-surface-variant">© 2024 Wapike. All rights reserved.</p>
+</div>
+<div class="col-span-1 md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+<div class="flex flex-col gap-4">
+<h4 class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">Social</h4>
+<ul class="flex flex-col gap-3 font-body-md text-body-md text-on-surface-variant">
+<li><a class="hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Instagram</a></li>
+<li><a class="hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Twitter</a></li>
+<li><a class="hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">TikTok</a></li>
+</ul>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">Legal</h4>
+<ul class="flex flex-col gap-3 font-body-md text-body-md text-on-surface-variant">
+<li><a class="hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Terms</a></li>
+</ul>
+</div>
+<div class="flex flex-col gap-4 col-span-2 md:col-span-1">
+<h4 class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">Stay Updated</h4>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Newsletter Signup</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

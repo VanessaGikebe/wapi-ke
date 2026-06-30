@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wapike - Hiking &amp; Nature</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "surface-container": "#e7eefe",
+                        "surface-tint": "#576159",
+                        "on-tertiary-fixed": "#1d1b18",
+                        "primary-fixed-dim": "#bfc9c0",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#050d08",
+                        "outline-variant": "#c4c8c2",
+                        "primary-container": "#1b241e",
+                        "tertiary-fixed": "#e6e2dc",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#0d0c09",
+                        "surface-bright": "#f9f9ff",
+                        "primary-fixed": "#dbe5db",
+                        "inverse-primary": "#bfc9c0",
+                        "tertiary-fixed-dim": "#cac6c0",
+                        "on-surface": "#151c27",
+                        "on-primary-fixed-variant": "#404942",
+                        "surface-dim": "#d3daea",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-fixed-variant": "#6b3b00",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-container": "#8c8984",
+                        "on-secondary-fixed": "#2d1600",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#494642",
+                        "surface-container-highest": "#dce2f3",
+                        "surface-container-high": "#e2e8f8",
+                        "error-container": "#ffdad6",
+                        "on-background": "#151c27",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "outline": "#747874",
+                        "on-secondary-container": "#774200",
+                        "inverse-on-surface": "#ebf1ff",
+                        "surface-variant": "#dce2f3",
+                        "secondary-container": "#ffb065",
+                        "on-surface-variant": "#434844",
+                        "secondary": "#8b500a",
+                        "on-primary-container": "#828c83",
+                        "on-primary-fixed": "#151e18",
+                        "secondary-fixed-dim": "#ffb876",
+                        "tertiary-container": "#23221e",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "secondary-fixed": "#ffdcc0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/90 dark:bg-primary/90 backdrop-blur-md docked full-width top-0 sticky z-50 bg-surface dark:bg-primary flat no shadows">
+<div class="max-w-container-max mx-auto px-margin-desktop flex justify-between items-center h-20">
+<a class="font-display-lg text-display-lg text-primary dark:text-primary-fixed" href="#">Wapike</a>
+<nav class="hidden md:flex space-x-gutter">
+<a class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1 cursor-pointer transition-all active:scale-95" href="#">Categories</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer transition-all active:scale-95" href="#">AI Assistant</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer transition-all active:scale-95" href="#">About</a>
+</nav>
+<button class="hidden md:block font-label-md text-label-md bg-primary text-on-primary px-6 py-3 rounded-full hover:bg-primary-container transition-colors">Sign In</button>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col">
+<!-- Hero Section -->
+<section class="relative w-full h-[400px] md:h-[500px] bg-surface-container-high flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full mix-blend-overlay opacity-60" data-alt="A breathtaking panoramic view of a lush, verdant hiking trail in Kenya, captured at sunrise. Soft, golden light filters through a canopy of indigenous trees, casting long shadows on the earthy path. The atmosphere is serene and inviting, with a modern, high-end travel photography aesthetic. The color palette emphasizes rich greens, deep earthy browns, and warm golden hues, embodying the 'Modern Heritage' brand identity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAJ5KUK2V3ldAgDVdVC9uEV045VhLNZ3nUI6Rv_fRFvoTVXP-C5FPEzz5DteXUs--G8-O20SynhoeS_FQOrd82m07V7KhKikTIgA4qwmbzBl0koDE565NbTq7pFb9sIq-yHe49cS1e15Q1q0p2qKJNe-m4tyUdOI-JobnbXJSNF0kJtJX6t2WffpPjCss076Lo-3cqlk16B5STUfPGAyt33Bw4CNoIr_u9S-d5zq6E0Qo_AYKarWMszp-R43NUcuRB8HLbnvriUffA')"></div>
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-4">Hiking &amp; Nature</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Escape the city and find your trail.</p>
+</div>
+</section>
+<!-- Main Content Area -->
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-10 w-full flex flex-col md:flex-row gap-10">
+<!-- Sidebar Filters -->
+<aside class="w-full md:w-64 flex-shrink-0">
+<div class="sticky top-28 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-[0px_10px_30px_rgba(27,36,30,0.04)]">
+<h2 class="font-headline-sm text-headline-sm text-primary mb-6">Filters</h2>
+<!-- Difficulty -->
+<div class="mb-8">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase mb-4">Difficulty</h3>
+<div class="space-y-3">
+<label class="flex items-center space-x-3 cursor-pointer">
+<input class="form-checkbox text-primary focus:ring-primary rounded border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Beginner</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input checked="" class="form-checkbox text-primary focus:ring-primary rounded border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Intermediate</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input class="form-checkbox text-primary focus:ring-primary rounded border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Advanced</span>
+</label>
+</div>
+</div>
+<!-- Features -->
+<div class="mb-8">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase mb-4">Features</h3>
+<div class="space-y-3">
+<label class="flex items-center space-x-3 cursor-pointer">
+<input checked="" class="form-checkbox text-primary focus:ring-primary rounded border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Waterfalls</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input class="form-checkbox text-primary focus:ring-primary rounded border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Camping</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input class="form-checkbox text-primary focus:ring-primary rounded border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Pet-friendly</span>
+</label>
+</div>
+</div>
+<!-- Duration Slider (Visual Representation) -->
+<div>
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase mb-4">Duration (hrs)</h3>
+<input class="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary" max="10" min="1" type="range" value="4"/>
+<div class="flex justify-between mt-2 font-caption text-caption text-on-surface-variant">
+<span>1h</span>
+<span>10h+</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Trail Grid -->
+<div class="flex-grow">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+<!-- Trail Card 1 -->
+<article class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_10px_30px_rgba(27,36,30,0.04)] border border-transparent hover:border-outline-variant transition-all duration-300 flex flex-col h-full">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A stunning view of the rolling Ngong Hills in Kenya against a bright blue sky. The landscape features undulating green slopes dotted with iconic wind turbines. The image is captured with a high-end, crisp editorial travel photography style, emphasizing the vast, open space and natural beauty. The lighting is bright and clear, contributing to a premium, aspirational aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhZ4qzx6oYSCn8Wvxl10I2bp5z7XdAGPUj06crPzjyiIN3WkMyAgXaDJqBJjHHCsvNigEXF6HyLF-boka2NTTXKB7WoaX5vRB5lrnN_NSiX96A-P8CeWHxmjG7aD1IZFAdNnmikAeC7ndX-Hp2IAJpJolJSk4c4dhyAAoK_AebOL1491k37P6G9KiU5PS0Y1CL9O0bHEOVuXGfE8K4bLvhRZ4W0n6KRO5y3jjv_gTBL6mzL1qWESIEToVrmdUaeN7VOUqBrRALnOQ"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-[#F4EFE9] text-primary font-label-md text-label-md px-3 py-1 rounded-full">Intermediate</span>
+</div>
+<button class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur-sm p-2 rounded-full text-on-surface hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">Ngong Hills Traverse</h3>
+<div class="flex items-center text-on-surface-variant mb-4 font-caption text-caption">
+<span class="material-symbols-outlined text-[16px] mr-1">location_on</span>
+<span>Rift Valley, Kenya</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined text-[16px] mr-1">route</span>
+<span>12 km</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6 flex-grow">Experience the iconic rolling hills with panoramic views of the Great Rift Valley and Nairobi city skyline.</p>
+<button class="w-full font-label-md text-label-md border border-primary text-primary px-4 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors">View Trail</button>
+</div>
+</article>
+<!-- Trail Card 2 -->
+<article class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_10px_30px_rgba(27,36,30,0.04)] border border-transparent hover:border-outline-variant transition-all duration-300 flex flex-col h-full">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A serene, sun-dappled path winding through Karura Forest in Nairobi. Tall indigenous trees form a lush canopy overhead, with dappled sunlight hitting the well-maintained dirt trail. The image has a calm, inviting mood, shot in a premium editorial style with a focus on fresh greens and deep forest shadows, perfectly aligning with a modern, high-end travel brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYnLfqsriBJl4D1I7hK_0NX3q9M1olvvKb6WrwP-3YjBxHcB30rGMF5VFLaUNQOXtdJXid8rxwMZtKwb9RWL16-zEyTZtQiBlm3QkSMPh9dXTzpByed6GB_sDk-W-OsN5CbmRDHidVpHmN5mHcaFb98pfVeraZID_Y3dBKFLekfV8gnwr7iuXs3vnvCwQ04owDoX7zLzitPLP-xs6Ig3TtzdA9BerE07aJL0SqpV91pEkVPlNkE0r16ALHjVMH_uqgAnLX7YAFIa0"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-[#F4EFE9] text-primary font-label-md text-label-md px-3 py-1 rounded-full">Beginner</span>
+</div>
+<button class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur-sm p-2 rounded-full text-on-surface hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">Karura Forest Main Loop</h3>
+<div class="flex items-center text-on-surface-variant mb-4 font-caption text-caption">
+<span class="material-symbols-outlined text-[16px] mr-1">location_on</span>
+<span>Nairobi, Kenya</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined text-[16px] mr-1">route</span>
+<span>5 km</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6 flex-grow">A gentle, shaded walk through Nairobi's premier urban forest, featuring historic caves and a stunning waterfall.</p>
+<button class="w-full font-label-md text-label-md border border-primary text-primary px-4 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors">View Trail</button>
+</div>
+</article>
+<!-- Trail Card 3 -->
+<article class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_10px_30px_rgba(27,36,30,0.04)] border border-transparent hover:border-outline-variant transition-all duration-300 flex flex-col h-full">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A dramatic view of Mount Longonot's rugged crater rim in Kenya. The landscape is arid and striking, featuring steep slopes dropping into a forested crater. The photograph is shot with a premium, majestic feel, utilizing a clean, light-mode aesthetic with strong contrast between the deep earth tones of the volcano and a clear, pale sky. The mood is adventurous and awe-inspiring." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD41iUU4scOZcHL9MA34-ggVDkixUSQpxTodb0rp0rF4gNqx4nM9DEI8QGmYVZuk_saadTVrUBtzFbvV-WAjfJvyu6qwfwxYyBbkVJza2O2fhi-gN-dI8cAGuWHGVZmnkliyed4g6zBrDujBadS5i8I0zkRaFWKijWorik1FKkRi3P6btx7EexBwp3p5cuGHHEbkprKY4yaj9YfltVy7HRTIrtEoCbgmC2P26AntgXqdqprb1BJtwr5YpQ6Qg3-HD_DZxWGyncbXXE"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-[#F4EFE9] text-primary font-label-md text-label-md px-3 py-1 rounded-full">Advanced</span>
+</div>
+<button class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur-sm p-2 rounded-full text-on-surface hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">Mt. Longonot Crater Hike</h3>
+<div class="flex items-center text-on-surface-variant mb-4 font-caption text-caption">
+<span class="material-symbols-outlined text-[16px] mr-1">location_on</span>
+<span>Naivasha, Kenya</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined text-[16px] mr-1">route</span>
+<span>7.2 km</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6 flex-grow">A challenging ascent followed by a breathtaking walk around the rim of this dormant stratovolcano.</p>
+<button class="w-full font-label-md text-label-md border border-primary text-primary px-4 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors">View Trail</button>
+</div>
+</article>
+<!-- Trail Card 4 -->
+<article class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_10px_30px_rgba(27,36,30,0.04)] border border-transparent hover:border-outline-variant transition-all duration-300 flex flex-col h-full">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A tranquil scene at Oloolua Nature Trail in Nairobi. The image focuses on a small, gentle waterfall cascading into a clear pool surrounded by dense, tropical foliage. The lighting is soft and diffused, creating a peaceful, secluded atmosphere. The high-quality editorial style highlights the rich textures of the wet rocks and vibrant green leaves, fitting a premium nature experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABXvNZ6c3zEMgHaIwmkAgXtuhEcae5jaU84CJ4ok3HnaVW-jSfDyWBcJMIyFvQlIwDwXR-N31-u2D8GS0TseZ3NhsrBlAhHgRBplkRtqEvpE_KhALNBUxqBmea8zAfIrgZ6rN0s4D2OyVD6l2k7OYHQZQpUP-cFn1XVF8FSqqn0K99RC1FoujCUty1XiWPdc7bWF4DzMsZgPTMSQ5U6Hg3OR5j9QNIVN3ua0rBvwegrcJGSrshyPETcgzCj8OKyH78oj97hR6oLEc"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-[#F4EFE9] text-primary font-label-md text-label-md px-3 py-1 rounded-full">Beginner</span>
+</div>
+<button class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur-sm p-2 rounded-full text-on-surface hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">Oloolua Nature Trail</h3>
+<div class="flex items-center text-on-surface-variant mb-4 font-caption text-caption">
+<span class="material-symbols-outlined text-[16px] mr-1">location_on</span>
+<span>Karen, Nairobi</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined text-[16px] mr-1">route</span>
+<span>4.5 km</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6 flex-grow">A peaceful retreat featuring a beautiful waterfall, bamboo rest areas, and a primate research center.</p>
+<button class="w-full font-label-md text-label-md border border-primary text-primary px-4 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors">View Trail</button>
+</div>
+</article>
+</div>
+<!-- Load More -->
+<div class="mt-12 flex justify-center">
+<button class="font-label-md text-label-md text-secondary border-b border-secondary pb-1 hover:text-primary hover:border-primary transition-colors">Load More Trails</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-primary-container full-width py-20 bg-surface-container-lowest dark:bg-primary-container flat no shadows mt-auto">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div>
+<a class="font-display-lg text-display-lg text-primary block mb-6" href="#">Wapike</a>
+<p class="font-body-md text-body-md text-primary dark:text-primary-fixed-dim">© 2024 Wapike. All rights reserved.</p>
+</div>
+<div class="flex flex-col space-y-4">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Instagram</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Twitter</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">TikTok</a>
+</div>
+<div class="flex flex-col space-y-4">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Terms</a>
+</div>
+<div class="flex flex-col space-y-4">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Newsletter Signup</a>
+</div>
+</div>
+</footer>
+</body></html>

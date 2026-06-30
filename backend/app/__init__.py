@@ -1,0 +1,1 @@
+"""Wapike backend application package."""

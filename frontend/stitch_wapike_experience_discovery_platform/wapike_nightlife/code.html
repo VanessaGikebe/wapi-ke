@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wapike - Nightlife Discovery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#ffb876",
+                      "on-primary-container": "#828c83",
+                      "error-container": "#ffdad6",
+                      "on-secondary-container": "#774200",
+                      "surface": "#f9f9ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#e7eefe",
+                      "on-background": "#151c27",
+                      "surface-tint": "#576159",
+                      "background": "#f9f9ff",
+                      "surface-container-high": "#e2e8f8",
+                      "primary": "#050d08",
+                      "on-tertiary-fixed-variant": "#494642",
+                      "primary-fixed-dim": "#bfc9c0",
+                      "on-surface-variant": "#434844",
+                      "surface-dim": "#d3daea",
+                      "on-secondary": "#ffffff",
+                      "surface-variant": "#dce2f3",
+                      "secondary": "#8b500a",
+                      "primary-container": "#1b241e",
+                      "inverse-primary": "#bfc9c0",
+                      "on-surface": "#151c27",
+                      "tertiary-container": "#23221e",
+                      "on-secondary-fixed-variant": "#6b3b00",
+                      "surface-bright": "#f9f9ff",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#dce2f3",
+                      "on-secondary-fixed": "#2d1600",
+                      "tertiary": "#0d0c09",
+                      "secondary-container": "#ffb065",
+                      "on-tertiary-container": "#8c8984",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#ffdcc0",
+                      "outline-variant": "#c4c8c2",
+                      "on-error": "#ffffff",
+                      "outline": "#747874",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2a313d",
+                      "surface-container-low": "#f0f3ff",
+                      "on-primary-fixed": "#151e18",
+                      "on-primary-fixed-variant": "#404942",
+                      "tertiary-fixed": "#e6e2dc",
+                      "tertiary-fixed-dim": "#cac6c0",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#ebf1ff",
+                      "primary-fixed": "#dbe5db",
+                      "on-tertiary-fixed": "#1d1b18"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "base": "8px",
+                      "margin-desktop": "40px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Playfair Display"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "display-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "caption": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar Component -->
+<header class="bg-surface/90 dark:bg-primary/90 backdrop-blur-md docked full-width top-0 sticky z-50">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex justify-between items-center h-20 bg-surface dark:bg-primary flat no shadows">
+<!-- Brand -->
+<a class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary dark:text-primary-fixed tracking-tight" href="#">Wapike</a>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1 transition-all active:scale-95 cursor-pointer" href="#">Categories</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 transition-all active:scale-95 cursor-pointer" href="#">AI Assistant</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 transition-all active:scale-95 cursor-pointer" href="#">About</a>
+</nav>
+<!-- Trailing Action -->
+<div class="flex items-center gap-4">
+<button class="font-label-md text-label-md bg-primary text-on-primary px-6 py-2.5 rounded-full hover:bg-surface-tint transition-colors cursor-pointer transition-all active:scale-95">Sign In</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full">
+<!-- Hero Section (Dark Theme Vibe) -->
+<section class="relative w-full h-[614px] min-h-[500px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center" data-alt="A sophisticated, atmospheric night shot of a high-end rooftop lounge in Nairobi. The scene is illuminated by warm, ambient lighting, with city lights blurred in the background. The mood is elegant and vibrant, reflecting a premium nightlife experience. The color palette emphasizes deep charcoals, warm golds, and subtle neon accents, perfectly aligning with a modern, high-end travel aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBs0lMvZuQ0q8rZlQ2sA-Ye22htBXkU7K0wfdo8nevXBCRlnBvni2Df_fsyHCoicq2RExFbj5EGvO64Br3NXgmlg0yJPflBDWioZ8GPf7ftEe0c7qas7x86OIoHU0vLOmn1fxAoNgm06zNrtdM1pz8CH92SZHeRMQQe65nrPpeCotraIXHDjhK3L1f9koHt45hdultKSjsFmaY6XLGJPr84S4zDRkkV-fXYxuqbzXyqPp4YzvL-ZqhHw4xwh9R4ljfUKb1e61njAIQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent"></div>
+</div>
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-4 text-white">Nairobi After Dark</h1>
+<p class="font-body-lg text-body-lg text-primary-fixed-dim max-w-2xl mx-auto mb-8">Discover curated nightlife experiences, from intimate speakeasies to panoramic rooftop lounges.</p>
+<!-- Quick Search Bar (Overlay) -->
+<div class="bg-surface/10 backdrop-blur-md border border-white/20 p-2 rounded-full flex items-center max-w-xl mx-auto">
+<span class="material-symbols-outlined text-white pl-4">search</span>
+<input class="bg-transparent border-none text-white font-body-md text-body-md placeholder-white/60 focus:ring-0 w-full px-4" placeholder="Search clubs, lounges, events..." type="text"/>
+</div>
+</div>
+</section>
+<!-- Filters & Grid Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-24">
+<div class="flex flex-col md:flex-row gap-12">
+<!-- Sidebar Filters (Desktop) / Sticky or Drawer (Mobile - simplified for now) -->
+<aside class="w-full md:w-64 flex-shrink-0">
+<div class="sticky top-28 space-y-8">
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-widest text-surface-tint">Venue Type</h3>
+<ul class="space-y-3">
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 border border-outline rounded bg-surface group-hover:border-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-primary hidden">check</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Clubs</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 border border-primary rounded bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-on-primary">check</span>
+</div>
+<span class="font-body-md text-body-md text-primary font-medium">Lounges</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 border border-outline rounded bg-surface group-hover:border-primary transition-colors flex items-center justify-center"></div>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Rooftop Bars</span>
+</label>
+</li>
+</ul>
+</div>
+<hr class="border-outline-variant/30"/>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-widest text-surface-tint">Vibe &amp; Experience</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant cursor-pointer hover:bg-primary hover:text-on-primary transition-colors border border-transparent">Live Music</span>
+<span class="px-4 py-2 bg-primary rounded-full font-label-md text-label-md text-on-primary cursor-pointer border border-primary">Cocktails</span>
+<span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant cursor-pointer hover:bg-primary hover:text-on-primary transition-colors border border-transparent">DJ Events</span>
+<span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant cursor-pointer hover:bg-primary hover:text-on-primary transition-colors border border-transparent">Karaoke</span>
+</div>
+</div>
+<hr class="border-outline-variant/30"/>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-widest text-surface-tint">Dress Code</h3>
+<ul class="space-y-3">
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 border border-outline rounded-full bg-surface group-hover:border-primary transition-colors flex items-center justify-center"></div>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Smart Casual</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 border border-outline rounded-full bg-surface group-hover:border-primary transition-colors flex items-center justify-center"></div>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Elegant / Formal</span>
+</label>
+</li>
+</ul>
+</div>
+</div>
+</aside>
+<!-- Results Grid -->
+<div class="flex-1">
+<div class="flex justify-between items-end mb-8">
+<h2 class="font-headline-sm text-headline-sm text-on-background">Curated Lounges</h2>
+<span class="font-caption text-caption text-surface-tint">Showing 12 results</span>
+</div>
+<!-- Bento-style Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
+<!-- Card 1 -->
+<div class="group flex flex-col gap-4 cursor-pointer">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="A high-quality, editorial photograph of a modern, upscale cocktail lounge interior. Soft, warm amber lighting highlights rich mahogany surfaces and plush velvet seating. The atmosphere is sophisticated and intimate, with a subtly blurred background suggesting a lively yet relaxed evening crowd. The style is premium minimalism, emphasizing calm professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1CBVai9OgXomHgtKgf9heQ8QXV8LHUlkvPzT_-IgzeSs3_dAJXXS4Qu8tjdqKlsvbxPKf7XeRUCDPz23HsuNfchUFJdTo7pcr7XwFKxw526O92A2hkr1LSfpdftEs6wqwmNW3jtx9ZF1jWzCeq3IUQ9Co5sqmFE0mAbwKZWv3K70PngRSYD8oAFgCfc63soC18dpRwRLe1Kc6Y7DjzAUGp7nPplY39-Hy6nV1efhQ3LjoE3Sy9BL7fX7SgsRU08QRfIKQus9tTpo"/>
+<div class="absolute top-4 right-4 bg-surface/80 backdrop-blur-sm p-2 rounded-full">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="px-3 py-1 bg-surface/90 backdrop-blur-md rounded-full font-caption text-caption text-primary">Lounge</span>
+<span class="px-3 py-1 bg-surface/90 backdrop-blur-md rounded-full font-caption text-caption text-primary">$$$</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-background mb-1">The Alchemist Bar</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">Westlands, Nairobi</p>
+<p class="font-caption text-caption text-surface-tint line-clamp-2">A creative hub featuring open-air lounging, craft cocktails, and an eclectic mix of electronic and live acoustic sets.</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col gap-4 cursor-pointer">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="A striking nighttime photograph looking out from a high-end rooftop bar over the Nairobi city skyline. The foreground shows elegantly designed minimalist seating and subtle string lights, while the background features glowing city lights against a deep night sky. The aesthetic is modern heritage, combining sleek design with a natural, sophisticated vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD69DciZ58Wqdr6HDJI2q7PiX2BLpYzCJscj-xHr6CNaPhy7iQMhwE-h84THOHnZrYPI7u95X5ZOXLGMOZRruGgv8h35e9469NyzbC8FRvjRlVki1_n7-SSCwuskio9oDmH_fdfJsbowza-in8fU9FV2pmwxCphrFBaEEO_GzXMMl5yCGBXLrID9k5nhI7X7hceFDT0XH05pswKmYlqlaPBwOwfj6VR_s7GrokL4ds8EDjNDr1dRmxuasYPtrbfLa_289x5BPyDY2Q"/>
+<div class="absolute top-4 right-4 bg-surface/80 backdrop-blur-sm p-2 rounded-full">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="px-3 py-1 bg-surface/90 backdrop-blur-md rounded-full font-caption text-caption text-primary">Rooftop</span>
+<span class="px-3 py-1 bg-surface/90 backdrop-blur-md rounded-full font-caption text-caption text-primary">$$</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-background mb-1">Fifteen Rooftop</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">Kilimani, Nairobi</p>
+<p class="font-caption text-caption text-surface-tint line-clamp-2">Panoramic city views paired with signature mixology and deep house beats in an elegantly designed open-air setting.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="bg-surface-container-lowest dark:bg-primary-container full-width py-20 bg-surface-container-lowest dark:bg-primary-container flat no shadows border-t border-outline-variant/20">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="flex flex-col gap-4">
+<span class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary">Wapike</span>
+<p class="font-body-md text-body-md text-primary dark:text-primary-fixed-dim">© 2024 Wapike. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-3">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Instagram</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Twitter</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">TikTok</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Terms</a>
+</div>
+<div class="flex flex-col gap-4">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors transition-opacity hover:opacity-80" href="#">Newsletter Signup</a>
+<div class="flex border-b border-primary pb-2 mt-2">
+<input class="bg-transparent border-none p-0 focus:ring-0 font-body-md text-body-md w-full placeholder-surface-tint" placeholder="Email address" type="email"/>
+<button class="text-primary hover:text-secondary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

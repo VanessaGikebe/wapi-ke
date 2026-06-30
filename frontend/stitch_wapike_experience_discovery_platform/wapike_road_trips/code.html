@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wapike - Road Trips</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#bfc9c0",
+                        "primary": "#050d08",
+                        "outline-variant": "#c4c8c2",
+                        "surface-container": "#e7eefe",
+                        "surface-tint": "#576159",
+                        "on-tertiary-fixed": "#1d1b18",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "on-error": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#6b3b00",
+                        "primary-fixed": "#dbe5db",
+                        "inverse-primary": "#bfc9c0",
+                        "tertiary-fixed-dim": "#cac6c0",
+                        "on-surface": "#151c27",
+                        "on-primary-fixed-variant": "#404942",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary-fixed": "#e6e2dc",
+                        "primary-container": "#1b241e",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#0d0c09",
+                        "on-error-container": "#93000a",
+                        "outline": "#747874",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#494642",
+                        "surface-container-highest": "#dce2f3",
+                        "surface-container-high": "#e2e8f8",
+                        "on-background": "#151c27",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#8c8984",
+                        "on-secondary-fixed": "#2d1600",
+                        "background": "#f9f9ff",
+                        "tertiary-container": "#23221e",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "secondary-fixed": "#ffdcc0",
+                        "secondary-container": "#ffb065",
+                        "on-surface-variant": "#434844",
+                        "secondary": "#8b500a",
+                        "on-primary-fixed": "#151e18",
+                        "on-primary-container": "#828c83",
+                        "secondary-fixed-dim": "#ffb876",
+                        "surface-variant": "#dce2f3",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-secondary-container": "#774200"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "container-max": "1280px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-auto-rows: 250px;
+            grid-auto-flow: dense;
+            gap: 24px;
+        }
+        .bento-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        @media (max-width: 768px) {
+            .bento-large {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- TopNavBar -->
+<nav class="bg-surface/90 dark:bg-primary/90 backdrop-blur-md docked full-width top-0 sticky z-50 transition-all active:scale-95">
+<div class="max-w-container-max mx-auto px-margin-desktop flex justify-between items-center h-20">
+<a class="font-display-lg text-display-lg text-primary dark:text-primary-fixed" href="#">
+                Wapike
+            </a>
+<div class="hidden md:flex space-x-8">
+<a class="text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1 font-label-md text-label-md uppercase tracking-wider hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer" href="#">Categories</a>
+<a class="text-on-surface-variant dark:text-on-tertiary-container font-label-md text-label-md uppercase tracking-wider hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer" href="#">AI Assistant</a>
+<a class="text-on-surface-variant dark:text-on-tertiary-container font-label-md text-label-md uppercase tracking-wider hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer" href="#">About</a>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded uppercase tracking-wider hover:bg-secondary transition-colors duration-300">
+                Sign In
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow">
+<!-- Hero Section -->
+<header class="relative w-full h-[614px] min-h-[400px] flex items-end pb-16 px-margin-desktop">
+<div class="absolute inset-0 z-0">
+<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="A breathtaking, cinematic photograph of a winding, scenic highway stretching across the vast Kenyan savannah. Golden hour lighting casts long, dramatic shadows and bathes the landscape in warm, rich earthy tones. The road cuts cleanly through the rugged terrain, leading the eye toward distant, mist-shrouded mountains under a clear, expansive sky. The aesthetic is premium, adventurous, and highly polished, resembling a high-end travel editorial." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCS5iSBdW8Z_-f_KLknDD1-oEW-WU8UTBxUs54wu-Ij8hYu79T8Fcc4yIsCaegmCA2pb4YzNX4ll48il47A2KXKA5M0A1nbOwb-OKN7_9WMPtyIPByDDjWAgUMpH65fQ9f1bPuSUHssxR4y8RMHbtDi7-XaC4cCjYQ4FSA5mam10HBE3RM4W3jMSDc-t5WAGI1X5-ORRG8AMrRKHmtFWc5e_r9WHEra_YBmRXG1AoExoD3MTgxt7rfMt9IZSoxsEMOP8xCMoTzcoc0')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto w-full">
+<span class="inline-block bg-surface-container-lowest text-primary font-label-md text-label-md px-4 py-1 rounded-full mb-4 shadow-[0px_10px_30px_rgba(27,36,30,0.04)]">Category</span>
+<h1 class="font-display-lg text-display-lg text-surface-container-lowest mb-2">Road Trips</h1>
+<p class="font-body-lg text-body-lg text-surface-container-lowest/80 max-w-2xl">Discover curated routes that blend breathtaking vistas with premium, untamed adventure across East Africa.</p>
+</div>
+</header>
+<div class="max-w-container-max mx-auto px-margin-desktop py-16">
+<!-- Filters -->
+<section class="mb-12 flex flex-wrap gap-4 items-center">
+<span class="font-label-md text-label-md text-on-surface-variant mr-4">Filter by:</span>
+<button class="flex items-center gap-2 bg-surface text-primary border border-primary px-4 py-2 rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">route</span>
+                    Scenic Routes
+                </button>
+<button class="flex items-center gap-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-md text-label-md hover:border-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">panorama</span>
+                    Viewpoints
+                </button>
+<button class="flex items-center gap-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-md text-label-md hover:border-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">photo_camera</span>
+                    Nearby Attractions
+                </button>
+<button class="flex items-center gap-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-md text-label-md hover:border-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">camping</span>
+                    Camping Spots
+                </button>
+<button class="flex items-center gap-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-md text-label-md hover:border-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">local_gas_station</span>
+                    Fuel Stops
+                </button>
+</section>
+<!-- Bento Grid Content -->
+<section class="bento-grid">
+<!-- Large Highlight Card -->
+<article class="bento-large relative group overflow-hidden rounded-xl shadow-[0px_10px_30px_rgba(27,36,30,0.04)]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A spectacular aerial drone shot of the Great Rift Valley escarpment in Kenya. A winding dirt road snakes along the edge of the dramatic cliff face. The lush green vegetation of the valley floor contrasts sharply with the rugged, rocky terrain of the escarpment. The lighting is soft morning sunlight, creating a serene, majestic, and premium travel aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaMbyjvhjrDrbS6tzVWnHKbTEbDbEhOR0D2fxNyOoB5sN_GCUprWfeH4GMApb3pkY6aHvZr4YqD5zHPg-wtbsrAA3prU3F3nyv6fNmcTmR9uKf18S0vIfecSLNVTXZ1VbOSOuw8Jsxrx6nHSlH2JoaDfvznQmn9R3IjJgBl6opvYS1z-0DPpIAiLBX0Rm59H5rd0VwNsJeR9FIgKUfSG29UJT2GIMaOQcUXNWYLpb7sW2rhY41tVDMbavw2VNHDtlDh_6if1Q405Y"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8 w-full">
+<div class="flex gap-2 mb-4">
+<span class="bg-surface-container-lowest/90 backdrop-blur text-primary font-label-md text-caption px-3 py-1 rounded-full uppercase">Epic</span>
+<span class="bg-surface-container-lowest/90 backdrop-blur text-primary font-label-md text-caption px-3 py-1 rounded-full uppercase">3 Days</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-surface-container-lowest mb-2">The Rift Valley Traverse</h2>
+<div class="flex items-center gap-6 text-surface-container-lowest/90 font-body-md text-body-md">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">straighten</span> 340 km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">timer</span> 14 hrs total</span>
+</div>
+</div>
+</article>
+<!-- Standard Card 1 -->
+<article class="relative group overflow-hidden rounded-xl bg-surface-container-lowest shadow-[0px_10px_30px_rgba(27,36,30,0.04)] flex flex-col border border-outline-variant/30">
+<div class="h-1/2 w-full relative overflow-hidden">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A beautifully composed photograph of a premium, modern off-road vehicle parked at a high-altitude viewpoint in the Aberdare Ranges. The misty, dense green forest drops away into a deep valley below. The scene is quiet, adventurous, and cool-toned, evoking a sense of refined exploration and sophisticated wilderness travel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMOJbeDVnffG2bKNTflMdws3J2eGlrSOz0ufJvvW5ATD6jTBWQLTdozCMl9qNxaL4Qjw66TK1uADdFe-kHuiIDQtpZxxU88oH-0a6Fm3zVVsHwjGkV58HvbvU-ZSdz7EJWqHhtBm3aq0NP5q5dtLjoFBjajp8ODO2miD1u1asDIHB-ysd9plafPyI0pP-ujoIYCwNDKiXevJpUccvhM2r4Abk6yPwUK5LPYwl19A9GpS3eJYacpe9RUKNGskxyZADVDBdeoJC8UOU"/>
+</div>
+<div class="p-6 flex flex-col flex-grow justify-between bg-surface-container-lowest">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-1">Aberdare Misty Loop</h3>
+<p class="font-body-md text-caption text-on-surface-variant line-clamp-2 mb-4">A cool, high-altitude drive through dense forests and sudden, dramatic waterfalls.</p>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-md text-caption border-t border-outline-variant/20 pt-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">straighten</span> 120 km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> 5 hrs</span>
+</div>
+</div>
+</article>
+<!-- Map/Info Widget -->
+<article class="relative rounded-xl bg-[#EFE9E1] p-6 flex flex-col justify-center shadow-[0px_10px_30px_rgba(27,36,30,0.04)] overflow-hidden">
+<div class="absolute -right-12 -top-12 opacity-10">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2 relative z-10">Prepare Your Vehicle</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 relative z-10">Ensure your 4x4 is ready for varied terrain. Check fuel stops along the northern routes.</p>
+<a class="inline-flex items-center gap-2 text-secondary font-label-md text-label-md uppercase tracking-wider relative z-10 hover:text-secondary-container transition-colors" href="#">
+                        View Checklist <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</article>
+<!-- Standard Card 2 -->
+<article class="relative group overflow-hidden rounded-xl bg-surface-container-lowest shadow-[0px_10px_30px_rgba(27,36,30,0.04)] flex flex-col border border-outline-variant/30">
+<div class="h-1/2 w-full relative overflow-hidden">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A vivid, wide-angle landscape photo of a dusty, red-earth road stretching straight towards the horizon in Tsavo National Park. A solitary Baobab tree stands prominently beside the road. The sky is an intense, clear blue. The aesthetic captures the raw, arid beauty of the savannah with a highly polished, premium photographic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW_l4pB5j3bRgkWoQUQ4XTUOaF4gsWT7Hwj089dcAWCu37DrpQw_LQs0rghkNGpqLa8Xpvx1Cw6Ud3S2aC_u8HtkvVfC8ffdbOoNdyRmHBrA80ZkWulH9GszbFwlIr2BP7kQFzbVPFPb65NvtL30jQgSLXK6D-RGUzQXuR2lfI3dZ9V5bkxc0j87u0t9mKYfNKkm6ybnmXz1nS_Vxsa9zCstuUxNVZCclg1zgtOId6rrIdy4U818rqLdc8UNGaAfdEGVwPVVhvSDc"/>
+</div>
+<div class="p-6 flex flex-col flex-grow justify-between bg-surface-container-lowest">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-1">Tsavo Red Dust Trail</h3>
+<p class="font-body-md text-caption text-on-surface-variant line-clamp-2 mb-4">Vast open spaces and incredible wildlife sightings along this arid, striking landscape.</p>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-md text-caption border-t border-outline-variant/20 pt-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">straighten</span> 210 km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> 8 hrs</span>
+</div>
+</div>
+</article>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-primary-container full-width py-20 transition-opacity hover:opacity-80">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="col-span-1 md:col-span-1 mb-8 md:mb-0">
+<a class="font-display-lg text-display-lg text-primary" href="#">Wapike</a>
+<p class="mt-4 text-on-surface-variant dark:text-on-primary-fixed-variant font-body-md text-body-md">
+                    © 2024 Wapike. All rights reserved.
+                </p>
+</div>
+<div class="flex flex-col space-y-4">
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">Instagram</a>
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">Twitter</a>
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">TikTok</a>
+</div>
+<div class="flex flex-col space-y-4">
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">Terms</a>
+</div>
+<div class="flex flex-col space-y-4">
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant font-body-md text-body-md hover:text-secondary transition-colors font-bold" href="#">Newsletter Signup</a>
+</div>
+</div>
+</footer>
+</body></html>
