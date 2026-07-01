@@ -6,8 +6,10 @@ is set as an httpOnly cookie scoped to the auth path, and rotated on refresh.
 
 from __future__ import annotations
 
+import secrets
 from uuid import UUID
 
+import httpx
 import jwt
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
 from sqlalchemy import select
@@ -27,10 +29,14 @@ from app.db import get_db
 from app.models import User
 from app.schemas.auth import (
     AuthResponse,
+    GoogleAuthRequest,
     LoginRequest,
     SignupRequest,
     UserResponse,
 )
+
+GOOGLE_TOKENINFO_URL = "https://oauth2.googleapis.com/tokeninfo"
+GOOGLE_ISSUERS = {"accounts.google.com", "https://accounts.google.com"}
 
 settings = get_settings()
 
@@ -101,6 +107,75 @@ def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
         )
+
+    return _issue_tokens(user, response)
+
+
+@router.post("/google", response_model=AuthResponse)
+def google_auth(
+    payload: GoogleAuthRequest,
+    response: Response,
+    db: Session = Depends(get_db),
+) -> AuthResponse:
+    """Sign in / sign up with a Google ID token from Google Identity Services.
+
+    The browser obtains an ID token (a signed JWT) and posts it here. We verify
+    it with Google's tokeninfo endpoint and require its ``aud`` to match our own
+    OAuth client ID, then find-or-create the matching user and issue our tokens.
+    """
+
+    if not settings.google_client_id:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Google sign-in is not configured on the server.",
+        )
+
+    invalid = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not verify Google sign-in.",
+    )
+
+    try:
+        resp = httpx.get(
+            GOOGLE_TOKENINFO_URL,
+            params={"id_token": payload.credential},
+            timeout=10.0,
+        )
+    except httpx.HTTPError:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Could not reach Google to verify sign-in.",
+        )
+
+    if resp.status_code != 200:
+        raise invalid
+
+    claims = resp.json()
+    # Google validates the signature + expiry; we validate audience + issuer.
+    if claims.get("aud") != settings.google_client_id:
+        raise invalid
+    if claims.get("iss") not in GOOGLE_ISSUERS:
+        raise invalid
+    if str(claims.get("email_verified")).lower() != "true":
+        raise invalid
+
+    email = claims.get("email")
+    if not email:
+        raise invalid
+    name = claims.get("name") or email.split("@")[0]
+
+    user = db.scalar(select(User).where(User.email == email))
+    if user is None:
+        # New Google user — create an account with an unusable random password
+        # (they sign in via Google, not email/password).
+        user = User(
+            email=email,
+            name=name,
+            password_hash=hash_password(secrets.token_urlsafe(32)),
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
 
     return _issue_tokens(user, response)
 

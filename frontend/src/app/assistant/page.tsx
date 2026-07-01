@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 
+import { BackLink } from "@/components/site/back-link";
 import { SiteHeader } from "@/components/site/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -115,7 +116,10 @@ export default function AssistantPage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface">
       <SiteHeader />
-      <main className="flex flex-1 justify-center px-margin-mobile py-8 md:px-margin-desktop">
+      <main className="flex flex-1 flex-col items-center px-margin-mobile py-8 md:px-margin-desktop">
+        <div className="mb-4 w-full max-w-4xl">
+          <BackLink href="/" label="Back to Home" />
+        </div>
         <div className="flex w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-tonal md:flex-row">
           {/* Sidebar */}
           <aside className="border-b border-outline-variant/30 bg-surface-container-low/60 p-6 md:w-1/3 md:border-b-0 md:border-r md:p-8">

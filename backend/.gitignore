@@ -24,3 +24,6 @@ htmlcov/
 # IDE
 .idea/
 .vscode/
+
+# Scraped data (JSON dumps in backend/data/)
+data/*.json

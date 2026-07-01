@@ -35,6 +35,7 @@ export interface AuthState {
   status: AuthStatus;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
+  loginWithGoogle: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
   initialize: () => Promise<void>;
 }
@@ -80,6 +81,14 @@ export const useAuthStore = create<AuthState>((set) => ({
     const data = await apiFetch<AuthResponseDto>("/auth/signup", {
       method: "POST",
       body: { email, password, name },
+    });
+    applySession(set, data);
+  },
+
+  loginWithGoogle: async (credential) => {
+    const data = await apiFetch<AuthResponseDto>("/auth/google", {
+      method: "POST",
+      body: { credential },
     });
     applySession(set, data);
   },

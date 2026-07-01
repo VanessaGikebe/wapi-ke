@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { CategoriesCarousel } from "@/components/categories/categories-carousel";
-import { FeaturedExperiences } from "@/components/marketing/featured-experiences";
 import { Testimonials } from "@/components/marketing/testimonials";
+import { UpcomingEvents } from "@/components/marketing/upcoming-events";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 /*
  * Landing page. One clear flow toward the two discovery paths:
- *   Hero → Explore Categories → AI Assistant → Featured Experiences →
+ *   Hero → Explore Categories → AI Assistant → Upcoming Events →
  *   Testimonials → Footer.
  */
 
@@ -138,21 +138,34 @@ function AssistantSection() {
   );
 }
 
-function FeaturedSection() {
+function UpcomingEventsSection() {
   return (
     <section className="bg-surface px-margin-mobile pb-section-mobile md:px-margin-desktop md:pb-section">
       <div className="mx-auto max-w-container-max">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4 md:mb-10">
           <div>
+            <Badge variant="accent" className="mb-3">
+              What&apos;s on
+            </Badge>
             <h2 className="font-headline-md text-headline-md text-primary">
-              Featured Experiences
+              Upcoming Events
             </h2>
             <p className="mt-2 max-w-xl font-body-md text-body-md text-on-surface-variant">
-              A handful of the highest-rated spots to get you started.
+              A fresh line-up at Kenya&apos;s top-rated venues — updated every
+              week.
             </p>
           </div>
+          <Link
+            href="/events"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "shrink-0",
+            )}
+          >
+            All Events
+          </Link>
         </div>
-        <FeaturedExperiences />
+        <UpcomingEvents />
       </div>
     </section>
   );
@@ -199,7 +212,7 @@ export default function LandingPage() {
         <Hero />
         <ExploreCategories />
         <AssistantSection />
-        <FeaturedSection />
+        <UpcomingEventsSection />
         <TestimonialsSection />
       </main>
       <SiteFooter />

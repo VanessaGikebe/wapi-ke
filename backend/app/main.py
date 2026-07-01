@@ -11,6 +11,7 @@ from app.api.v1.assistant import router as assistant_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.bookings import router as bookings_router
 from app.api.v1.categories import router as categories_router
+from app.api.v1.events import router as events_router
 from app.api.v1.experiences import router as experiences_router
 from app.api.v1.favorites import router as favorites_router
 from app.config import get_settings
@@ -31,6 +32,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(categories_router, prefix="/api/v1")
 app.include_router(experiences_router, prefix="/api/v1")
+app.include_router(events_router, prefix="/api/v1")
 app.include_router(favorites_router, prefix="/api/v1")
 app.include_router(bookings_router, prefix="/api/v1")
 app.include_router(assistant_router, prefix="/api/v1")

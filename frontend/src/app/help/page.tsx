@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { BackLink } from "@/components/site/back-link";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { buttonVariants } from "@/components/ui/button";
@@ -37,6 +38,7 @@ export default function HelpPage() {
       <SiteHeader />
       <main className="flex-1">
         <section className="mx-auto max-w-3xl px-margin-mobile pb-section-mobile pt-16 md:px-margin-desktop md:pb-section md:pt-24">
+          <BackLink href="/" label="Back to Home" className="mb-6" />
           <h1 className="mb-3 font-display-lg-mobile text-display-lg-mobile text-primary md:font-display-lg md:text-display-lg">
             Help &amp; FAQ
           </h1>

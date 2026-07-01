@@ -15,6 +15,7 @@ import { UserMenu } from "./user-menu";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Categories", href: "/categories" },
+  { label: "Events", href: "/events" },
   { label: "AI Assistant", href: "/assistant" },
   { label: "Account", href: "/account" },
 ];

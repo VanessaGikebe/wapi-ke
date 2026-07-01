@@ -43,6 +43,8 @@ export interface Experience {
   /** 1–4, rendered as `$`–`$$$$`. */
   priceTier: number;
   rating: number;
+  /** Real business photos (from the scraped dataset); may be empty. */
+  images: string[];
   /** Keyed by filter `key` — the values filters match against. */
   attributes: Record<string, AttributeValue>;
 }

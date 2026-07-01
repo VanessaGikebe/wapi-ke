@@ -10,6 +10,7 @@ export interface CategorySummary {
   slug: string;
   name: string;
   icon: string;
+  heroImage: string | null;
 }
 
 interface ApiCategory {
@@ -51,7 +52,12 @@ interface ApiPaginatedExperiences {
 }
 
 function toCategorySummary(c: ApiCategory): CategorySummary {
-  return { slug: c.slug, name: c.name, icon: c.icon ?? "" };
+  return {
+    slug: c.slug,
+    name: c.name,
+    icon: c.icon ?? "",
+    heroImage: c.hero_image,
+  };
 }
 
 function toExperience(e: ApiExperience): Experience {
@@ -64,6 +70,7 @@ function toExperience(e: ApiExperience): Experience {
     location: e.location ?? "",
     priceTier: e.price_tier,
     rating: typeof rating === "number" ? rating : 0,
+    images: Array.isArray(e.images) ? e.images : [],
     attributes: e.attributes as Experience["attributes"],
   };
 }

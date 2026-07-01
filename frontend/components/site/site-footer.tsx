@@ -36,10 +36,7 @@ export function SiteFooter() {
     <footer className="border-t border-surface-variant bg-surface-container-lowest py-16">
       <div className="mx-auto grid max-w-container-max grid-cols-1 gap-gutter px-margin-mobile md:grid-cols-4 md:px-margin-desktop">
         <div className="md:col-span-2">
-          <Brand
-            logoClassName="h-10 w-10"
-            wordmarkClassName="text-display-lg"
-          />
+          <Brand wordmarkClassName="text-display-lg" />
           <p className="mt-4 font-body-md text-body-md text-on-surface-variant">
             © 2024 wapiKE. All rights reserved.
           </p>

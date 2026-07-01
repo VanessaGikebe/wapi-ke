@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
+import { BackLink } from "@/components/site/back-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -39,6 +40,11 @@ export function CategoryListing({ slug }: { slug: string }) {
   return (
     <>
       <section className="mx-auto max-w-container-max px-margin-mobile pb-8 pt-16 md:px-margin-desktop md:pb-12 md:pt-24">
+        <BackLink
+          href="/categories"
+          label="Back to Categories"
+          className="mb-6"
+        />
         {categoryQuery.data ? (
           <>
             <h1 className="mb-4 font-display-lg-mobile text-display-lg-mobile text-primary md:font-display-lg md:text-display-lg">

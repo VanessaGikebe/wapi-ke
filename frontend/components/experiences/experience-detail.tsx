@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { BookingModal } from "@/components/categories/booking-modal";
 import { ExperienceCard } from "@/components/categories/experience-card";
+import { BackLink } from "@/components/site/back-link";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,8 +16,8 @@ import {
   experienceContact,
   experienceReviews,
   experienceTags,
-  priceFromKsh,
   priceLabel,
+  priceText,
 } from "@/lib/experience-presentation";
 import { experienceGallery } from "@/lib/images";
 import { useExperience, useExperiences } from "@/lib/queries/categories";
@@ -52,7 +53,10 @@ export function ExperienceDetail({ id }: { id: string }) {
   if (experienceQuery.isLoading) return <DetailSkeleton />;
   if (experienceQuery.isError || !experience) return <NotFound />;
 
-  const gallery = experienceGallery(experience.categorySlug, experience.id);
+  const gallery =
+    experience.images.length > 0
+      ? experience.images
+      : experienceGallery(experience.categorySlug, experience.id);
   const tags = experienceTags(experience);
   const amenities = experienceAmenities(experience);
   const reviews = experienceReviews(experience);
@@ -78,12 +82,11 @@ export function ExperienceDetail({ id }: { id: string }) {
 
   return (
     <div className="mx-auto max-w-container-max px-margin-mobile py-8 md:px-margin-desktop md:py-12">
-      <Link
+      <BackLink
         href={`/categories/${experience.categorySlug}`}
-        className="transition-subtle mb-6 inline-flex items-center gap-1 rounded font-label-md text-label-md uppercase tracking-wider text-on-surface-variant hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
-      >
-        <span aria-hidden>←</span> Back to {categoryLabel}
-      </Link>
+        label={`Back to ${categoryLabel}`}
+        className="mb-6 capitalize"
+      />
 
       {/* Header */}
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -96,11 +99,15 @@ export function ExperienceDetail({ id }: { id: string }) {
           </h1>
           <p className="mt-2 flex flex-wrap items-center gap-2 font-body-md text-body-md text-on-surface-variant">
             <span>{experience.location}</span>
-            <span aria-hidden>•</span>
-            <span className="inline-flex items-center gap-1">
-              <StarIcon className="h-4 w-4 text-secondary" />
-              {experience.rating.toFixed(1)}
-            </span>
+            {experience.rating > 0 && (
+              <>
+                <span aria-hidden>•</span>
+                <span className="inline-flex items-center gap-1">
+                  <StarIcon className="h-4 w-4 text-secondary" />
+                  {experience.rating.toFixed(1)}
+                </span>
+              </>
+            )}
             <span aria-hidden>•</span>
             <span>{priceLabel(experience.priceTier)}</span>
           </p>
@@ -115,6 +122,7 @@ export function ExperienceDetail({ id }: { id: string }) {
             alt={`${experience.title} — photo ${activeImage + 1}`}
             fill
             priority
+            referrerPolicy="no-referrer"
             sizes="(max-width: 1024px) 100vw, 1280px"
             className="object-cover"
           />
@@ -139,6 +147,7 @@ export function ExperienceDetail({ id }: { id: string }) {
                   src={src}
                   alt=""
                   fill
+                  referrerPolicy="no-referrer"
                   sizes="120px"
                   className="object-cover"
                 />
@@ -266,10 +275,10 @@ export function ExperienceDetail({ id }: { id: string }) {
           <div className="flex flex-col gap-5 rounded-2xl border border-outline-variant bg-surface-container-lowest p-6 shadow-tonal">
             <div>
               <p className="font-caption text-caption uppercase tracking-wide text-on-surface-variant">
-                From
+                Price guide
               </p>
               <p className="font-headline-md text-headline-md text-primary">
-                KSh {priceFromKsh(experience.priceTier).toLocaleString()}
+                {priceText(experience)}
               </p>
             </div>
 
@@ -293,9 +302,16 @@ export function ExperienceDetail({ id }: { id: string }) {
               <p className="font-body-md text-body-md text-on-surface">
                 {contact.phone}
               </p>
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                {contact.email}
-              </p>
+              {contact.website && (
+                <a
+                  href={contact.website}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="transition-subtle break-all font-body-md text-body-md text-secondary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                >
+                  Visit website
+                </a>
+              )}
             </div>
           </div>
         </aside>

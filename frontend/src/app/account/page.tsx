@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { BackLink } from "@/components/site/back-link";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -66,6 +67,7 @@ function AccountContent() {
   return (
     <>
       <section className="mx-auto max-w-container-max px-margin-mobile pb-8 pt-16 md:px-margin-desktop md:pb-10 md:pt-24">
+        <BackLink href="/" label="Back to Home" className="mb-6" />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="mb-2 font-display-lg-mobile text-display-lg-mobile text-primary md:font-display-lg md:text-display-lg">

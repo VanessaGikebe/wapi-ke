@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     jwt_secret: str = "change-me-to-a-long-random-secret"
     anthropic_api_key: str = ""
 
+    # Google Sign-In: the OAuth 2.0 Web client ID. When set, POST /auth/google
+    # verifies Google ID tokens whose `aud` matches this value. Leave blank to
+    # disable Google sign-in (the endpoint then returns 503).
+    google_client_id: str = ""
+
     # JWT / auth settings.
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15

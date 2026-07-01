@@ -22,9 +22,10 @@ export function CategoryCard({
       )}
     >
       <Image
-        src={categoryImage(category.slug)}
+        src={category.heroImage ?? categoryImage(category.slug)}
         alt={category.name}
         fill
+        referrerPolicy="no-referrer"
         sizes="(max-width: 640px) 70vw, 320px"
         className="object-cover transition-transform duration-700 group-hover:scale-105"
       />

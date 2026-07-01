@@ -38,7 +38,9 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
   const toggleFavorite = useToggleFavorite();
 
   const href = `/experiences/${experience.id}`;
-  const cover = experienceCover(experience.categorySlug, experience.id);
+  const cover =
+    experience.images[0] ??
+    experienceCover(experience.categorySlug, experience.id);
   const tags = experienceTags(experience).slice(0, 3);
 
   const handleFavorite = () => {
@@ -62,6 +64,7 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
             src={cover}
             alt={experience.title}
             fill
+            referrerPolicy="no-referrer"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -71,14 +74,16 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
           />
         </Link>
 
-        <Badge
-          variant="glass"
-          shape="chip"
-          className="absolute left-4 top-4 z-10 normal-case"
-        >
-          <StarIcon className="h-3.5 w-3.5 text-secondary-fixed-dim" />
-          {experience.rating.toFixed(1)}
-        </Badge>
+        {experience.rating > 0 && (
+          <Badge
+            variant="glass"
+            shape="chip"
+            className="absolute left-4 top-4 z-10 normal-case"
+          >
+            <StarIcon className="h-3.5 w-3.5 text-secondary-fixed-dim" />
+            {experience.rating.toFixed(1)}
+          </Badge>
+        )}
 
         <button
           type="button"

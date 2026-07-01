@@ -6,7 +6,9 @@ each query param whose name matches a filter ``key`` is applied per its type:
 
   - enum    -> attribute (a JSON string OR array of strings) intersects the
                selected values; repeat or comma-separate the param to OR them
-  - range   -> attribute (a JSON number) is <= the given value (a "max" cap)
+  - range   -> attribute (a JSON number) compared against the given value;
+               ``options.direction == "min"`` matches ``>=`` (a floor, e.g.
+               "rating 4+"), otherwise the default is ``<=`` (a "max" cap)
   - boolean -> attribute is JSON ``true`` (only applied when the value is truthy)
 
 Unknown params are ignored. Results are paginated with ``page`` / ``limit``.
@@ -69,7 +71,9 @@ def _build_condition(
             threshold = float(raw_values[0])
         except (ValueError, IndexError):
             return None
-        return cast(element.astext, Float) <= threshold
+        column = cast(element.astext, Float)
+        direction = (fdef.options or {}).get("direction")
+        return column >= threshold if direction == "min" else column <= threshold
 
     if fdef.type == FilterType.boolean:
         if not raw_values or raw_values[0].lower() not in TRUTHY:
