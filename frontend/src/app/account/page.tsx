@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { ProfileEditor } from "@/components/account/profile-editor";
 import { BackLink } from "@/components/site/back-link";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
@@ -133,9 +134,7 @@ function AccountContent() {
               id={`panel-${tab}`}
               aria-labelledby={`tab-${tab}`}
             >
-              {tab === "profile" && user && (
-                <ProfilePanel name={user.name} email={user.email} />
-              )}
+              {tab === "profile" && <ProfileEditor />}
               {tab === "saved" && <SavedPanel query={favorites} />}
               {tab === "bookings" && <BookingsPanel query={bookings} />}
               {tab === "settings" && (
@@ -151,46 +150,6 @@ function AccountContent() {
         )}
       </section>
     </>
-  );
-}
-
-function ProfilePanel({ name, email }: { name: string; email: string }) {
-  return (
-    <div className="flex max-w-xl flex-col gap-6 rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
-      <div className="flex items-center gap-4">
-        <span
-          aria-hidden
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-primary font-headline-sm text-headline-sm text-on-primary"
-        >
-          {name.charAt(0).toUpperCase()}
-        </span>
-        <div>
-          <h2 className="font-headline-sm text-headline-sm text-primary">
-            {name}
-          </h2>
-          <Badge variant="subtle" className="mt-1">
-            Member
-          </Badge>
-        </div>
-      </div>
-      <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="Full name" value={name} />
-        <Field label="Email" value={email} />
-      </dl>
-    </div>
-  );
-}
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt className="font-label-md text-label-md uppercase text-on-surface-variant">
-        {label}
-      </dt>
-      <dd className="mt-1 font-body-md text-body-md text-on-surface">
-        {value}
-      </dd>
-    </div>
   );
 }
 

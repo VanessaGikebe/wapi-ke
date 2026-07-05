@@ -29,6 +29,12 @@ class Settings(BaseSettings):
     # disable Google sign-in (the endpoint then returns 503).
     google_client_id: str = ""
 
+    # Supabase Auth bridge. When SUPABASE_JWKS_URL is set, protected routes
+    # accept Supabase-issued JWTs (verified against the project's JWKS) in
+    # addition to (legacy) app-issued tokens.
+    supabase_url: str = ""
+    supabase_jwks_url: str = ""
+
     # JWT / auth settings.
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15
@@ -36,11 +42,16 @@ class Settings(BaseSettings):
     # Set true in production (HTTPS) so the refresh cookie is Secure.
     cookie_secure: bool = False
 
-    # Browser origins allowed to call the API with credentials (CORS).
-    cors_origins: list[str] = [
-        "http://localhost:3000",
-        "http://localhost:3001",
-    ]
+    # CORS: comma-separated list of allowed browser origins, e.g.
+    # "http://localhost:3000,https://your-app.vercel.app". Optionally set
+    # CORS_ORIGIN_REGEX to allow Vercel preview URLs, e.g.
+    # "https://.*\\.vercel\\.app".
+    cors_origins: str = "http://localhost:3000,http://localhost:3001"
+    cors_origin_regex: str = ""
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
 @lru_cache

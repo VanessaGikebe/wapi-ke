@@ -11,7 +11,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from app.config import get_settings
-from app.db import Base
+from app.db import Base, _normalize_db_url
 
 # Import models so they register on Base.metadata for autogenerate.
 import app.models  # noqa: E402,F401
@@ -19,8 +19,10 @@ import app.models  # noqa: E402,F401
 # Alembic Config object, provides access to alembic.ini values.
 config = context.config
 
-# Inject the runtime database URL from app settings.
-config.set_main_option("sqlalchemy.url", get_settings().database_url)
+# Inject the runtime database URL from app settings (psycopg 3 driver).
+config.set_main_option(
+    "sqlalchemy.url", _normalize_db_url(get_settings().database_url)
+)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

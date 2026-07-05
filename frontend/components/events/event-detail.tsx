@@ -7,11 +7,7 @@ import { BackLink } from "@/components/site/back-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  formatEventDateLong,
-  formatEventPrice,
-  type WapikeEvent,
-} from "@/lib/api/events";
+import { formatEventDateLong, formatEventPrice } from "@/lib/api/events";
 import { useEvent } from "@/lib/queries/events";
 import { cn } from "@/lib/utils";
 

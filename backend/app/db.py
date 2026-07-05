@@ -12,7 +12,20 @@ from app.config import get_settings
 
 settings = get_settings()
 
-engine = create_engine(settings.database_url, pool_pre_ping=True, future=True)
+
+def _normalize_db_url(url: str) -> str:
+    """Accept a bare ``postgresql://`` URL (as Render/Supabase provide) and make
+    SQLAlchemy use the psycopg 3 driver."""
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+    if url.startswith("postgres://"):  # some providers use this alias
+        return url.replace("postgres://", "postgresql+psycopg://", 1)
+    return url
+
+
+engine = create_engine(
+    _normalize_db_url(settings.database_url), pool_pre_ping=True, future=True
+)
 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
