@@ -17,6 +17,7 @@ const NAV_LINKS = [
   { label: "Categories", href: "/categories" },
   { label: "Events", href: "/events" },
   { label: "AI Assistant", href: "/assistant" },
+  { label: "Business", href: "/business" },
   { label: "Account", href: "/account" },
 ];
 

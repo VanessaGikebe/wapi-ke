@@ -34,6 +34,8 @@ class Settings(BaseSettings):
     # addition to (legacy) app-issued tokens.
     supabase_url: str = ""
     supabase_jwks_url: str = ""
+    supabase_service_role_key: str = ""
+    site_url: str = "http://localhost:3000"
 
     # JWT / auth settings.
     jwt_algorithm: str = "HS256"

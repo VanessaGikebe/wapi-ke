@@ -19,11 +19,11 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.elements import ColumnElement
 
-from app.api.deps import get_current_admin
+from app.api.deps import get_current_admin_account
 from app.core.event_status import compute_status
 from app.core.slug import slugify
 from app.db import get_db
-from app.models import Event, EventStatus, User
+from app.models import Account, Event, EventStatus
 from app.schemas.event import (
     EventCreate,
     EventOut,
@@ -172,7 +172,7 @@ def get_event(slug: str, db: Session = Depends(get_db)) -> EventOut:
 def create_event(
     payload: EventCreate,
     db: Session = Depends(get_db),
-    _admin: User = Depends(get_current_admin),
+    _admin: Account = Depends(get_current_admin_account),
 ) -> EventOut:
     base_slug = slugify(payload.slug or payload.title)
     event = Event(
@@ -211,7 +211,7 @@ def update_event(
     event_id: UUID,
     payload: EventUpdate,
     db: Session = Depends(get_db),
-    _admin: User = Depends(get_current_admin),
+    _admin: Account = Depends(get_current_admin_account),
 ) -> EventOut:
     event = db.get(Event, event_id)
     if event is None:
@@ -234,7 +234,7 @@ def update_event(
 def delete_event(
     event_id: UUID,
     db: Session = Depends(get_db),
-    _admin: User = Depends(get_current_admin),
+    _admin: Account = Depends(get_current_admin_account),
 ) -> None:
     event = db.get(Event, event_id)
     if event is None:

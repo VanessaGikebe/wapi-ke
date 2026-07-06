@@ -24,7 +24,7 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.core.security import ACCESS_TOKEN_TYPE, decode_token, hash_password
 from app.db import get_db
-from app.models import User
+from app.models import Account, AccountRole, AccountStatus, AccountType, User
 
 settings = get_settings()
 
@@ -106,6 +106,55 @@ def _resolve_supabase_user(db: Session, claims: dict[str, Any]) -> User:
     return user
 
 
+def _resolve_account_from_claims(db: Session, claims: dict[str, Any]) -> Account:
+    """Resolve an application account for a Supabase JWT.
+
+    Public self-signup is allowed only for regular users. Business and admin
+    accounts must already exist, created by approval/provisioning workflows.
+    """
+
+    try:
+        auth_user_id = UUID(str(claims.get("sub")))
+    except (ValueError, TypeError):
+        raise _CREDENTIALS_EXC
+
+    account = db.scalar(
+        select(Account).where(Account.auth_user_id == auth_user_id)
+    )
+    if account is not None:
+        return account
+
+    email = claims.get("email")
+    if not email:
+        raise _CREDENTIALS_EXC
+    meta = claims.get("user_metadata") or {}
+    name = (
+        meta.get("full_name")
+        or meta.get("name")
+        or email.split("@")[0]
+    )
+
+    account = Account(
+        auth_user_id=auth_user_id,
+        email=email,
+        display_name=name,
+        account_type=AccountType.regular,
+        role=AccountRole.regular_user,
+        status=AccountStatus.active,
+        onboarding_completed=True,
+    )
+    db.add(account)
+    try:
+        db.commit()
+        db.refresh(account)
+    except IntegrityError:
+        db.rollback()
+        account = db.scalar(select(Account).where(Account.email == email))
+        if account is None:
+            raise _CREDENTIALS_EXC
+    return account
+
+
 def _resolve_legacy_user(db: Session, token: str) -> User:
     try:
         payload = decode_token(token)
@@ -141,6 +190,67 @@ def get_current_user(
         return _resolve_supabase_user(db, claims)
 
     return _resolve_legacy_user(db, token)
+
+
+def get_current_account(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    db: Session = Depends(get_db),
+) -> Account:
+    """Resolve the server-controlled application account for a Supabase JWT."""
+
+    if credentials is None:
+        raise _CREDENTIALS_EXC
+
+    claims = _verify_supabase_token(credentials.credentials)
+    if claims is None or not claims.get("sub"):
+        raise _CREDENTIALS_EXC
+    return _resolve_account_from_claims(db, claims)
+
+
+def require_roles(*roles: AccountRole):
+    allowed = set(roles)
+
+    def dependency(account: Account = Depends(get_current_account)) -> Account:
+        if account.status not in {
+            AccountStatus.active,
+            AccountStatus.pending_onboarding,
+        }:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Account is not active",
+            )
+        if account.role not in allowed:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Insufficient permissions",
+            )
+        return account
+
+    return dependency
+
+
+def get_current_business_account(
+    account: Account = Depends(require_roles(AccountRole.business_account)),
+) -> Account:
+    return account
+
+
+def get_current_admin_account(
+    account: Account = Depends(
+        require_roles(
+            AccountRole.moderator,
+            AccountRole.administrator,
+            AccountRole.super_admin,
+        )
+    ),
+) -> Account:
+    return account
+
+
+def get_current_super_admin_account(
+    account: Account = Depends(require_roles(AccountRole.super_admin)),
+) -> Account:
+    return account
 
 
 def get_current_admin(current_user: User = Depends(get_current_user)) -> User:
