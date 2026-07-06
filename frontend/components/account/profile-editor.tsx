@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { ACCEPT_ATTR, uploadAvatar, validateImageFile } from "@/lib/avatar";
 import { assessPassword } from "@/lib/password";
 import { createClient } from "@/lib/supabase/client";
 import { useAuthStore } from "@/lib/stores/auth-store";
@@ -40,8 +41,10 @@ export function ProfileEditor() {
   const [loading, setLoading] = React.useState(true);
   const [savingProfile, setSavingProfile] = React.useState(false);
   const [savingPrefs, setSavingPrefs] = React.useState(false);
+  const [uploading, setUploading] = React.useState(false);
   const [profileBanner, setProfileBanner] = React.useState<Banner>(null);
   const [prefsBanner, setPrefsBanner] = React.useState<Banner>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Load profile + preferences.
   React.useEffect(() => {
@@ -83,14 +86,11 @@ export function ProfileEditor() {
       .update({
         full_name: fullName.trim() || null,
         username: username.trim() || null,
-        avatar_url: avatarUrl.trim() || null,
       })
       .eq("id", user.id);
     // Keep the auth-session metadata in sync so the header updates too.
     if (!error) {
-      await supabase.auth.updateUser({
-        data: { full_name: fullName.trim(), avatar_url: avatarUrl.trim() },
-      });
+      await supabase.auth.updateUser({ data: { full_name: fullName.trim() } });
     }
     setSavingProfile(false);
     setProfileBanner(
@@ -103,6 +103,60 @@ export function ProfileEditor() {
           }
         : { kind: "success", text: "Profile updated." },
     );
+  };
+
+  // Persist the avatar URL to the profile + auth session immediately so it
+  // shows everywhere the moment it's uploaded/removed.
+  const persistAvatar = async (url: string | null) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ avatar_url: url })
+      .eq("id", user.id);
+    if (error) throw new Error(error.message);
+    await supabase.auth.updateUser({ data: { avatar_url: url ?? "" } });
+    setAvatarUrl(url ?? "");
+  };
+
+  const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = ""; // let the user re-pick the same file
+    if (!file || !user) return;
+    const invalid = validateImageFile(file);
+    if (invalid) {
+      setProfileBanner({ kind: "error", text: invalid });
+      return;
+    }
+    setUploading(true);
+    setProfileBanner(null);
+    try {
+      const url = await uploadAvatar(supabase, user.id, file);
+      await persistAvatar(url);
+      setProfileBanner({ kind: "success", text: "Photo updated." });
+    } catch (err) {
+      setProfileBanner({
+        kind: "error",
+        text: err instanceof Error ? err.message : "Upload failed.",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    setUploading(true);
+    setProfileBanner(null);
+    try {
+      await persistAvatar(null);
+      setProfileBanner({ kind: "success", text: "Photo removed." });
+    } catch (err) {
+      setProfileBanner({
+        kind: "error",
+        text: err instanceof Error ? err.message : "Couldn't remove photo.",
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const savePreferences = async () => {
@@ -133,15 +187,53 @@ export function ProfileEditor() {
         onSubmit={saveProfile}
         className="flex flex-col gap-5 rounded-xl border border-outline-variant bg-surface-container-lowest p-6"
       >
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <Avatar url={avatarUrl} name={fullName || user.name} />
-          <div>
-            <h2 className="font-headline-sm text-headline-sm text-primary">
-              {fullName || user.name}
-            </h2>
-            <Badge variant="subtle" className="mt-1">
-              {user.email}
-            </Badge>
+          <div className="flex flex-col gap-2">
+            <div>
+              <h2 className="font-headline-sm text-headline-sm text-primary">
+                {fullName || user.name}
+              </h2>
+              <Badge variant="subtle" className="mt-1">
+                {user.email}
+              </Badge>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept={ACCEPT_ATTR}
+                onChange={handleFile}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={uploading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {uploading
+                  ? "Uploading…"
+                  : avatarUrl
+                    ? "Change photo"
+                    : "Upload photo"}
+              </Button>
+              {avatarUrl && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  disabled={uploading}
+                  onClick={handleRemovePhoto}
+                >
+                  Remove
+                </Button>
+              )}
+            </div>
+            <p className="font-caption text-caption text-on-surface-variant">
+              PNG, JPG, WebP or GIF · up to 5&nbsp;MB
+            </p>
           </div>
         </div>
 
@@ -151,10 +243,6 @@ export function ProfileEditor() {
         <FieldRow label="Username" htmlFor="username">
           <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" />
         </FieldRow>
-        <FieldRow label="Avatar URL" htmlFor="avatar">
-          <Input id="avatar" type="url" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://…/photo.jpg" />
-        </FieldRow>
-
         <BannerLine banner={profileBanner} />
         <div>
           <Button type="submit" disabled={savingProfile}>

@@ -32,7 +32,7 @@ export function UserMenu() {
       triggerClassName="gap-2 py-1 pl-1 pr-2 hover:bg-surface-container-high"
       trigger={
         <>
-          <Avatar name={user.name} />
+          <Avatar name={user.name} url={user.avatarUrl} />
           <span className="hidden font-label-md text-label-md text-primary sm:inline">
             {firstName}
           </span>
@@ -48,7 +48,7 @@ export function UserMenu() {
       {(close) => (
         <div>
           <div className="flex items-center gap-3 border-b border-surface-variant px-4 py-4">
-            <Avatar name={user.name} />
+            <Avatar name={user.name} url={user.avatarUrl} />
             <div className="min-w-0">
               <p className="truncate font-label-md text-label-md text-primary">
                 {user.name}
@@ -103,7 +103,18 @@ export function UserMenu() {
   );
 }
 
-function Avatar({ name }: { name: string }) {
+function Avatar({ name, url }: { name: string; url?: string | null }) {
+  if (url) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={url}
+        alt=""
+        referrerPolicy="no-referrer"
+        className="h-8 w-8 shrink-0 rounded-full object-cover"
+      />
+    );
+  }
   return (
     <span
       aria-hidden
