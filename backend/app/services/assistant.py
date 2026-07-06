@@ -1,11 +1,10 @@
-"""AI assistant service — talks to the Anthropic API server-side.
+"""AI assistant service — talks to Google **Gemini 2.5 Flash** server-side.
 
 The assistant chats conversationally to learn the user's mood, occasion, group
 size, budget, location, and interests, and — once it has enough signal —
-recommends a category and concrete filter values. The structured fields are
-returned via a forced tool call (`provide_response`), not parsed loosely from
-free text, so the frontend gets reliable `reply` / `suggested_category_slug` /
-`suggested_filters` every turn.
+recommends a category and concrete filter values. Structured fields are returned
+as strict JSON (Gemini JSON mode), so the frontend gets reliable
+`reply` / `suggested_category_slug` / `suggested_filters` every turn.
 """
 
 from __future__ import annotations
@@ -13,58 +12,25 @@ from __future__ import annotations
 import json
 from typing import Any
 
-import anthropic
+from google import genai
+from google.genai import errors, types
 
 from app.config import get_settings
 
 settings = get_settings()
 
-MODEL = "claude-opus-4-8"
+MODEL = "gemini-2.5-flash"
 
-# Forced tool: every turn returns this structure. `suggested_*` stay null until
-# the assistant is confident, so the frontend knows when to show the CTA.
-RESPONSE_TOOL: dict[str, Any] = {
-    "name": "provide_response",
-    "description": (
-        "Return your conversational reply to the user, plus an optional "
-        "category recommendation once you have enough signal."
-    ),
-    "input_schema": {
-        "type": "object",
-        "additionalProperties": False,
-        "properties": {
-            "reply": {
-                "type": "string",
-                "description": (
-                    "Your warm, concise message to the user. Ask one or two "
-                    "short questions, or — when recommending — preview what you "
-                    "found and invite them to view it. Never include raw JSON."
-                ),
-            },
-            "suggested_category_slug": {
-                "anyOf": [{"type": "string"}, {"type": "null"}],
-                "description": (
-                    "Exact slug of the single best-matching category once "
-                    "confident; otherwise null. Must be one of the provided "
-                    "category slugs."
-                ),
-            },
-            "suggested_filters": {
-                "anyOf": [{"type": "object"}, {"type": "null"}],
-                "description": (
-                    "Filter values for the suggested category, keyed by the "
-                    "category's filter keys. Use valid enum option values, a "
-                    "number within a range filter's min/max, or true/false for "
-                    "boolean filters. Null until a category is suggested."
-                ),
-            },
-        },
-        "required": [
-            "reply",
-            "suggested_category_slug",
-            "suggested_filters",
-        ],
+# JSON shape the model must return every turn (`suggested_*` stay null until the
+# assistant is confident, so the frontend knows when to show the CTA).
+_RESPONSE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "reply": {"type": "string"},
+        "suggested_category_slug": {"type": "string", "nullable": True},
+        "suggested_filters": {"type": "object", "nullable": True},
     },
+    "required": ["reply", "suggested_category_slug", "suggested_filters"],
 }
 
 
@@ -89,10 +55,51 @@ def build_system_prompt(categories: list[dict[str, Any]]) -> str:
         "(enum option values, a number within a range filter's min/max as a "
         "maximum, or true/false for booleans). Until then, keep both null and "
         "keep the conversation going. In your `reply`, preview the "
-        "recommendation and invite the user to view the matching experiences.\n"
-        "\nAlways respond by calling the provide_response tool.\n\n"
+        "recommendation and invite the user to view the matching experiences.\n\n"
+        "Always respond with ONLY a JSON object (no markdown, no code fences) "
+        "with exactly these keys:\n"
+        '  - "reply": string — your warm, concise message (never include raw '
+        "JSON in it).\n"
+        '  - "suggested_category_slug": string or null — the exact slug of the '
+        "best category once confident, else null.\n"
+        '  - "suggested_filters": object or null — filter values keyed by that '
+        "category's filter keys, else null.\n\n"
         f"Available categories and their filters (JSON):\n{catalog}"
     )
+
+
+def _to_contents(
+    history: list[dict[str, str]], message: str
+) -> list[dict[str, Any]]:
+    """Map our stored history + new message to Gemini's contents format."""
+
+    contents: list[dict[str, Any]] = []
+    for turn in history:
+        role = "model" if turn.get("role") == "assistant" else "user"
+        contents.append(
+            {"role": role, "parts": [{"text": turn.get("content", "")}]}
+        )
+    contents.append({"role": "user", "parts": [{"text": message}]})
+    return contents
+
+
+def _parse(raw: str | None) -> dict[str, Any]:
+    """Parse the model's JSON, tolerating stray code fences; never crash."""
+
+    text = (raw or "").strip()
+    if text.startswith("```"):
+        text = text.strip("`")
+        if text.lower().startswith("json"):
+            text = text[4:]
+        text = text.strip()
+    try:
+        data = json.loads(text)
+        if isinstance(data, dict):
+            return data
+    except (ValueError, TypeError):
+        pass
+    # Fallback: treat the whole thing as the reply, no suggestion.
+    return {"reply": text, "suggested_category_slug": None, "suggested_filters": None}
 
 
 def generate_reply(
@@ -100,36 +107,39 @@ def generate_reply(
     history: list[dict[str, str]],
     message: str,
 ) -> dict[str, Any]:
-    """Call the model and return {reply, suggested_category_slug,
+    """Call Gemini and return {reply, suggested_category_slug,
     suggested_filters}. Raises AssistantUnavailable on config/API failure."""
 
-    if not settings.anthropic_api_key:
+    if not settings.gemini_api_key:
         raise AssistantUnavailable(
-            "Assistant is not configured (ANTHROPIC_API_KEY is not set)."
+            "Assistant is not configured (GEMINI_API_KEY is not set)."
         )
 
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-    messages = [*history, {"role": "user", "content": message}]
+    client = genai.Client(api_key=settings.gemini_api_key)
 
     try:
-        response = client.messages.create(
+        response = client.models.generate_content(
             model=MODEL,
-            max_tokens=1024,
-            system=system_prompt,
-            messages=messages,
-            tools=[RESPONSE_TOOL],
-            tool_choice={"type": "tool", "name": "provide_response"},
+            contents=_to_contents(history, message),
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                response_mime_type="application/json",
+                response_schema=_RESPONSE_SCHEMA,
+                temperature=0.7,
+                max_output_tokens=1024,
+            ),
         )
-    except anthropic.APIError as exc:  # network / upstream / auth
+    except errors.APIError as exc:  # auth / rate limit / upstream
+        status_code = getattr(exc, "code", None) or getattr(exc, "status_code", None)
+        if status_code == 429:
+            raise AssistantUnavailable(
+                "The assistant is busy right now — please try again in a moment."
+            ) from exc
+        raise AssistantUnavailable(str(exc)) from exc
+    except Exception as exc:  # noqa: BLE001 — network/unknown, degrade gracefully
         raise AssistantUnavailable(str(exc)) from exc
 
-    tool_block = next(
-        (b for b in response.content if b.type == "tool_use"), None
-    )
-    if tool_block is None:
-        raise AssistantUnavailable("Assistant returned no structured response.")
-
-    data: dict[str, Any] = dict(tool_block.input)
+    data = _parse(response.text)
     return {
         "reply": data.get("reply", ""),
         "suggested_category_slug": data.get("suggested_category_slug"),

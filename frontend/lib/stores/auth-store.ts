@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import type { Session, User } from "@supabase/supabase-js";
 
-import { setAccessToken } from "@/lib/api/client";
+import { apiFetch, setAccessToken } from "@/lib/api/client";
 import { createClient } from "@/lib/supabase/client";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
+
+export type Role = "user" | "business_manager" | "administrator";
 
 /**
  * Global auth state (Zustand), backed by **Supabase Auth**.
@@ -43,6 +45,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   user: AuthUser | null;
   token: string | null;
+  role: Role | null;
   status: AuthStatus;
   login: (email: string, password: string) => Promise<void>;
   signup: (
@@ -53,6 +56,7 @@ export interface AuthState {
   loginWithGoogle: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
+  refreshRole: () => Promise<void>;
   logout: () => Promise<void>;
   initialize: () => Promise<void>;
 }
@@ -95,13 +99,26 @@ function applySession(
   setAccessToken(session?.access_token ?? null);
   if (!session) {
     useFavoritesStore.getState().reset();
+    set({
+      isAuthenticated: false,
+      user: null,
+      token: null,
+      role: null,
+      status: "unauthenticated",
+    });
+    return;
   }
   set({
-    isAuthenticated: Boolean(session),
-    user: toUser(session?.user ?? null),
-    token: session?.access_token ?? null,
-    status: session ? "authenticated" : "unauthenticated",
+    isAuthenticated: true,
+    user: toUser(session.user),
+    token: session.access_token,
+    status: "authenticated",
   });
+  // Fetch the platform role (user / business_manager / administrator) from the
+  // bridged API. Fire-and-forget — the UI works without it, just as a plain user.
+  apiFetch<{ role: Role }>("/auth/me")
+    .then((me) => set({ role: me.role }))
+    .catch(() => set({ role: "user" }));
 }
 
 let listenerAttached = false;
@@ -110,6 +127,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   user: null,
   token: null,
+  role: null,
   status: "idle",
 
   login: async (email, password) => {
@@ -152,6 +170,15 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (error) throw new Error(friendly(error.message));
   },
 
+  refreshRole: async () => {
+    try {
+      const me = await apiFetch<{ role: Role }>("/auth/me");
+      set({ role: me.role });
+    } catch {
+      // keep the current role
+    }
+  },
+
   logout: async () => {
     await sb().auth.signOut();
     setAccessToken(null);
@@ -160,6 +187,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       isAuthenticated: false,
       user: null,
       token: null,
+      role: null,
       status: "unauthenticated",
     });
   },

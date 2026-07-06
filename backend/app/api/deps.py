@@ -24,7 +24,7 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.core.security import ACCESS_TOKEN_TYPE, decode_token, hash_password
 from app.db import get_db
-from app.models import User
+from app.models import AccountType, AdminRole, User
 
 settings = get_settings()
 
@@ -138,16 +138,74 @@ def get_current_user(
 
     claims = _verify_supabase_token(token)
     if claims is not None and claims.get("sub"):
-        return _resolve_supabase_user(db, claims)
+        user = _resolve_supabase_user(db, claims)
+    else:
+        user = _resolve_legacy_user(db, token)
 
-    return _resolve_legacy_user(db, token)
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This account has been deactivated.",
+        )
+    return user
+
+
+# --- Role-based access control (RBAC) ---------------------------------------
+#
+# Authorization is enforced *server-side* only. There are three separate
+# account types (``AccountType``); admins additionally carry a tier
+# (``AdminRole``) stored in the ``admin_roles`` table. Never trust a role sent
+# by the client.
 
 
 def get_current_admin(current_user: User = Depends(get_current_user)) -> User:
-    """Require the authenticated user to be an administrator (403 otherwise)."""
-    if not current_user.is_admin:
+    """Require an administrator account (any admin tier). 403 otherwise."""
+    if current_user.account_type != AccountType.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Administrator access required",
+        )
+    return current_user
+
+
+def admin_role_of(user: User) -> AdminRole | None:
+    """Return the admin tier for an admin account, or ``None``."""
+    return user.admin_role
+
+
+def require_admin_role(minimum: AdminRole):
+    """Dependency factory: require an admin whose tier is at least ``minimum``.
+
+    Tiers are ordered moderator < administrator < super_admin, so
+    ``require_admin_role(AdminRole.administrator)`` also admits super admins.
+    """
+
+    def _dependency(current_user: User = Depends(get_current_admin)) -> User:
+        tier = admin_role_of(current_user)
+        if tier is None or tier.rank < minimum.rank:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Requires {minimum.value} privileges or higher.",
+            )
+        return current_user
+
+    return _dependency
+
+
+# Convenience dependencies for the three admin tiers.
+require_moderator = require_admin_role(AdminRole.moderator)
+require_administrator = require_admin_role(AdminRole.administrator)
+require_super_admin = require_admin_role(AdminRole.super_admin)
+
+
+def get_current_business(
+    current_user: User = Depends(get_current_user),
+) -> User:
+    """Require a business account. Admins do NOT pass — admins manage
+    businesses through the admin portal, not the business routes."""
+    if current_user.account_type != AccountType.business:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Business account required",
         )
     return current_user

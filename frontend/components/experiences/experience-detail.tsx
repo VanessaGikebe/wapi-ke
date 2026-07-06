@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { BookingModal } from "@/components/categories/booking-modal";
 import { ExperienceCard } from "@/components/categories/experience-card";
 import { BackLink } from "@/components/site/back-link";
+import { ListingActions } from "@/components/experiences/listing-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,7 +20,7 @@ import {
   priceLabel,
   priceText,
 } from "@/lib/experience-presentation";
-import { experienceGallery } from "@/lib/images";
+import { galleryForExperience } from "@/lib/images";
 import { useExperience, useExperiences } from "@/lib/queries/categories";
 import { useToggleFavorite } from "@/lib/queries/favorites";
 import { useAuthStore } from "@/lib/stores/auth-store";
@@ -53,10 +54,7 @@ export function ExperienceDetail({ id }: { id: string }) {
   if (experienceQuery.isLoading) return <DetailSkeleton />;
   if (experienceQuery.isError || !experience) return <NotFound />;
 
-  const gallery =
-    experience.images.length > 0
-      ? experience.images
-      : experienceGallery(experience.categorySlug, experience.id);
+  const gallery = galleryForExperience(experience);
   const tags = experienceTags(experience);
   const amenities = experienceAmenities(experience);
   const reviews = experienceReviews(experience);
@@ -313,6 +311,11 @@ export function ExperienceDetail({ id }: { id: string }) {
                 </a>
               )}
             </div>
+
+            <ListingActions
+              experienceId={experience.id}
+              redirectPath={pathname}
+            />
           </div>
         </aside>
       </div>
