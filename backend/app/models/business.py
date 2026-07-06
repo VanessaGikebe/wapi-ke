@@ -78,10 +78,12 @@ class ApplicationStatus(str, enum.Enum):
 
 class BusinessStatus(str, enum.Enum):
     """Lifecycle of a *live* business. Only ``approved`` businesses may publish
-    listings; ``suspended`` businesses are hidden and blocked."""
+    listings; ``suspended`` businesses are hidden and blocked; ``archived``
+    businesses are retired (soft-removed) but kept for the record."""
 
     approved = "approved"
     suspended = "suspended"
+    archived = "archived"
 
 
 class VerificationStatus(str, enum.Enum):

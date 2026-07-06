@@ -6,6 +6,8 @@ import { EventCard } from "@/components/events/event-card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEvents } from "@/lib/queries/events";
+import { useRecordInteraction } from "@/lib/queries/personalization";
+import { useAuthStore } from "@/lib/stores/auth-store";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
@@ -23,6 +25,8 @@ export function EventsBrowser() {
   const [q, setQ] = React.useState("");
   const [category, setCategory] = React.useState<string | null>(null);
   const [county, setCounty] = React.useState<string | null>(null);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const recordInteraction = useRecordInteraction();
 
   const query = useEvents({
     q: q.trim() || undefined,
@@ -33,6 +37,22 @@ export function EventsBrowser() {
 
   const events = query.data?.items ?? [];
   const total = query.data?.total ?? 0;
+
+  React.useEffect(() => {
+    const search = q.trim();
+    if (!isAuthenticated || search.length < 3) return;
+    const timeout = window.setTimeout(() => {
+      recordInteraction.mutate({
+        interactionType: "search",
+        searchQuery: search,
+        weight: 3,
+        context: { surface: "events", category, county },
+      });
+    }, 800);
+    return () => window.clearTimeout(timeout);
+    // recordInteraction is intentionally omitted so stable searches record once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, county, isAuthenticated, q]);
 
   return (
     <>

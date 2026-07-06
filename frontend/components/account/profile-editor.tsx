@@ -181,11 +181,11 @@ export function ProfileEditor() {
   }
 
   return (
-    <div className="flex max-w-2xl flex-col gap-8">
+    <div className="flex max-w-4xl flex-col gap-8">
       {/* Profile */}
       <form
         onSubmit={saveProfile}
-        className="flex flex-col gap-5 rounded-xl border border-outline-variant bg-surface-container-lowest p-6"
+        className="flex flex-col gap-5 rounded-xl border border-outline-variant bg-surface-container-lowest p-6 md:p-8"
       >
         <div className="flex flex-wrap items-center gap-4">
           <Avatar url={avatarUrl} name={fullName || user.name} />
@@ -237,12 +237,14 @@ export function ProfileEditor() {
           </div>
         </div>
 
-        <FieldRow label="Full name" htmlFor="full_name">
-          <Input id="full_name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" />
-        </FieldRow>
-        <FieldRow label="Username" htmlFor="username">
-          <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" />
-        </FieldRow>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <FieldRow label="Full name" htmlFor="full_name">
+            <Input id="full_name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" />
+          </FieldRow>
+          <FieldRow label="Username" htmlFor="username">
+            <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" />
+          </FieldRow>
+        </div>
         <BannerLine banner={profileBanner} />
         <div>
           <Button type="submit" disabled={savingProfile}>
@@ -255,7 +257,7 @@ export function ProfileEditor() {
       <PasswordCard updatePassword={updatePassword} />
 
       {/* Preferences */}
-      <div className="flex flex-col gap-5 rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
+      <div className="flex flex-col gap-5 rounded-xl border border-outline-variant bg-surface-container-lowest p-6 md:p-8">
         <h2 className="font-headline-sm text-headline-sm text-primary">Preferences</h2>
         <FieldRow label="Home county" htmlFor="home_county">
           <select
@@ -328,16 +330,18 @@ function PasswordCard({
   return (
     <form
       onSubmit={submit}
-      className="flex flex-col gap-5 rounded-xl border border-outline-variant bg-surface-container-lowest p-6"
+      className="flex flex-col gap-5 rounded-xl border border-outline-variant bg-surface-container-lowest p-6 md:p-8"
     >
       <h2 className="font-headline-sm text-headline-sm text-primary">Change password</h2>
-      <FieldRow label="New password" htmlFor="new_password">
-        <Input id="new_password" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-      </FieldRow>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <FieldRow label="New password" htmlFor="new_password">
+          <Input id="new_password" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+        </FieldRow>
+        <FieldRow label="Confirm password" htmlFor="confirm_password">
+          <Input id="confirm_password" type="password" autoComplete="new-password" aria-invalid={mismatch} value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="••••••••" />
+        </FieldRow>
+      </div>
       {password.length > 0 && <PasswordStrength password={password} />}
-      <FieldRow label="Confirm password" htmlFor="confirm_password">
-        <Input id="confirm_password" type="password" autoComplete="new-password" aria-invalid={mismatch} value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="••••••••" />
-      </FieldRow>
       {mismatch && <p className="font-caption text-caption text-error">Passwords don&apos;t match.</p>}
       <BannerLine banner={banner} />
       <div>

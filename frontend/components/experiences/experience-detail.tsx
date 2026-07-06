@@ -23,6 +23,7 @@ import {
 import { galleryForExperience } from "@/lib/images";
 import { useExperience, useExperiences } from "@/lib/queries/categories";
 import { useToggleFavorite } from "@/lib/queries/favorites";
+import { useRecordInteraction } from "@/lib/queries/personalization";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,7 @@ export function ExperienceDetail({ id }: { id: string }) {
   );
   const setPendingFavorite = useFavoritesStore((s) => s.setPendingFavorite);
   const toggleFavorite = useToggleFavorite();
+  const recordInteraction = useRecordInteraction();
   const [bookingOpen, setBookingOpen] = React.useState(false);
   const [activeImage, setActiveImage] = React.useState(0);
 
@@ -50,6 +52,30 @@ export function ExperienceDetail({ id }: { id: string }) {
   const related = (relatedQuery.data?.items ?? [])
     .filter((e) => e.id !== id)
     .slice(0, 3);
+
+  React.useEffect(() => {
+    if (!isAuthenticated || !experience) return;
+    const startedAt = Date.now();
+    recordInteraction.mutate({
+      interactionType: "view",
+      experienceId: experience.id,
+      categorySlug: experience.categorySlug,
+      weight: 3,
+    });
+    return () => {
+      const seconds = Math.round((Date.now() - startedAt) / 1000);
+      if (seconds < 8) return;
+      recordInteraction.mutate({
+        interactionType: "dwell",
+        experienceId: experience.id,
+        categorySlug: experience.categorySlug,
+        weight: Math.min(20, Math.max(4, Math.round(seconds / 10))),
+        context: { seconds },
+      });
+    };
+    // recordInteraction is intentionally omitted so each detail view records once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [experience?.id, isAuthenticated]);
 
   if (experienceQuery.isLoading) return <DetailSkeleton />;
   if (experienceQuery.isError || !experience) return <NotFound />;

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { CategoriesCarousel } from "@/components/categories/categories-carousel";
+import { PersonalizedHome } from "@/components/marketing/personalized-home";
 import { Testimonials } from "@/components/marketing/testimonials";
 import { UpcomingEvents } from "@/components/marketing/upcoming-events";
 import { SiteFooter } from "@/components/site/site-footer";
@@ -210,6 +211,7 @@ export default function LandingPage() {
       <SiteHeader />
       <main className="flex-1">
         <Hero />
+        <PersonalizedHome />
         <ExploreCategories />
         <AssistantSection />
         <UpcomingEventsSection />

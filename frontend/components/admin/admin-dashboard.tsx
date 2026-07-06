@@ -59,7 +59,7 @@ export function AdminDashboard() {
   );
 }
 
-function ListingsTab() {
+export function ListingsTab() {
   const qc = useQueryClient();
   const [status, setStatus] = React.useState<ListingStatus | undefined>();
   const [q, setQ] = React.useState("");
@@ -179,7 +179,7 @@ function StatusActions({
   );
 }
 
-function ReportsTab() {
+export function ReportsTab() {
   const qc = useQueryClient();
   const query = useQuery({ queryKey: ["admin", "reports"], queryFn: () => fetchReports() });
   const mutate = useMutation({
@@ -227,7 +227,7 @@ function ReportsTab() {
   );
 }
 
-function AuditTab() {
+export function AuditTab() {
   const query = useQuery({ queryKey: ["admin", "audit"], queryFn: () => fetchAudit() });
   if (query.isLoading) return <Loading />;
   const rows = query.data ?? [];

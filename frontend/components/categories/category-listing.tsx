@@ -19,11 +19,17 @@ import {
   useExperiences,
   useFilters,
 } from "@/lib/queries/categories";
+import {
+  useRecommendations,
+  useRecordInteraction,
+} from "@/lib/queries/personalization";
+import { useAuthStore } from "@/lib/stores/auth-store";
 import type { FilterDefinition } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 import { ExperienceCard } from "./experience-card";
 import { FilterSidebar } from "./filter-sidebar";
+import { PersonalizedSections } from "./personalized-sections";
 
 /**
  * Generic category listing template — ONE component for all 10 categories.
@@ -112,11 +118,26 @@ function CategoryListingInner({
     [filters, state],
   );
   const experiencesQuery = useExperiences(slug, query);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const recommendationsQuery = useRecommendations(slug, query, isAuthenticated);
+  const recordInteraction = useRecordInteraction();
 
   const items = experiencesQuery.data?.items ?? [];
   const total = experiencesQuery.data?.total ?? 0;
   const activeCount = countActiveFilters(filters, state);
   const initialLoading = experiencesQuery.isLoading && !experiencesQuery.data;
+
+  React.useEffect(() => {
+    if (!isAuthenticated || activeCount === 0) return;
+    recordInteraction.mutate({
+      interactionType: "filter",
+      categorySlug: slug,
+      weight: Math.min(6, activeCount + 1),
+      context: { query },
+    });
+    // recordInteraction is intentionally omitted so each stable query records once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCount, isAuthenticated, query, slug]);
 
   const setFilter = React.useCallback(
     (key: string, value: FilterValue) =>
@@ -166,6 +187,13 @@ function CategoryListingInner({
         </aside>
 
         <section>
+          {isAuthenticated && (
+            <PersonalizedSections
+              sections={recommendationsQuery.data}
+              loading={recommendationsQuery.isLoading}
+            />
+          )}
+
           <div className="mb-6 hidden items-center justify-between lg:flex">
             <p className="font-caption text-caption uppercase tracking-wide text-on-surface-variant">
               {resultLabel("experience")}

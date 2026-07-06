@@ -39,6 +39,11 @@ from app.models.moderation import (
     ModerationActionType,
     ReportStatus,
 )
+from app.models.personalization import (
+    InteractionType,
+    UserInteraction,
+    UserPreferenceProfile,
+)
 from app.models.user import AccountType, User
 
 __all__ = [
@@ -69,12 +74,15 @@ __all__ = [
     "FilterDefinition",
     "FilterType",
     "InvitationStatus",
+    "InteractionType",
     "ListingReport",
     "ListingStatus",
     "ModerationAction",
     "ModerationActionType",
     "OwnerRole",
     "ReportStatus",
+    "UserInteraction",
+    "UserPreferenceProfile",
     "User",
     "VerificationStatus",
 ]
