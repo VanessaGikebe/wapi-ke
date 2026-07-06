@@ -1,14 +1,18 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { submitClaim } from "@/lib/api/business";
 import { reportExperience } from "@/lib/api/roles";
 import { useAuthStore } from "@/lib/stores/auth-store";
 
-/** Report (any signed-in user) + Claim (business managers) actions. */
+/**
+ * Report (any signed-in user) + a link into the Business portal to claim this
+ * listing. Claiming is a verification-gated flow (`/business/claim`), not a
+ * self-service account action.
+ */
 export function ListingActions({
   experienceId,
   redirectPath,
@@ -18,8 +22,6 @@ export function ListingActions({
 }) {
   const router = useRouter();
   const isAuth = useAuthStore((s) => s.isAuthenticated);
-  const role = useAuthStore((s) => s.role);
-  const canClaim = role === "business_manager" || role === "administrator";
 
   const [reporting, setReporting] = React.useState(false);
   const [reason, setReason] = React.useState("");
@@ -48,30 +50,14 @@ export function ListingActions({
     }
   };
 
-  const claim = async () => {
-    setBusy(true);
-    setMsg(null);
-    try {
-      await submitClaim(experienceId);
-      setMsg("Claim submitted — an admin will review it.");
-    } catch (err) {
-      setMsg(
-        err instanceof Error && err.message.includes("pending")
-          ? "You already have a pending claim on this."
-          : "Couldn't submit the claim.",
-      );
-    } finally {
-      setBusy(false);
-    }
-  };
-
   return (
     <div className="mt-4 flex flex-col gap-2 border-t border-surface-variant pt-4">
-      {canClaim && (
-        <Button variant="outline" size="sm" disabled={busy} onClick={claim}>
-          Claim this business
-        </Button>
-      )}
+      <Link
+        href="/business/claim"
+        className="rounded text-left font-caption text-caption text-primary underline-offset-2 hover:underline"
+      >
+        Own this business? Claim it →
+      </Link>
 
       {!reporting ? (
         <button

@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import {
   createListing,
   editListing,
-  fetchMyClaims,
   fetchMyListings,
   type ListingCreatePayload,
   type ManagerListing,
@@ -17,7 +16,7 @@ import {
 import { useCategories } from "@/lib/queries/categories";
 import { cn } from "@/lib/utils";
 
-const TABS = ["My Listings", "New Listing", "My Claims"] as const;
+const TABS = ["My Listings", "New Listing"] as const;
 type Tab = (typeof TABS)[number];
 
 const STATUS_STYLES: Record<string, string> = {
@@ -51,7 +50,6 @@ export function BusinessDashboard() {
       </div>
       {tab === "My Listings" && <MyListings />}
       {tab === "New Listing" && <NewListing onDone={() => setTab("My Listings")} />}
-      {tab === "My Claims" && <MyClaims />}
     </div>
   );
 }
@@ -231,27 +229,6 @@ function NewListing({ onDone }: { onDone: () => void }) {
         </Button>
       </div>
     </form>
-  );
-}
-
-function MyClaims() {
-  const query = useQuery({ queryKey: ["business", "claims"], queryFn: fetchMyClaims });
-  if (query.isLoading) return <Loading />;
-  const claims = query.data ?? [];
-  if (claims.length === 0)
-    return <Empty>No claims yet. Open a business&apos;s page and tap “Claim this business”.</Empty>;
-  return (
-    <ul className="flex flex-col gap-3">
-      {claims.map((c) => (
-        <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
-          <div>
-            <p className="font-headline-sm text-headline-sm text-primary">{c.experience_title ?? "Listing"}</p>
-            {c.message && <p className="font-caption text-caption text-on-surface-variant">“{c.message}”</p>}
-          </div>
-          <StatusBadge status={c.status} />
-        </li>
-      ))}
-    </ul>
   );
 }
 

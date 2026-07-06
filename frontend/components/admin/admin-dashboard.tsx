@@ -6,19 +6,19 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ApplicationsTab } from "@/components/admin/applications-panel";
+import { ClaimsTab } from "@/components/admin/claims-panel";
 import {
   fetchAdminListings,
   fetchAudit,
-  fetchClaims,
   fetchReports,
-  reviewClaim,
   updateListingStatus,
   updateReport,
   type ListingStatus,
 } from "@/lib/api/admin";
 import { cn } from "@/lib/utils";
 
-const TABS = ["Listings", "Reports", "Claims", "Audit"] as const;
+const TABS = ["Applications", "Claims", "Listings", "Reports", "Audit"] as const;
 type Tab = (typeof TABS)[number];
 
 const STATUS_STYLES: Record<ListingStatus, string> = {
@@ -29,7 +29,7 @@ const STATUS_STYLES: Record<ListingStatus, string> = {
 };
 
 export function AdminDashboard() {
-  const [tab, setTab] = React.useState<Tab>("Listings");
+  const [tab, setTab] = React.useState<Tab>("Applications");
   return (
     <div>
       <div role="tablist" className="mb-8 flex gap-1 overflow-x-auto border-b border-surface-variant">
@@ -50,9 +50,10 @@ export function AdminDashboard() {
           </button>
         ))}
       </div>
+      {tab === "Applications" && <ApplicationsTab />}
+      {tab === "Claims" && <ClaimsTab />}
       {tab === "Listings" && <ListingsTab />}
       {tab === "Reports" && <ReportsTab />}
-      {tab === "Claims" && <ClaimsTab />}
       {tab === "Audit" && <AuditTab />}
     </div>
   );
@@ -217,56 +218,6 @@ function ReportsTab() {
               </Button>
               <Button variant="ghost" size="sm" disabled={mutate.isPending} onClick={() => mutate.mutate({ id: r.id, status: "dismissed" })}>
                 Dismiss
-              </Button>
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function ClaimsTab() {
-  const qc = useQueryClient();
-  const query = useQuery({ queryKey: ["admin", "claims"], queryFn: () => fetchClaims() });
-  const mutate = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: "approved" | "rejected" }) =>
-      reviewClaim(id, status),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", "claims"] });
-      qc.invalidateQueries({ queryKey: ["admin", "audit"] });
-    },
-  });
-
-  if (query.isLoading) return <Loading />;
-  const claims = query.data ?? [];
-  if (claims.length === 0) return <Empty>No claims.</Empty>;
-
-  return (
-    <ul className="flex flex-col gap-3">
-      {claims.map((c) => (
-        <li
-          key={c.id}
-          className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-4"
-        >
-          <div className="min-w-0 flex-1">
-            <p className="font-headline-sm text-headline-sm text-primary">
-              {c.experience_title ?? "Listing"}
-            </p>
-            <p className="mt-1 font-caption text-caption text-on-surface-variant">
-              claimed by {c.manager_email} · {c.status}
-            </p>
-            {c.message && (
-              <p className="mt-1 font-body-md text-body-md text-on-surface-variant">“{c.message}”</p>
-            )}
-          </div>
-          {c.status === "pending" && (
-            <div className="flex gap-2">
-              <Button size="sm" disabled={mutate.isPending} onClick={() => mutate.mutate({ id: c.id, status: "approved" })}>
-                Approve
-              </Button>
-              <Button variant="outline" size="sm" disabled={mutate.isPending} onClick={() => mutate.mutate({ id: c.id, status: "rejected" })}>
-                Reject
               </Button>
             </div>
           )}

@@ -409,8 +409,17 @@ class BusinessClaim(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid, primary_key=True, default=uuid.uuid4
     )
-    business_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False
+    # The catalog listing being claimed (the public ``experiences`` entry the
+    # claimant recognises as their business). The live ``Business`` entity does
+    # not exist yet — it is created on approval, so ``business_id`` is null until
+    # then (mirroring the application → business flow).
+    experience_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("experiences.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+    business_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True
     )
 
     # Claimant contact — they may not yet have an account (that's the point of

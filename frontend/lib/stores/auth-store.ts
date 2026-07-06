@@ -5,7 +5,10 @@ import { apiFetch, setAccessToken } from "@/lib/api/client";
 import { createClient } from "@/lib/supabase/client";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
 
-export type Role = "user" | "business_manager" | "administrator";
+/** The three separate account types (assigned server-side only). */
+export type AccountType = "user" | "business" | "admin";
+/** Admin tier, present only for admin accounts. */
+export type AdminRole = "moderator" | "administrator" | "super_admin";
 
 /**
  * Global auth state (Zustand), backed by **Supabase Auth**.
@@ -45,7 +48,8 @@ export interface AuthState {
   isAuthenticated: boolean;
   user: AuthUser | null;
   token: string | null;
-  role: Role | null;
+  accountType: AccountType | null;
+  adminRole: AdminRole | null;
   status: AuthStatus;
   login: (email: string, password: string) => Promise<void>;
   signup: (
@@ -56,7 +60,7 @@ export interface AuthState {
   loginWithGoogle: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
-  refreshRole: () => Promise<void>;
+  refreshAccount: () => Promise<void>;
   logout: () => Promise<void>;
   initialize: () => Promise<void>;
 }
@@ -103,7 +107,8 @@ function applySession(
       isAuthenticated: false,
       user: null,
       token: null,
-      role: null,
+      accountType: null,
+      adminRole: null,
       status: "unauthenticated",
     });
     return;
@@ -114,11 +119,11 @@ function applySession(
     token: session.access_token,
     status: "authenticated",
   });
-  // Fetch the platform role (user / business_manager / administrator) from the
+  // Fetch the account type (user / business / admin) + admin tier from the
   // bridged API. Fire-and-forget — the UI works without it, just as a plain user.
-  apiFetch<{ role: Role }>("/auth/me")
-    .then((me) => set({ role: me.role }))
-    .catch(() => set({ role: "user" }));
+  apiFetch<{ account_type: AccountType; admin_role: AdminRole | null }>("/auth/me")
+    .then((me) => set({ accountType: me.account_type, adminRole: me.admin_role }))
+    .catch(() => set({ accountType: "user", adminRole: null }));
 }
 
 let listenerAttached = false;
@@ -127,7 +132,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   user: null,
   token: null,
-  role: null,
+  accountType: null,
+  adminRole: null,
   status: "idle",
 
   login: async (email, password) => {
@@ -170,12 +176,15 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (error) throw new Error(friendly(error.message));
   },
 
-  refreshRole: async () => {
+  refreshAccount: async () => {
     try {
-      const me = await apiFetch<{ role: Role }>("/auth/me");
-      set({ role: me.role });
+      const me = await apiFetch<{
+        account_type: AccountType;
+        admin_role: AdminRole | null;
+      }>("/auth/me");
+      set({ accountType: me.account_type, adminRole: me.admin_role });
     } catch {
-      // keep the current role
+      // keep the current account type
     }
   },
 
@@ -187,7 +196,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       isAuthenticated: false,
       user: null,
       token: null,
-      role: null,
+      accountType: null,
+      adminRole: null,
       status: "unauthenticated",
     });
   },

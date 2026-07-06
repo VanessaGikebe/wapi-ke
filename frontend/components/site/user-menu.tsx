@@ -21,18 +21,22 @@ const itemClass =
 export function UserMenu() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const role = useAuthStore((s) => s.role);
+  const accountType = useAuthStore((s) => s.accountType);
   const logout = useAuthStore((s) => s.logout);
 
   if (!user) return null;
   const firstName = user.name.split(" ")[0];
 
   const roleLinks = [
-    role === "administrator"
+    accountType === "admin"
       ? { label: "Admin Dashboard", href: "/admin", icon: "shield_person" }
       : null,
-    role === "administrator" || role === "business_manager"
-      ? { label: "Business Dashboard", href: "/business", icon: "storefront" }
+    accountType === "business"
+      ? {
+          label: "Business Dashboard",
+          href: "/business/dashboard",
+          icon: "storefront",
+        }
       : null,
   ].filter(Boolean) as { label: string; href: string; icon: string }[];
   const links = [...roleLinks, ...MENU_LINKS];

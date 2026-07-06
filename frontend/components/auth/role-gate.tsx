@@ -3,45 +3,45 @@
 import * as React from "react";
 import Link from "next/link";
 
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { registerAdmin, registerBusinessManager } from "@/lib/api/roles";
-import { useAuthStore, type Role } from "@/lib/stores/auth-store";
+import { buttonVariants } from "@/components/ui/button";
+import { useAuthStore, type AccountType } from "@/lib/stores/auth-store";
 import { cn } from "@/lib/utils";
 
 /**
- * Guards a role-restricted area. Shows a sign-in prompt when logged out, a
- * one-time role-upgrade card when the user lacks the role (admin needs an
- * invite code; business manager is self-service), and the content once allowed.
- * Administrators can access every area.
+ * Guards an account-type-restricted area. Pure guard — there is NO self-service
+ * role upgrade. States: loading → sign-in prompt (logged out) → not-authorized
+ * (wrong account type) → the content.
+ *
+ * Account types are separate: a business account cannot open the admin portal
+ * and vice-versa. Authorization is also enforced server-side on every API call;
+ * this gate is only about what the UI shows.
  */
 export function RoleGate({
-  role,
+  accountType,
   loginHref,
   children,
 }: {
-  role: Exclude<Role, "user">;
+  accountType: Exclude<AccountType, "user">;
   loginHref: string;
   children: React.ReactNode;
 }) {
   const status = useAuthStore((s) => s.status);
   const isAuth = useAuthStore((s) => s.isAuthenticated);
-  const currentRole = useAuthStore((s) => s.role);
-  const refreshRole = useAuthStore((s) => s.refreshRole);
+  const current = useAuthStore((s) => s.accountType);
 
   if (status === "idle" || status === "loading") {
     return <Centered>Loading…</Centered>;
   }
   if (!isAuth) {
-    return <NeedSignIn role={role} loginHref={loginHref} />;
+    return <NeedSignIn accountType={accountType} loginHref={loginHref} />;
   }
-  if (currentRole === null) {
+  if (current === null) {
     return <Centered>Checking access…</Centered>;
   }
-  if (currentRole === role || currentRole === "administrator") {
+  if (current === accountType) {
     return <>{children}</>;
   }
-  return <Upgrade role={role} onDone={refreshRole} />;
+  return <NotAuthorized accountType={accountType} />;
 }
 
 function Centered({ children }: { children: React.ReactNode }) {
@@ -52,76 +52,62 @@ function Centered({ children }: { children: React.ReactNode }) {
   );
 }
 
-function NeedSignIn({ role, loginHref }: { role: Role; loginHref: string }) {
+function NeedSignIn({
+  accountType,
+  loginHref,
+}: {
+  accountType: Exclude<AccountType, "user">;
+  loginHref: string;
+}) {
   return (
     <Card
-      title={role === "administrator" ? "Administrator area" : "Business area"}
+      title={accountType === "admin" ? "Administrator area" : "Business area"}
       body="Please sign in to continue."
     >
-      <Link href={loginHref} className={cn(buttonVariants({ size: "lg" }), "w-full")}>
+      <Link
+        href={loginHref}
+        className={cn(buttonVariants({ size: "lg" }), "w-full")}
+      >
         Sign in
       </Link>
     </Card>
   );
 }
 
-function Upgrade({
-  role,
-  onDone,
+function NotAuthorized({
+  accountType,
 }: {
-  role: Exclude<Role, "user">;
-  onDone: () => Promise<void>;
+  accountType: Exclude<AccountType, "user">;
 }) {
-  const [code, setCode] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-
-  const submit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      if (role === "administrator") await registerAdmin(code);
-      else await registerBusinessManager();
-      await onDone();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't upgrade access.");
-      setLoading(false);
-    }
-  };
-
-  if (role === "business_manager") {
-    return (
-      <Card
-        title="Become a business manager"
-        body="List and manage businesses on wapiKE. This upgrades your account — you can start listing right away."
-      >
-        {error && <ErrorLine text={error} />}
-        <Button size="lg" className="w-full" disabled={loading} onClick={submit}>
-          {loading ? "Setting up…" : "Continue as a business manager"}
-        </Button>
-      </Card>
-    );
-  }
-
+  const isAdmin = accountType === "admin";
   return (
     <Card
-      title="Administrator access"
-      body="Enter the administrator invite code to unlock the moderation dashboard."
+      title="Access restricted"
+      body={
+        isAdmin
+          ? "This is the administrator portal. Your account doesn't have admin access."
+          : "This is the business portal, for verified WapiKE business accounts. To list a business, submit an application first."
+      }
     >
-      <form onSubmit={submit} className="flex w-full flex-col gap-3">
-        <Input
-          type="password"
-          placeholder="Admin invite code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          required
-        />
-        {error && <ErrorLine text={error} />}
-        <Button type="submit" size="lg" className="w-full" disabled={loading}>
-          {loading ? "Verifying…" : "Unlock admin access"}
-        </Button>
-      </form>
+      <div className="flex flex-col gap-2">
+        <Link
+          href="/"
+          className={cn(buttonVariants({ size: "lg" }), "w-full")}
+        >
+          Back to WapiKE
+        </Link>
+        {!isAdmin && (
+          <Link
+            href="/business"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "w-full",
+            )}
+          >
+            WapiKE for Business
+          </Link>
+        )}
+      </div>
     </Card>
   );
 }
@@ -141,16 +127,5 @@ function Card({
       <p className="font-body-md text-body-md text-on-surface-variant">{body}</p>
       {children}
     </div>
-  );
-}
-
-function ErrorLine({ text }: { text: string }) {
-  return (
-    <p
-      role="alert"
-      className="rounded-lg bg-error-container px-4 py-2.5 font-body-md text-body-md text-on-error-container"
-    >
-      {text}
-    </p>
   );
 }

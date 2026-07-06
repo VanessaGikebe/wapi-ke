@@ -4,7 +4,6 @@ import { apiFetch } from "@/lib/api/client";
 
 export type ListingStatus = "pending" | "approved" | "flagged" | "removed";
 export type ReportStatus = "open" | "reviewed" | "dismissed";
-export type ClaimStatus = "pending" | "approved" | "rejected";
 
 export interface AdminListing {
   id: string;
@@ -26,18 +25,6 @@ export interface Report {
   reporter_email: string | null;
   status: ReportStatus;
   created_at: string;
-}
-
-export interface Claim {
-  id: string;
-  experience_id: string;
-  experience_title: string | null;
-  manager_id: string;
-  manager_email: string | null;
-  message: string | null;
-  status: ClaimStatus;
-  created_at: string;
-  reviewed_at: string | null;
 }
 
 export interface AuditEntry {
@@ -81,19 +68,6 @@ export function fetchReports(status?: ReportStatus): Promise<Report[]> {
 
 export function updateReport(id: string, status: ReportStatus): Promise<Report> {
   return apiFetch<Report>(`/admin/reports/${id}`, {
-    method: "PATCH",
-    body: { status },
-  });
-}
-
-export function fetchClaims(status?: ClaimStatus): Promise<Claim[]> {
-  return apiFetch<Claim[]>("/admin/claims", {
-    query: status ? `status=${status}` : "",
-  });
-}
-
-export function reviewClaim(id: string, status: ClaimStatus): Promise<Claim> {
-  return apiFetch<Claim>(`/admin/claims/${id}`, {
     method: "PATCH",
     body: { status },
   });
