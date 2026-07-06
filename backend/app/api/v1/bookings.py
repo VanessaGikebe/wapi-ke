@@ -9,7 +9,14 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_current_user
 from app.db import get_db
-from app.models import Booking, BookingStatus, Experience, User
+from app.models import (
+    Booking,
+    BookingStatus,
+    Experience,
+    InteractionType,
+    User,
+    UserInteraction,
+)
 from app.schemas.booking import BookingCreateRequest, BookingOut
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
@@ -39,6 +46,14 @@ def create_booking(
         requested_date=payload.requested_date,
     )
     db.add(booking)
+    db.add(
+        UserInteraction(
+            user_id=current_user.id,
+            interaction_type=InteractionType.booking,
+            experience_id=experience.id,
+            weight=12,
+        )
+    )
     db.commit()
     db.refresh(booking)
 

@@ -223,6 +223,11 @@ def logout(response: Response) -> dict[str, str]:
 
 @router.get("/me", response_model=UserResponse)
 def me(current_user: User = Depends(get_current_user)) -> User:
-    """Example protected route — returns the authenticated user."""
+    """Return the authenticated user (including their account type).
+
+    Role/account-type is assigned only through the correct onboarding flows
+    (business approval, admin invitation) — there is deliberately NO
+    self-service promotion endpoint here.
+    """
 
     return current_user

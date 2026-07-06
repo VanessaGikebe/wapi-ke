@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import enum
 import uuid
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import Float, ForeignKey, Integer, String, Text, Uuid
+from sqlalchemy import Enum, Float, ForeignKey, Integer, String, Text, Uuid
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -13,6 +14,16 @@ from app.db import Base
 
 if TYPE_CHECKING:
     from app.models.category import Category
+    from app.models.user import User
+
+
+class ListingStatus(str, enum.Enum):
+    """Moderation state of a listing. Only `approved` shows publicly."""
+
+    pending = "pending"
+    approved = "approved"
+    flagged = "flagged"
+    removed = "removed"
 
 
 class Experience(Base):
@@ -38,5 +49,21 @@ class Experience(Base):
     attributes: Mapped[dict[str, Any]] = mapped_column(
         JSONB, nullable=False, default=dict
     )
+    # Moderation + ownership.
+    status: Mapped[ListingStatus] = mapped_column(
+        Enum(ListingStatus, name="listing_status"),
+        nullable=False,
+        default=ListingStatus.approved,
+        server_default=ListingStatus.approved.value,
+    )
+    owner_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    # The live Business this listing belongs to (assigned on approval / claim).
+    # Nullable during the transition and for legacy/seed listings.
+    business_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("businesses.id", ondelete="SET NULL"), nullable=True
+    )
 
     category: Mapped[Category] = relationship(back_populates="experiences")
+    owner: Mapped[User | None] = relationship()

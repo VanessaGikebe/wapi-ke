@@ -169,8 +169,8 @@ function SettingsPanel({ onSignOut }: { onSignOut: () => void }) {
   ];
 
   return (
-    <div className="flex max-w-xl flex-col gap-6">
-      <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
+    <div className="flex max-w-2xl flex-col gap-6">
+      <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-6 md:p-8">
         <h2 className="mb-4 font-headline-sm text-headline-sm text-primary">
           Notifications
         </h2>

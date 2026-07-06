@@ -1,9 +1,14 @@
 import { create } from "zustand";
 import type { Session, User } from "@supabase/supabase-js";
 
-import { setAccessToken } from "@/lib/api/client";
+import { apiFetch, setAccessToken } from "@/lib/api/client";
 import { createClient } from "@/lib/supabase/client";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
+
+/** The three separate account types (assigned server-side only). */
+export type AccountType = "user" | "business" | "admin";
+/** Admin tier, present only for admin accounts. */
+export type AdminRole = "moderator" | "administrator" | "super_admin";
 
 /**
  * Global auth state (Zustand), backed by **Supabase Auth**.
@@ -43,6 +48,8 @@ export interface AuthState {
   isAuthenticated: boolean;
   user: AuthUser | null;
   token: string | null;
+  accountType: AccountType | null;
+  adminRole: AdminRole | null;
   status: AuthStatus;
   login: (email: string, password: string) => Promise<void>;
   signup: (
@@ -53,6 +60,7 @@ export interface AuthState {
   loginWithGoogle: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
+  refreshAccount: () => Promise<void>;
   logout: () => Promise<void>;
   initialize: () => Promise<void>;
 }
@@ -95,13 +103,27 @@ function applySession(
   setAccessToken(session?.access_token ?? null);
   if (!session) {
     useFavoritesStore.getState().reset();
+    set({
+      isAuthenticated: false,
+      user: null,
+      token: null,
+      accountType: null,
+      adminRole: null,
+      status: "unauthenticated",
+    });
+    return;
   }
   set({
-    isAuthenticated: Boolean(session),
-    user: toUser(session?.user ?? null),
-    token: session?.access_token ?? null,
-    status: session ? "authenticated" : "unauthenticated",
+    isAuthenticated: true,
+    user: toUser(session.user),
+    token: session.access_token,
+    status: "authenticated",
   });
+  // Fetch the account type (user / business / admin) + admin tier from the
+  // bridged API. Fire-and-forget — the UI works without it, just as a plain user.
+  apiFetch<{ account_type: AccountType; admin_role: AdminRole | null }>("/auth/me")
+    .then((me) => set({ accountType: me.account_type, adminRole: me.admin_role }))
+    .catch(() => set({ accountType: "user", adminRole: null }));
 }
 
 let listenerAttached = false;
@@ -110,6 +132,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   user: null,
   token: null,
+  accountType: null,
+  adminRole: null,
   status: "idle",
 
   login: async (email, password) => {
@@ -152,6 +176,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (error) throw new Error(friendly(error.message));
   },
 
+  refreshAccount: async () => {
+    try {
+      const me = await apiFetch<{
+        account_type: AccountType;
+        admin_role: AdminRole | null;
+      }>("/auth/me");
+      set({ accountType: me.account_type, adminRole: me.admin_role });
+    } catch {
+      // keep the current account type
+    }
+  },
+
   logout: async () => {
     await sb().auth.signOut();
     setAccessToken(null);
@@ -160,6 +196,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       isAuthenticated: false,
       user: null,
       token: null,
+      accountType: null,
+      adminRole: null,
       status: "unauthenticated",
     });
   },

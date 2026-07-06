@@ -25,7 +25,13 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.sql.elements import ColumnElement
 
 from app.db import get_db
-from app.models import Category, Experience, FilterDefinition, FilterType
+from app.models import (
+    Category,
+    Experience,
+    FilterDefinition,
+    FilterType,
+    ListingStatus,
+)
 from app.schemas.category import CategoryOut, FilterDefinitionOut
 from app.schemas.experience import ExperienceOut, PaginatedExperiences
 
@@ -129,7 +135,10 @@ def list_experiences(
     stmt = (
         select(Experience)
         .options(joinedload(Experience.category))
-        .where(Experience.category_id == category.id)
+        .where(
+            Experience.category_id == category.id,
+            Experience.status == ListingStatus.approved,
+        )
     )
 
     # Apply each recognised filter param once (dedupe repeated keys).

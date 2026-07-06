@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { BookingModal } from "@/components/categories/booking-modal";
 import { ExperienceCard } from "@/components/categories/experience-card";
 import { BackLink } from "@/components/site/back-link";
+import { ListingActions } from "@/components/experiences/listing-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,9 +20,10 @@ import {
   priceLabel,
   priceText,
 } from "@/lib/experience-presentation";
-import { experienceGallery } from "@/lib/images";
+import { galleryForExperience } from "@/lib/images";
 import { useExperience, useExperiences } from "@/lib/queries/categories";
 import { useToggleFavorite } from "@/lib/queries/favorites";
+import { useRecordInteraction } from "@/lib/queries/personalization";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
 import { cn } from "@/lib/utils";
@@ -38,6 +40,7 @@ export function ExperienceDetail({ id }: { id: string }) {
   );
   const setPendingFavorite = useFavoritesStore((s) => s.setPendingFavorite);
   const toggleFavorite = useToggleFavorite();
+  const recordInteraction = useRecordInteraction();
   const [bookingOpen, setBookingOpen] = React.useState(false);
   const [activeImage, setActiveImage] = React.useState(0);
 
@@ -50,13 +53,34 @@ export function ExperienceDetail({ id }: { id: string }) {
     .filter((e) => e.id !== id)
     .slice(0, 3);
 
+  React.useEffect(() => {
+    if (!isAuthenticated || !experience) return;
+    const startedAt = Date.now();
+    recordInteraction.mutate({
+      interactionType: "view",
+      experienceId: experience.id,
+      categorySlug: experience.categorySlug,
+      weight: 3,
+    });
+    return () => {
+      const seconds = Math.round((Date.now() - startedAt) / 1000);
+      if (seconds < 8) return;
+      recordInteraction.mutate({
+        interactionType: "dwell",
+        experienceId: experience.id,
+        categorySlug: experience.categorySlug,
+        weight: Math.min(20, Math.max(4, Math.round(seconds / 10))),
+        context: { seconds },
+      });
+    };
+    // recordInteraction is intentionally omitted so each detail view records once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [experience?.id, isAuthenticated]);
+
   if (experienceQuery.isLoading) return <DetailSkeleton />;
   if (experienceQuery.isError || !experience) return <NotFound />;
 
-  const gallery =
-    experience.images.length > 0
-      ? experience.images
-      : experienceGallery(experience.categorySlug, experience.id);
+  const gallery = galleryForExperience(experience);
   const tags = experienceTags(experience);
   const amenities = experienceAmenities(experience);
   const reviews = experienceReviews(experience);
@@ -313,6 +337,11 @@ export function ExperienceDetail({ id }: { id: string }) {
                 </a>
               )}
             </div>
+
+            <ListingActions
+              experienceId={experience.id}
+              redirectPath={pathname}
+            />
           </div>
         </aside>
       </div>

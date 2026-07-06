@@ -7,13 +7,21 @@ service boots. Routers (auth, categories, experiences, assistant) come later.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.admin import router as admin_router
+from app.api.v1.admin_applications import router as admin_applications_router
+from app.api.v1.admin_businesses import router as admin_businesses_router
+from app.api.v1.admin_claims import router as admin_claims_router
+from app.api.v1.applications import router as applications_router
+from app.api.v1.claims import router as claims_router
 from app.api.v1.assistant import router as assistant_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.bookings import router as bookings_router
+from app.api.v1.business import router as business_router
 from app.api.v1.categories import router as categories_router
 from app.api.v1.events import router as events_router
 from app.api.v1.experiences import router as experiences_router
 from app.api.v1.favorites import router as favorites_router
+from app.api.v1.personalization import router as personalization_router
 from app.config import get_settings
 
 settings = get_settings()
@@ -35,8 +43,16 @@ app.include_router(categories_router, prefix="/api/v1")
 app.include_router(experiences_router, prefix="/api/v1")
 app.include_router(events_router, prefix="/api/v1")
 app.include_router(favorites_router, prefix="/api/v1")
+app.include_router(personalization_router, prefix="/api/v1")
 app.include_router(bookings_router, prefix="/api/v1")
 app.include_router(assistant_router, prefix="/api/v1")
+app.include_router(admin_router, prefix="/api/v1")
+app.include_router(admin_applications_router, prefix="/api/v1")
+app.include_router(admin_businesses_router, prefix="/api/v1")
+app.include_router(admin_claims_router, prefix="/api/v1")
+app.include_router(business_router, prefix="/api/v1")
+app.include_router(applications_router, prefix="/api/v1")
+app.include_router(claims_router, prefix="/api/v1")
 
 
 @app.get("/health", tags=["meta"])

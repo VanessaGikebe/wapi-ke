@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_current_user
 from app.db import get_db
-from app.models import Experience, Favorite, User
+from app.models import Experience, Favorite, InteractionType, User, UserInteraction
 from app.schemas.booking import FavoriteOut
 
 router = APIRouter(prefix="/favorites", tags=["favorites"])
@@ -56,6 +56,14 @@ def add_favorite(
     )
     if existing is None:
         db.add(Favorite(user_id=current_user.id, experience_id=experience_id))
+        db.add(
+            UserInteraction(
+                user_id=current_user.id,
+                interaction_type=InteractionType.save,
+                experience_id=experience_id,
+                weight=8,
+            )
+        )
         db.commit()
 
     return {"experience_id": str(experience_id), "favorited": True}

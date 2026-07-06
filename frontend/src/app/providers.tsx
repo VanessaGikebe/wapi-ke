@@ -3,6 +3,8 @@
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { DiscoverVibeOnboarding } from "@/components/personalization/discover-vibe-onboarding";
+import { PortalGuard } from "@/components/portal/portal-guard";
 import { addFavorite, fetchFavorites } from "@/lib/api/favorites";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
@@ -72,6 +74,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthInitializer />
+      <PortalGuard />
+      <DiscoverVibeOnboarding />
       {children}
     </QueryClientProvider>
   );

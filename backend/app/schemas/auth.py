@@ -7,6 +7,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
+from app.models import AccountType, AdminRole
+
 
 class SignupRequest(BaseModel):
     email: EmailStr
@@ -31,6 +33,11 @@ class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
     name: str
+    # The account type is assigned server-side only (never self-service).
+    account_type: AccountType
+    # Present only for admin accounts: their tier (moderator/administrator/
+    # super_admin). Read from the ``admin_role`` property on the ORM model.
+    admin_role: AdminRole | None = None
     created_at: datetime
 
 

@@ -14,7 +14,7 @@ import {
   CardMeta,
   CardTitle,
 } from "@/components/ui/card";
-import { experienceCover } from "@/lib/images";
+import { coverImage } from "@/lib/images";
 import { experienceTags, priceLabel } from "@/lib/experience-presentation";
 import { useToggleFavorite } from "@/lib/queries/favorites";
 import { useAuthStore } from "@/lib/stores/auth-store";
@@ -38,9 +38,7 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
   const toggleFavorite = useToggleFavorite();
 
   const href = `/experiences/${experience.id}`;
-  const cover =
-    experience.images[0] ??
-    experienceCover(experience.categorySlug, experience.id);
+  const cover = coverImage(experience);
   const tags = experienceTags(experience).slice(0, 3);
 
   const handleFavorite = () => {
