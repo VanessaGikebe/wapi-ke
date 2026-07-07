@@ -124,18 +124,42 @@ function poolFor(experience: Experience): string[] {
   return POOLS[experience.categorySlug] ?? FALLBACK_IDS;
 }
 
-/** Deterministic, professional cover image for a listing. */
+/** The listing's real (scraped) photos from the DB, filtered to usable URLs. */
+function realImages(experience: Experience): string[] {
+  const imgs = experience.images;
+  if (!Array.isArray(imgs)) return [];
+  return imgs.filter(
+    (url) => typeof url === "string" && /^https?:\/\//.test(url.trim()),
+  );
+}
+
+/**
+ * Cover image for a listing. Prefers the experience's own scraped photo (each
+ * business has a distinct one — see backend import), so cards don't all share a
+ * handful of stock images. Falls back to the curated Unsplash pool when a
+ * listing has no real photo (e.g. the synthetic dev seed).
+ */
 export function coverImage(experience: Experience): string {
+  const real = realImages(experience);
+  if (real.length > 0) return real[0];
   const ids = poolFor(experience);
   return photo(ids[hash(experience.id) % ids.length], 800, 65);
 }
 
-/** Stable multi-image gallery for the detail page (rotated pool). */
+/**
+ * Multi-image gallery for the detail page. Leads with the listing's real
+ * photo(s), then pads with the curated pool so the gallery still has several
+ * thumbnails. Falls back entirely to the pool when there are no real photos.
+ */
 export function galleryForExperience(experience: Experience): string[] {
   const ids = poolFor(experience);
   const start = hash(experience.id) % ids.length;
   const rotated = [...ids.slice(start), ...ids.slice(0, start)];
-  return rotated.map((id) => photo(id, 1200, 68));
+  const pool = rotated.map((id) => photo(id, 1200, 68));
+
+  const real = realImages(experience);
+  if (real.length === 0) return pool;
+  return [...real, ...pool].slice(0, Math.max(real.length, 5));
 }
 
 /** Category tile image (used by the category cards/carousel). */

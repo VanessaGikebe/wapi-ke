@@ -35,6 +35,7 @@ from sqlalchemy import delete
 
 from app.db import SessionLocal
 from app.models import Category, Experience, FilterDefinition, FilterType
+from app.seed_images import CATEGORY_HERO
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
@@ -475,7 +476,9 @@ def run() -> None:
                 slug=slug,
                 name=name,
                 icon=icon,
-                hero_image=pick_hero(experiences),
+                # Curated, distinct tile image; fall back to the best scraped
+                # photo only if a slug has no curated entry.
+                hero_image=CATEGORY_HERO.get(slug) or pick_hero(experiences),
             )
             session.add(category)
             session.flush()

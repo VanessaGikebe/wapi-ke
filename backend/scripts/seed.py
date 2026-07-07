@@ -24,6 +24,7 @@ from app.models import (
     FilterDefinition,
     FilterType,
 )
+from app.seed_images import CATEGORY_HERO
 
 # --- Category + filter schemas (CLAUDE.md §6) -------------------------------
 
@@ -449,7 +450,7 @@ def seed() -> None:
                 slug=cat["slug"],
                 name=cat["name"],
                 icon=cat["icon"],
-                hero_image=None,
+                hero_image=CATEGORY_HERO.get(cat["slug"]),
             )
             session.add(category)
             session.flush()  # assign category.id
