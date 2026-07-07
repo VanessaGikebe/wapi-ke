@@ -18,6 +18,10 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    # Created explicitly (checkfirst) and referenced with create_type=False so
+    # op.create_table below does NOT also emit a CREATE TYPE — that second,
+    # un-checkfirsted creation is what raised DuplicateObject. Matches the enum
+    # handling in the sibling migrations (c9d1e2f3a4b5, d4e5f6a7b8c9).
     interaction_type = postgresql.ENUM(
         "search",
         "view",
@@ -28,6 +32,7 @@ def upgrade() -> None:
         "filter",
         "not_interested",
         name="interaction_type",
+        create_type=False,
     )
     interaction_type.create(op.get_bind(), checkfirst=True)
 
