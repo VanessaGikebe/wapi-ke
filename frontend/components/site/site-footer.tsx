@@ -44,9 +44,9 @@ export function SiteFooter() {
         <FooterColumn
           heading="Social"
           links={[
-            { label: "Instagram", href: "#" },
-            { label: "Twitter", href: "#" },
-            { label: "TikTok", href: "#" },
+            { label: "Instagram", href: "https://www.instagram.com/wapi_ke/" },
+            { label: "Twitter", href: "https://x.com/wap1_KE" },
+            { label: "TikTok", href: "https://www.tiktok.com/@wapike1" },
           ]}
         />
         <FooterColumn
