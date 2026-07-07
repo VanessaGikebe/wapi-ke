@@ -133,7 +133,7 @@ export function PersonalizedSections({
  * - disabled entirely under prefers-reduced-motion (manual scrolling only)
  * - pauses while off-screen (IntersectionObserver)
  */
-function AutoScrollRow({ children }: { children: React.ReactNode }) {
+export function AutoScrollRow({ children }: { children: React.ReactNode }) {
   const ref = React.useRef<HTMLUListElement>(null);
 
   React.useEffect(() => {
