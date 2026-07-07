@@ -74,9 +74,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthInitializer />
-      <PortalGuard />
       <DiscoverVibeOnboarding />
-      {children}
+      <PortalGuard>{children}</PortalGuard>
     </QueryClientProvider>
   );
 }

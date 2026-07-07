@@ -19,7 +19,8 @@ from __future__ import annotations
 import math
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
-from sqlalchemy import Float, and_, cast, func, or_, select
+from pydantic import BaseModel
+from sqlalchemy import Float, and_, cast, desc, func, or_, select
 from sqlalchemy.dialects.postgresql import array
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.sql.elements import ColumnElement
@@ -30,15 +31,41 @@ from app.models import (
     Experience,
     FilterDefinition,
     FilterType,
+    InteractionType,
     ListingStatus,
+    User,
 )
 from app.schemas.category import CategoryOut, FilterDefinitionOut
 from app.schemas.experience import ExperienceOut, PaginatedExperiences
+from app.services.recommendations import (
+    log_interaction,
+    optional_user,
+    update_preference_scores,
+)
 
 router = APIRouter(prefix="/categories", tags=["categories"])
 
-RESERVED_PARAMS = {"page", "limit"}
+# ``q`` is the free-text search param (see list_experiences / search_catalog);
+# reserve it so it's never mistaken for a filter key.
+RESERVED_PARAMS = {"page", "limit", "q"}
 TRUTHY = {"true", "1", "yes", "on"}
+SEARCH_SAMPLE_LIMIT = 6
+SEARCH_CATEGORY_LIMIT = 8
+
+
+class CategorySearchOut(BaseModel):
+    """Quick-jump results for the categories grid search: matching categories
+    plus a small sample of matching experiences across all categories."""
+
+    categories: list[CategoryOut]
+    experiences: list[ExperienceOut]
+
+
+def _escape_like(value: str) -> str:
+    """Escape ILIKE wildcards so a user's text is matched literally."""
+    return (
+        value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    )
 
 
 def _get_category_or_404(db: Session, slug: str) -> Category:
@@ -94,6 +121,49 @@ def list_categories(db: Session = Depends(get_db)) -> list[Category]:
     return list(db.scalars(select(Category).order_by(Category.name)).all())
 
 
+# NOTE: must be declared before ``/{slug}`` or "search" would match as a slug.
+@router.get("/search", response_model=CategorySearchOut)
+def search_catalog(
+    q: str = Query(..., min_length=1, max_length=100),
+    db: Session = Depends(get_db),
+) -> CategorySearchOut:
+    """Lightweight cross-category quick search — matching categories and a small
+    sample of matching experiences. Not a full results page (use a category's
+    ``/experiences?q=`` for that)."""
+    term = q.strip()
+    if not term:
+        return CategorySearchOut(categories=[], experiences=[])
+
+    like = f"%{_escape_like(term)}%"
+
+    categories = db.scalars(
+        select(Category)
+        .where(Category.name.ilike(like))
+        .order_by(Category.name)
+        .limit(SEARCH_CATEGORY_LIMIT)
+    ).all()
+
+    rating = cast(Experience.attributes["rating"].astext, Float)
+    experiences = db.scalars(
+        select(Experience)
+        .options(joinedload(Experience.category))
+        .where(
+            Experience.status == ListingStatus.approved,
+            or_(
+                Experience.title.ilike(like),
+                Experience.description.ilike(like),
+            ),
+        )
+        .order_by(desc(rating), Experience.title)
+        .limit(SEARCH_SAMPLE_LIMIT)
+    ).all()
+
+    return CategorySearchOut(
+        categories=[CategoryOut.model_validate(c) for c in categories],
+        experiences=[ExperienceOut.from_experience(e) for e in experiences],
+    )
+
+
 @router.get("/{slug}", response_model=CategoryOut)
 def get_category(slug: str, db: Session = Depends(get_db)) -> Category:
     return _get_category_or_404(db, slug)
@@ -119,7 +189,9 @@ def list_experiences(
     request: Request,
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
+    q: str | None = Query(default=None, max_length=100),
     db: Session = Depends(get_db),
+    user: User | None = Depends(optional_user),
 ) -> PaginatedExperiences:
     category = _get_category_or_404(db, slug)
 
@@ -141,15 +213,29 @@ def list_experiences(
         )
     )
 
-    # Apply each recognised filter param once (dedupe repeated keys).
+    # Free-text search narrows the candidate set; existing filters + ordering
+    # then apply on top exactly as before.
+    if q and q.strip():
+        like = f"%{_escape_like(q.strip())}%"
+        stmt = stmt.where(
+            or_(
+                Experience.title.ilike(like),
+                Experience.description.ilike(like),
+            )
+        )
+
+    # Apply each recognised filter param once (dedupe repeated keys). The
+    # applied filters are the *implied* vibe/budget of a search — we log those,
+    # never the raw query text.
+    applied_filters: dict[str, list[str]] = {}
     for key in dict.fromkeys(request.query_params.keys()):
         if key in RESERVED_PARAMS or key not in filters_by_key:
             continue
-        condition = _build_condition(
-            filters_by_key[key], request.query_params.getlist(key)
-        )
+        values = request.query_params.getlist(key)
+        condition = _build_condition(filters_by_key[key], values)
         if condition is not None:
             stmt = stmt.where(condition)
+            applied_filters[key] = values
 
     total = db.scalar(select(func.count()).select_from(stmt.subquery())) or 0
     items = list(
@@ -161,10 +247,26 @@ def list_experiences(
     )
     pages = math.ceil(total / limit) if total else 0
 
-    return PaginatedExperiences(
+    response = PaginatedExperiences(
         items=[ExperienceOut.from_experience(item) for item in items],
         total=total,
         page=page,
         limit=limit,
         pages=pages,
     )
+
+    # A filtered browse is an intentful search; log it (category + implied
+    # filters) as a behaviour signal. Plain, unfiltered browsing isn't logged
+    # here — experience detail views already capture category interest.
+    if user is not None and applied_filters and page == 1:
+        log_interaction(
+            db,
+            user_id=user.id,
+            interaction_type=InteractionType.search,
+            category_slug=category.slug,
+            context={"filters": applied_filters},
+        )
+        update_preference_scores(db, user.id)
+        db.commit()
+
+    return response

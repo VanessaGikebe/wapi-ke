@@ -12,9 +12,14 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_current_user
 from app.db import get_db
-from app.models import Experience, ListingReport, ListingStatus, User
+from app.models import Experience, InteractionType, ListingReport, ListingStatus, User
 from app.schemas.experience import ExperienceOut
 from app.schemas.moderation import ReportCreate
+from app.services.recommendations import (
+    log_interaction,
+    optional_user,
+    update_preference_scores,
+)
 
 router = APIRouter(prefix="/experiences", tags=["experiences"])
 
@@ -41,6 +46,7 @@ def featured_experiences(
 def get_experience(
     experience_id: UUID,
     db: Session = Depends(get_db),
+    user: User | None = Depends(optional_user),
 ) -> ExperienceOut:
     experience = db.scalar(
         select(Experience)
@@ -55,7 +61,22 @@ def get_experience(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Experience not found",
         )
-    return ExperienceOut.from_experience(experience)
+    result = ExperienceOut.from_experience(experience)
+
+    # Log the detail view as a behaviour signal (repeated views of the same
+    # experience accumulate and raise its category). Authenticated users only.
+    if user is not None:
+        log_interaction(
+            db,
+            user_id=user.id,
+            interaction_type=InteractionType.view,
+            experience_id=experience.id,
+            category_slug=experience.category.slug,
+        )
+        update_preference_scores(db, user.id)
+        db.commit()
+
+    return result
 
 
 @router.post(

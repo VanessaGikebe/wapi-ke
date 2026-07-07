@@ -18,6 +18,7 @@ from app.models import (
     UserInteraction,
 )
 from app.schemas.booking import BookingCreateRequest, BookingOut
+from app.services.recommendations import update_preference_scores
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 
@@ -54,6 +55,7 @@ def create_booking(
             weight=12,
         )
     )
+    update_preference_scores(db, current_user.id)
     db.commit()
     db.refresh(booking)
 

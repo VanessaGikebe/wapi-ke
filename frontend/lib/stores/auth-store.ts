@@ -96,6 +96,21 @@ function friendly(message: string): string {
   return message || "Something went wrong. Please try again.";
 }
 
+interface AccountInfo {
+  account_type: AccountType;
+  admin_role: AdminRole | null;
+}
+
+/** Resolve the account type from the bridged API, retrying once on failure. */
+async function fetchAccount(): Promise<AccountInfo> {
+  try {
+    return await apiFetch<AccountInfo>("/auth/me");
+  } catch {
+    // A single transient failure shouldn't cost a portal account its portal.
+    return await apiFetch<AccountInfo>("/auth/me");
+  }
+}
+
 function applySession(
   set: (partial: Partial<AuthState>) => void,
   session: Session | null,
@@ -120,8 +135,11 @@ function applySession(
     status: "authenticated",
   });
   // Fetch the account type (user / business / admin) + admin tier from the
-  // bridged API. Fire-and-forget — the UI works without it, just as a plain user.
-  apiFetch<{ account_type: AccountType; admin_role: AdminRole | null }>("/auth/me")
+  // bridged API. This drives portal confinement (see PortalGuard), so a single
+  // transient failure must NOT silently downgrade an admin/business account to
+  // a plain user (which would drop them onto the public site) — retry once
+  // before falling back.
+  fetchAccount()
     .then((me) => set({ accountType: me.account_type, adminRole: me.admin_role }))
     .catch(() => set({ accountType: "user", adminRole: null }));
 }

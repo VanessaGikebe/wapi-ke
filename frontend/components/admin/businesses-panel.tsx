@@ -45,6 +45,11 @@ export function BusinessesPanel() {
     queryFn: () => fetchBusinesses(status, debounced || undefined),
   });
 
+  const rows = query.data ?? [];
+  // The endpoint caps a page at 100 rows (no offset pagination), so make a full
+  // page visibly a partial view rather than silently truncating the list.
+  const truncated = rows.length >= 100;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -64,8 +69,14 @@ export function BusinessesPanel() {
 
       {query.isLoading ? (
         <Loading />
-      ) : (query.data ?? []).length === 0 ? (
-        <Empty>No businesses.</Empty>
+      ) : query.isError ? (
+        <ErrorState onRetry={() => query.refetch()} />
+      ) : rows.length === 0 ? (
+        <Empty>
+          {status || debounced
+            ? "No businesses match this filter."
+            : "No businesses on the platform yet."}
+        </Empty>
       ) : (
         <>
           {/* Desktop table */}
@@ -81,7 +92,7 @@ export function BusinessesPanel() {
                 </tr>
               </thead>
               <tbody>
-                {(query.data ?? []).map((b) => (
+                {rows.map((b) => (
                   <Row key={b.id} b={b} onView={() => setOpen(b.id)} />
                 ))}
               </tbody>
@@ -90,7 +101,7 @@ export function BusinessesPanel() {
 
           {/* Mobile cards */}
           <ul className="flex flex-col gap-3 md:hidden">
-            {(query.data ?? []).map((b) => (
+            {rows.map((b) => (
               <li key={b.id} className="rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
                 <div className="flex items-center justify-between gap-2">
                   <p className="font-headline-sm text-headline-sm text-primary">{b.name}</p>
@@ -105,6 +116,12 @@ export function BusinessesPanel() {
               </li>
             ))}
           </ul>
+
+          <p className="font-caption text-caption text-on-surface-variant">
+            {truncated
+              ? "Showing the first 100 businesses — refine with search or a status filter to narrow the list."
+              : `Showing ${rows.length} ${rows.length === 1 ? "business" : "businesses"}.`}
+          </p>
         </>
       )}
 
@@ -149,8 +166,15 @@ function BusinessDrawer({ id, onClose }: { id: string; onClose: () => void }) {
     queryKey: ["admin", "business-history", id],
     queryFn: () => fetchOwnershipHistory(id),
   });
-  const list = qc.getQueryData<AdminBusiness[]>(["admin", "businesses"]);
-  const current = list?.find((b) => b.id === id);
+  // The list is cached under keys that also carry the active filter + search
+  // (["admin","businesses",status,q]), so match by prefix across all of them
+  // rather than an exact key that would never hit.
+  const lists = qc.getQueriesData<AdminBusiness[]>({
+    queryKey: ["admin", "businesses"],
+  });
+  const current = lists
+    .flatMap(([, data]) => data ?? [])
+    .find((b) => b.id === id);
 
   const mutate = useMutation({
     mutationFn: (action: "suspend" | "archive" | "reopen") =>
@@ -281,6 +305,19 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
 
 function Loading() {
   return <div className="h-40 animate-pulse rounded-xl bg-surface-container" />;
+}
+
+function ErrorState({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-outline-variant px-6 py-16 text-center">
+      <p className="font-body-md text-body-md text-on-surface-variant">
+        Couldn&apos;t load businesses. Check your connection and try again.
+      </p>
+      <Button variant="outline" size="sm" onClick={onRetry}>
+        Retry
+      </Button>
+    </div>
+  );
 }
 
 function Empty({ children }: { children: React.ReactNode }) {

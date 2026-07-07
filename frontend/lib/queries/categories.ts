@@ -1,6 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import {
+  fetchCatalogSearch,
   fetchCategories,
   fetchCategory,
   fetchExperience,
@@ -34,6 +35,17 @@ export function useExperiences(slug: string, query: string, enabled = true) {
     queryFn: () => fetchExperiences(slug, query),
     placeholderData: keepPreviousData,
     enabled,
+  });
+}
+
+/** Cross-category quick search (categories grid page). Debounce `q` upstream. */
+export function useCatalogSearch(q: string) {
+  const term = q.trim();
+  return useQuery({
+    queryKey: ["catalog-search", term],
+    queryFn: () => fetchCatalogSearch(term),
+    enabled: term.length >= 2,
+    placeholderData: keepPreviousData,
   });
 }
 

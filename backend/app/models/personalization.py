@@ -27,6 +27,10 @@ class InteractionType(str, enum.Enum):
     dwell = "dwell"
     filter = "filter"
     not_interested = "not_interested"
+    # Engagement signals that only originate client-side (no dedicated backend
+    # endpoint) — logged through POST /personalization/interactions.
+    directions = "directions"
+    share = "share"
 
 
 class UserPreferenceProfile(Base):
@@ -41,6 +45,22 @@ class UserPreferenceProfile(Base):
     vibes: Mapped[list[str]] = mapped_column(JSONB, nullable=False, default=list)
     preferences: Mapped[dict[str, Any]] = mapped_column(
         JSONB, nullable=False, default=dict
+    )
+    # Behaviour-derived preference scores, recomputed from interaction_events
+    # (see app.services.recommendations.update_preference_scores). Shape:
+    # {"categories": {slug: float}, "vibes": {name: float}, "budgets": {tier: float}}.
+    # These evolve from what the user actually does and gradually outweigh the
+    # onboarding answers above as behaviour accumulates.
+    behavior_scores: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, nullable=False, default=dict, server_default="{}"
+    )
+    # How many interaction_events currently fold into behavior_scores. Drives
+    # how far the onboarding answers get down-weighted over time.
+    behavior_events_count: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+    scores_updated_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
     )
     completed_onboarding: Mapped[bool] = mapped_column(
         Boolean, default=False, server_default="false", nullable=False

@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 import { BackLink } from "@/components/site/back-link";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   countActiveFilters,
@@ -113,11 +114,29 @@ function CategoryListingInner({
   );
   const [mobileFiltersOpen, setMobileFiltersOpen] = React.useState(false);
 
+  // Free-text search within this category. Debounced, and composed onto the
+  // filter query so `q` narrows the same filtered result set (the personalized
+  // recommendations query below stays on the filters-only query).
+  const [rawSearch, setRawSearch] = React.useState("");
+  const [search, setSearch] = React.useState("");
+  React.useEffect(() => {
+    const id = setTimeout(() => setSearch(rawSearch), 300);
+    return () => clearTimeout(id);
+  }, [rawSearch]);
+
   const query = React.useMemo(
     () => filterStateToQuery(filters, state),
     [filters, state],
   );
-  const experiencesQuery = useExperiences(slug, query);
+  const experiencesQueryString = React.useMemo(() => {
+    const term = search.trim();
+    if (!term) return query;
+    const params = new URLSearchParams(query);
+    params.set("q", term);
+    return params.toString();
+  }, [query, search]);
+
+  const experiencesQuery = useExperiences(slug, experiencesQueryString);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const recommendationsQuery = useRecommendations(slug, query, isAuthenticated);
   const recordInteraction = useRecordInteraction();
@@ -175,7 +194,8 @@ function CategoryListingInner({
             mobileFiltersOpen ? "block" : "hidden",
           )}
         >
-          <div className="lg:sticky lg:top-24">
+          <div className="flex flex-col gap-4 lg:sticky lg:top-24">
+            <SidebarSearch value={rawSearch} onChange={setRawSearch} />
             <FilterSidebar
               filters={filters}
               state={state}
@@ -226,7 +246,9 @@ function CategoryListingInner({
                 No matches
               </p>
               <p className="max-w-sm font-body-md text-body-md text-on-surface-variant">
-                No experiences match your current filters. Try loosening a few.
+                {search.trim()
+                  ? "No experiences match your search and filters. Try a different term or loosen a few filters."
+                  : "No experiences match your current filters. Try loosening a few."}
               </p>
               {activeCount > 0 && (
                 <Button variant="outline" size="sm" onClick={clearAll}>
@@ -238,6 +260,33 @@ function CategoryListingInner({
         </section>
       </div>
     </>
+  );
+}
+
+function SidebarSearch({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="relative">
+      <span
+        aria-hidden
+        className="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-on-surface-variant"
+      >
+        search
+      </span>
+      <Input
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search this category…"
+        aria-label="Search within this category"
+        className="pl-10"
+      />
+    </div>
   );
 }
 

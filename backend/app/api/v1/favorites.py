@@ -16,6 +16,7 @@ from app.api.deps import get_current_user
 from app.db import get_db
 from app.models import Experience, Favorite, InteractionType, User, UserInteraction
 from app.schemas.booking import FavoriteOut
+from app.services.recommendations import update_preference_scores
 
 router = APIRouter(prefix="/favorites", tags=["favorites"])
 
@@ -64,6 +65,7 @@ def add_favorite(
                 weight=8,
             )
         )
+        update_preference_scores(db, current_user.id)
         db.commit()
 
     return {"experience_id": str(experience_id), "favorited": True}

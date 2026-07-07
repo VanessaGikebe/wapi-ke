@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CategoriesGrid } from "@/components/categories/categories-grid";
+import { CategorySearch } from "@/components/categories/category-search";
 import { BackLink } from "@/components/site/back-link";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
@@ -31,6 +32,9 @@ export default function CategoriesPage() {
             Pick a category to explore curated experiences across Kenya, or let
             the AI assistant point you to the right one.
           </p>
+          <div className="mt-8">
+            <CategorySearch />
+          </div>
         </section>
 
         <section className="mx-auto max-w-container-max px-margin-mobile pb-section-mobile md:px-margin-desktop md:pb-section">

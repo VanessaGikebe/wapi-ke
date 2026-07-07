@@ -38,6 +38,7 @@ from app.schemas.personalization import (
     RecommendationResponse,
     RecommendationSection,
 )
+from app.services.recommendations import update_preference_scores
 
 router = APIRouter(prefix="/personalization", tags=["personalization"])
 
@@ -126,6 +127,10 @@ def record_interaction(
             context=payload.context,
         )
     )
+    # Fold this action into the user's evolving behaviour scores. This endpoint
+    # is the logging path for client-only signals too (directions, share, dwell,
+    # review) that have no dedicated backend route.
+    update_preference_scores(db, current_user.id)
     db.commit()
 
 
@@ -195,6 +200,14 @@ def _clean_strings(values: list[str]) -> list[str]:
     return sorted({value.strip().lower() for value in values if value.strip()})
 
 
+def _onboarding_factor(profile: UserPreferenceProfile) -> float:
+    """Weight applied to the one-time onboarding answers. Starts at 1.0 and
+    decays toward a small floor as behaviour accumulates, so what the user does
+    gradually outweighs what they answered during onboarding."""
+    events = profile.behavior_events_count or 0
+    return max(0.15, 1.0 / (1.0 + events / 30.0))
+
+
 def _recommendation_context(
     db: Session,
     user: User,
@@ -246,10 +259,26 @@ def _taste_profile(
     budgets: Counter[int] = Counter()
 
     if profile is not None:
-        categories.update({value: 6 for value in profile.categories})
-        interests.update({value: 5 for value in profile.interests})
-        vibes.update({value: 4 for value in profile.vibes})
-        budgets.update({value: 4 for value in profile.budget_tiers})
+        # Onboarding answers seed the profile, but their weight shrinks as real
+        # behaviour accumulates so behaviour gradually outweighs them over time.
+        factor = _onboarding_factor(profile)
+        categories.update({value: 6 * factor for value in profile.categories})
+        interests.update({value: 5 * factor for value in profile.interests})
+        vibes.update({value: 4 * factor for value in profile.vibes})
+        budgets.update({value: 4 * factor for value in profile.budget_tiers})
+
+        # Behaviour-derived scores (maintained by update_preference_scores) —
+        # the part of the profile that evolves from what the user actually does.
+        behavior = profile.behavior_scores or {}
+        for slug, value in (behavior.get("categories") or {}).items():
+            categories[slug] += float(value)
+        for name, value in (behavior.get("vibes") or {}).items():
+            vibes[name] += float(value)
+        for tier, value in (behavior.get("budgets") or {}).items():
+            try:
+                budgets[int(tier)] += float(value)
+            except (TypeError, ValueError):
+                continue
 
     saved_and_booked = db.scalars(
         select(Experience)

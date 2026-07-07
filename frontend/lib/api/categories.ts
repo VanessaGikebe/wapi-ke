@@ -127,3 +127,22 @@ export async function fetchExperiences(
     total: data.total,
   };
 }
+
+export interface CatalogSearchResults {
+  categories: CategorySummary[];
+  experiences: Experience[];
+}
+
+/** Cross-category quick search for the categories grid page. */
+export async function fetchCatalogSearch(
+  q: string,
+): Promise<CatalogSearchResults> {
+  const data = await apiFetch<{
+    categories: ApiCategory[];
+    experiences: ApiExperience[];
+  }>("/categories/search", { query: `q=${encodeURIComponent(q)}` });
+  return {
+    categories: data.categories.map(toCategorySummary),
+    experiences: data.experiences.map(toExperience),
+  };
+}
