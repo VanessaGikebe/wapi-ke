@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     # Google Gemini API key (Google AI Studio) for the AI assistant.
     gemini_api_key: str = ""
+    gemini_model: str = "gemini-2.5-flash"
+    gemini_temperature: float = 0.7
 
     # Google Sign-In: the OAuth 2.0 Web client ID. When set, POST /auth/google
     # verifies Google ID tokens whose `aud` matches this value. Leave blank to

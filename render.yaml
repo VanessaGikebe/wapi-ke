@@ -36,6 +36,14 @@ services:
         sync: false
       - key: SUPABASE_JWKS_URL
         sync: false
+      # Service (secret) key — REQUIRED for document uploads (signed Storage
+      # URLs) and account provisioning. Without it, /documents/sign returns 503
+      # "Document uploads are not configured on the server."
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      # Google Gemini (AI assistant).
+      - key: GEMINI_API_KEY
+        sync: false
       - key: CORS_ORIGINS
         sync: false          # e.g. https://your-app.vercel.app,http://localhost:3000
       - key: CORS_ORIGIN_REGEX

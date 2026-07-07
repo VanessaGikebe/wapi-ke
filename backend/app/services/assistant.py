@@ -22,7 +22,7 @@ from app.config import get_settings
 
 settings = get_settings()
 
-MODEL = "gemini-2.5-flash"
+MODEL = settings.gemini_model
 
 # --- Wapike knowledge base (single source of truth) -------------------------
 # Loaded from app/data/wapike_knowledge.json. Used two ways:
@@ -242,7 +242,7 @@ def generate_reply(
                 system_instruction=system_prompt,
                 response_mime_type="application/json",
                 response_schema=_RESPONSE_SCHEMA,
-                temperature=0.7,
+                temperature=settings.gemini_temperature,
                 max_output_tokens=1024,
             ),
         )
