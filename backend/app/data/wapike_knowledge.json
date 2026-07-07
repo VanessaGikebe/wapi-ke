@@ -1,0 +1,151 @@
+{
+  "meta": {
+    "name": "Wapike Knowledge Base",
+    "purpose": "Single source of truth describing what Wapike is and how it works. Used to ground the AI assistant and to answer platform FAQs. Keep factual and current.",
+    "last_updated": "2026-07-07"
+  },
+
+  "product": {
+    "name": "Wapike",
+    "tagline": "Discover your next unforgettable Kenyan experience.",
+    "what_it_is": "A premium tourism and experience-discovery platform for Kenya. Users discover curated experiences (restaurants, cafés, nightlife, coastal trips, outdoor activities, wellness, picnics, family activities, museums & art) and upcoming events, then save favourites and make bookings. Two entry points on the homepage: Browse Categories, or ask the AI Assistant.",
+    "audience": ["Tourists / consumers", "Business owners", "Administrators"],
+    "region": "Kenya"
+  },
+
+  "architecture": {
+    "presentation_layer": {
+      "tech": ["Next.js 14 (App Router)", "TypeScript", "Tailwind CSS", "TanStack Query", "Zustand"],
+      "hosting": "Vercel",
+      "consumers": ["Tourist", "Business Owner", "Admin"],
+      "notes": "Three separate portals share one backend, kept apart by PortalGuard (client-side confinement) and RBAC (server-side)."
+    },
+    "application_layer": {
+      "tech": ["FastAPI (Python 3.12)", "Pydantic v2", "SQLAlchemy 2.0", "Alembic"],
+      "hosting": "Render (web service + a daily events cron)",
+      "api_base": "/api/v1",
+      "modules": ["Auth (Supabase-bridged)", "Discovery & Search (categories, experiences, filters)", "AI Assistant (Gemini)", "Personalized Recommendations", "Favourites & Bookings", "Reviews & Moderation", "Business Onboarding (applications, claims, documents)", "Admin & Analytics"]
+    },
+    "data_layer": {
+      "tech": ["PostgreSQL", "SQLAlchemy + Alembic migrations"],
+      "hosting": "Render Postgres (production); portable local Postgres for dev",
+      "data_source": "Real scraped Google Maps dataset stored as backend/data/*.json, normalized and ingested by backend/scripts/import_data.py (idempotent: de-dupes by placeId, standardizes the 9 categories, derives price tiers, auto-generates filter schema from the data). Events are ingested daily by a cron (event_ingestion pipeline)."
+    },
+    "external_services": {
+      "supabase": "Authentication (issues JWTs the backend verifies via JWKS) and Storage (business documents in a private bucket; logos, covers, avatars in a public bucket).",
+      "google_gemini": "AI Assistant model (gemini-2.5-flash) called server-side from the FastAPI assistant router.",
+      "google_maps_data": "Source of the experiences catalogue (scraped, not a live runtime API)."
+    }
+  },
+
+  "portals": {
+    "user": {
+      "who": "Tourists / consumers (account_type 'user', or anonymous)",
+      "can": ["Browse categories & experiences", "Filter and search", "Use the AI assistant", "Save favourites", "Make bookings", "Leave reviews", "Get personalised recommendations after onboarding"],
+      "home": "/"
+    },
+    "business": {
+      "who": "Approved business owners (account_type 'business')",
+      "can": ["Manage their business profile and listings from the business dashboard"],
+      "home": "/business/dashboard",
+      "confined": true
+    },
+    "admin": {
+      "who": "Administrators (account_type 'admin'), currently Vanessa and Kellie, both super_admin",
+      "can": ["Review & verify business applications (permits/documents)", "Review ownership claims", "Manage live businesses", "Moderate listings and reviews"],
+      "home": "/admin/dashboard",
+      "confined": true
+    }
+  },
+
+  "accounts": {
+    "auth": "Login is via Supabase Auth (email+password or Google). The backend verifies the Supabase JWT (JWKS) and mirrors the user into the local users table, matching by id then by email.",
+    "account_types": ["user", "business", "admin"],
+    "admin_tiers": ["moderator", "administrator", "super_admin"],
+    "assignment": "Account type is set server-side only — never self-service. Business accounts are created on admin approval; admins are created via backend/scripts/create_admin.py.",
+    "confinement": "PortalGuard confines each type to its portal: admin -> /admin/**, business -> /business/dashboard/**, user/anon -> public site. Data access is independently enforced by API RBAC."
+  },
+
+  "categories": [
+    {"slug": "cafes", "name": "Cafés"},
+    {"slug": "restaurants", "name": "Restaurants"},
+    {"slug": "nightlife", "name": "Nightlife"},
+    {"slug": "coastal", "name": "Coastal Experiences"},
+    {"slug": "outdoor-activities", "name": "Outdoor Activities"},
+    {"slug": "family-activities", "name": "Family Activities"},
+    {"slug": "picnics", "name": "Picnics"},
+    {"slug": "museums-art", "name": "Museums & Art"},
+    {"slug": "wellness", "name": "Wellness"}
+  ],
+
+  "filters": {
+    "model": "Filters are data-driven, not hardcoded per category. Each category has a FilterDefinition[] (key, label, type: enum | range | boolean, options). The frontend renders one generic filter component from that schema; filtering is server-side and never triggers a full page reload.",
+    "source": "Filter options are auto-generated from the scraped Google Maps attributes actually present in each category."
+  },
+
+  "features": {
+    "discovery": "Browse by category or search; server-side filtered, paginated experience listings using one generic CategoryListing template.",
+    "ai_assistant": "A conversational concierge (Gemini) that learns mood, occasion, group size, budget, location and interests, then suggests a category + filters. It can also answer platform FAQs from this knowledge base. Conversation state is persisted per session in Postgres.",
+    "personalization": "Signed-in users complete a short 'Discover Your Vibe' onboarding. The homepage then shows 'Recommended For You' and 'Discover Hidden Gems' carousels, tuned by onboarding answers plus behaviour (views, favourites, bookings, interactions). Rows are gated to signed-in 'user' accounts and are disjoint (no repeated experiences).",
+    "favourites_bookings": "Signed-in users save experiences to favourites and make bookings from an experience page. Favouriting/booking while logged out redirects to login and resumes the action after.",
+    "reviews": "Signed-in users can leave first-party reviews on experiences; admins can moderate.",
+    "events": "Upcoming Kenyan events are ingested daily by a cron and shown on the homepage and an events browser."
+  },
+
+  "business_onboarding": {
+    "list_a_business": "In the Business area, choose 'List a New Business', complete the application, and upload documents. Required: business registration certificate and the owner's National ID/passport. Optional: business permit, tourism licence, logo, cover image. Documents upload directly to Supabase Storage via a backend-minted signed URL. An admin reviews and verifies it; on approval the owner gets an activation link to set up their Business Account.",
+    "claim_a_business": "In the Business area, search the catalogue, select an existing listing, submit a claim, and upload proof of ownership. An admin reviews before ownership is transferred.",
+    "review": "Admins handle applications, claims and live businesses from the admin dashboard (Business Applications, Business Claims, Businesses)."
+  },
+
+  "data_model": {
+    "User": "id, email, name, account_type (user|business|admin), phone, is_active, created_at",
+    "AdminRoleAssignment": "user_id, role (moderator|administrator|super_admin) — presence makes a user an admin",
+    "Category": "id, slug, name, hero_image, icon",
+    "FilterDefinition": "id, category_id, key, label, type (enum|range|boolean), options (JSONB)",
+    "Experience": "id, category_id, title, description, images (JSONB), location, lat, lng, price_tier (1 budget – 4 premium), attributes (JSONB keyed by filter key), status (approved), owner_id",
+    "Favorite": "user_id, experience_id, created_at",
+    "Booking": "user_id, experience_id, status, requested_date (v1 stub — no payment processing)",
+    "Review": "user_id, experience_id, rating, body",
+    "Event": "id, title, slug, description, category, venue, county, city, start_datetime, end_datetime, ticket_url, status",
+    "AssistantSession": "id, user_id (nullable for guests), messages (JSONB), inferred_category_id, inferred_filters (JSONB)",
+    "UserPreferenceProfile": "user_id, completed_onboarding, interests, categories, budget_tiers, vibes, preferences, behavior_scores",
+    "UserInteraction": "user_id, interaction_type (search|view|save|booking|review|dwell|filter|not_interested), experience_id, category_slug, weight",
+    "BusinessApplication": "business + owner details, primary/secondary category, status, documents",
+    "BusinessClaim": "target experience/business, claimant details, status, documents",
+    "Business": "approved business profile, status, listings"
+  },
+
+  "key_flows": [
+    "Discover: Home -> Browse Categories -> category listing (cards + filter sidebar, live server-side filtering) -> experience detail -> favourite/book (login-gated).",
+    "Assistant: Home -> AI Assistant -> conversation -> suggested category + filters -> same listing template.",
+    "Personalize: sign up -> 'Discover Your Vibe' onboarding -> personalised homepage carousels.",
+    "List a business: Business -> List a New Business -> application + document upload -> admin review/verify -> activation link.",
+    "Claim a business: Business -> search catalogue -> submit claim + proof -> admin review.",
+    "Admin: /admin/login -> confined to /admin/dashboard -> review applications/claims, manage businesses."
+  ],
+
+  "stats_snapshot": {
+    "experiences": 5239,
+    "categories": 9,
+    "note": "Counts change as data is ingested; treat as approximate."
+  },
+
+  "faq": [
+    {"q": "What is Wapike?", "a": "Wapike is a premium platform for discovering Kenyan experiences — cafés, restaurants, nightlife, coastal trips, outdoor and family activities, picnics, museums & art, and wellness — plus upcoming events. Browse by category or ask the AI assistant, then save favourites and book."},
+    {"q": "Do I need an account to use Wapike?", "a": "No — browsing is free and needs no account. Sign up (also free) to save favourites, make bookings, leave reviews, and get personalised recommendations."},
+    {"q": "Is Wapike free?", "a": "Yes, browsing and signing up are free. Bookings are a simple request in v1 — there is no payment processing yet."},
+    {"q": "How do I get personalised recommendations?", "a": "Sign up and complete the short 'Discover Your Vibe' onboarding. The homepage then shows 'Recommended For You' and 'Discover Hidden Gems' rows tuned to your taste and activity."},
+    {"q": "Why don't I see the recommendation carousels?", "a": "They only appear for signed-in consumer ('user') accounts. Logged-out visitors and admin/business accounts don't see them."},
+    {"q": "How do I list my business on Wapike?", "a": "In the Business area choose 'List a New Business', complete the application, and upload documents — a business registration certificate and the owner's National ID/passport are required; a business permit, tourism licence, logo and cover image are optional. An admin reviews and verifies it, then you receive an activation link to set up your Business Account."},
+    {"q": "What documents do I need to list a business?", "a": "Required: business registration certificate and owner's National ID or passport. Optional: business permit, tourism licence, business logo, and cover image."},
+    {"q": "How do I claim a business that's already listed?", "a": "In the Business area, search the catalogue, select your listing, submit a claim, and upload proof of ownership. An admin reviews it before ownership is transferred to you."},
+    {"q": "What account types exist?", "a": "Three: regular user (consumer), business, and admin. Account type is assigned server-side only — you can't upgrade yourself."},
+    {"q": "How do bookings and favourites work?", "a": "Signed-in users save experiences to favourites and make bookings from an experience's page. If you try while logged out, you're sent to login and the action resumes afterward."},
+    {"q": "How does the AI assistant work?", "a": "Tell it what you're after — mood, occasion, budget, location — and it recommends a category and filters, landing you on matching experiences. It can also answer questions about how Wapike works."},
+    {"q": "What categories are available?", "a": "Nine: Cafés, Restaurants, Nightlife, Coastal Experiences, Outdoor Activities, Family Activities, Picnics, Museums & Art, and Wellness."},
+    {"q": "Where does Wapike's data come from?", "a": "Experiences come from a curated, de-duplicated Google Maps dataset for Kenya. Upcoming events are refreshed daily by an automated ingestion job."},
+    {"q": "How do I leave a review?", "a": "Sign in and add a review on an experience's page. Admins may moderate reviews."},
+    {"q": "How do I become an admin?", "a": "Admins are created only by the trusted backend process (not self-service). Wapike currently has two admins."}
+  ]
+}

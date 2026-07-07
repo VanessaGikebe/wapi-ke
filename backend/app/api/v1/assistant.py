@@ -73,23 +73,30 @@ def post_message(
         db.flush()  # assign session.id
 
     categories = _load_categories(db)
-    context = _categories_context(categories)
-    system_prompt = assistant_service.build_system_prompt(context)
-
     history = list(session.messages or [])
 
-    try:
-        result = assistant_service.generate_reply(
-            system_prompt, history, payload.message
-        )
-    except assistant_service.AssistantUnavailable as exc:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)
-        )
-
-    reply: str = result["reply"]
-    suggested_slug: str | None = result.get("suggested_category_slug")
-    suggested_filters: dict[str, Any] | None = result.get("suggested_filters")
+    # First try to answer straight from the knowledge base — no model call, no
+    # token cost, works with no GEMINI_API_KEY. Only open-ended queries (mood /
+    # occasion / recommendations) fall through to Gemini.
+    faq_reply = assistant_service.faq_answer(payload.message)
+    if faq_reply is not None:
+        reply: str = faq_reply
+        suggested_slug: str | None = None
+        suggested_filters: dict[str, Any] | None = None
+    else:
+        context = _categories_context(categories)
+        system_prompt = assistant_service.build_system_prompt(context)
+        try:
+            result = assistant_service.generate_reply(
+                system_prompt, history, payload.message
+            )
+        except assistant_service.AssistantUnavailable as exc:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)
+            )
+        reply = result["reply"]
+        suggested_slug = result.get("suggested_category_slug")
+        suggested_filters = result.get("suggested_filters")
 
     # Validate the suggestion against the real schema; drop anything bogus.
     by_slug = {c.slug: c for c in categories}

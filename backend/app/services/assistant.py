@@ -9,7 +9,10 @@ as strict JSON (Gemini JSON mode), so the frontend gets reliable
 
 from __future__ import annotations
 
+import functools
 import json
+import re
+from pathlib import Path
 from typing import Any
 
 from google import genai
@@ -21,33 +24,112 @@ settings = get_settings()
 
 MODEL = "gemini-2.5-flash"
 
-# Static knowledge so the assistant can answer common "how does Wapike work"
-# questions (not just recommend experiences). Kept short and factual — grounded
-# in the real product so answers stay accurate.
-WAPIKE_FAQ = (
-    "About Wapike: a platform to discover premium Kenyan experiences across "
-    "nine categories — Cafés, Restaurants, Nightlife, Coastal Experiences, "
-    "Outdoor Activities, Family Activities, Picnics, Museums & Art, and "
-    "Wellness — plus upcoming events. You can browse by category, filter, or "
-    "ask this assistant.\n"
-    "Accounts: browsing is free and needs no account. Sign up (also free) to "
-    "save favourites, make bookings, and get personalised recommendations. "
-    "There are three account types: regular user, business, and admin.\n"
-    "Personalised picks: after signing up, complete the short 'Discover Your "
-    "Vibe' onboarding; the homepage then shows 'Recommended For You' and "
-    "'Discover Hidden Gems' rows tuned to your taste.\n"
-    "Listing a business: in the Business area choose 'List a New Business', "
-    "complete the application, and upload documents — a business registration "
-    "certificate and the owner's National ID/passport are required; a business "
-    "permit, tourism licence, logo, and cover image are optional. An admin "
-    "reviews and verifies it; once approved you get an activation link to set "
-    "up your Business Account.\n"
-    "Claiming an existing listing: in the Business area, search the catalogue, "
-    "select your listing, submit a claim, and upload proof of ownership. An "
-    "admin reviews it before it's transferred to you.\n"
-    "Favourites & bookings: signed-in users can save experiences to favourites "
-    "and make bookings from an experience's page."
+# --- Wapike knowledge base (single source of truth) -------------------------
+# Loaded from app/data/wapike_knowledge.json. Used two ways:
+#   1. to GROUND Gemini's answers (build_system_prompt), and
+#   2. to answer common FAQs OFFLINE via faq_answer() — no model call, no token
+#      cost, and it works even with no GEMINI_API_KEY configured.
+_KB_PATH = Path(__file__).resolve().parent.parent / "data" / "wapike_knowledge.json"
+
+
+@functools.lru_cache(maxsize=1)
+def _knowledge() -> dict[str, Any]:
+    try:
+        with _KB_PATH.open(encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return {}
+
+
+def _kb_prompt_block() -> str:
+    """Render the knowledge base (overview + FAQ) as grounding text for Gemini."""
+    kb = _knowledge()
+    if not kb:
+        return ""
+    lines = ["Wapike knowledge — answer platform questions only from this:"]
+    overview = kb.get("product", {}).get("what_it_is")
+    if overview:
+        lines.append(f"Overview: {overview}")
+    for item in kb.get("faq", []):
+        question, answer = item.get("q"), item.get("a")
+        if question and answer:
+            lines.append(f"Q: {question}\nA: {answer}")
+    return "\n".join(lines)
+
+
+# --- Offline FAQ matcher (token-free) ---------------------------------------
+_STOPWORDS = frozenset(
+    {
+        "the", "and", "for", "are", "you", "your", "with", "that", "this", "from",
+        "have", "how", "what", "who", "why", "when", "where", "which", "does",
+        "did", "can", "could", "should", "would", "will", "was", "were", "been",
+        "being", "into", "onto", "out", "about", "need", "get", "got", "use",
+        "using", "used", "any", "all", "also", "not", "but", "its", "our", "their",
+        "there", "here", "some", "one", "two", "want", "like", "please", "tell",
+        "does", "make", "made", "them", "they", "who", "whom", "then", "than",
+    }
 )
+
+
+def _tokens(text: str) -> set[str]:
+    return {
+        tok
+        for tok in re.findall(r"[a-z]+", text.lower())
+        if len(tok) >= 3 and tok not in _STOPWORDS
+    }
+
+
+@functools.lru_cache(maxsize=1)
+def _faq_index() -> tuple[tuple[frozenset[str], str], ...]:
+    out: list[tuple[frozenset[str], str]] = []
+    for item in _knowledge().get("faq", []):
+        question, answer = item.get("q", ""), item.get("a", "")
+        toks = frozenset(_tokens(question))
+        if toks and answer:
+            out.append((toks, answer))
+    return tuple(out)
+
+
+@functools.lru_cache(maxsize=1)
+def _doc_freq() -> dict[str, int]:
+    df: dict[str, int] = {}
+    for toks, _ in _faq_index():
+        for tok in toks:
+            df[tok] = df.get(tok, 0) + 1
+    return df
+
+
+def faq_answer(message: str) -> str | None:
+    """Answer a common question straight from the knowledge base — NO model call,
+    NO tokens. Returns None when there's no confident, unambiguous match (the
+    caller then falls back to Gemini).
+
+    Scoring: shared significant words, weighted by inverse frequency across the
+    FAQ (rare, discriminating words count more), plus a coverage bonus. Requires
+    a clear winner so vague messages fall through instead of misfiring.
+    """
+    index = _faq_index()
+    if not index:
+        return None
+    msg = _tokens(message)
+    if not msg:
+        return None
+    df = _doc_freq()
+    best_score = 0.0
+    best_answer: str | None = None
+    for toks, answer in index:
+        shared = msg & toks
+        if not shared:
+            continue
+        score = sum(1.0 / df.get(tok, 1) for tok in shared) + len(shared) / len(toks)
+        if score > best_score:
+            best_score, best_answer = score, answer
+    # Absolute threshold: a single common word (high frequency, low coverage)
+    # scores below 1.0 and falls through to Gemini, so only reasonably specific
+    # questions are answered offline. On a tie the earlier (more general) FAQ wins.
+    if best_answer is not None and best_score >= 1.0:
+        return best_answer
+    return None
 
 # JSON shape the model must return every turn (`suggested_*` stay null until the
 # assistant is confident, so the frontend knows when to show the CTA).
@@ -78,11 +160,11 @@ def build_system_prompt(categories: list[dict[str, Any]]) -> str:
         "or two short questions per turn; never interrogate.\n\n"
         "You can also answer common questions about how Wapike works (accounts, "
         "listing or claiming a business, favourites, bookings, personalised "
-        "recommendations) using the FAQ below. Answer those directly and "
-        "concisely from the FAQ, and only use facts stated there — don't invent "
+        "recommendations) using the knowledge below. Answer those directly and "
+        "concisely from it, and only use facts stated there — don't invent "
         "policies or details. For a plain question like this, keep "
         "`suggested_category_slug` and `suggested_filters` null.\n\n"
-        f"Wapike FAQ:\n{WAPIKE_FAQ}\n\n"
+        f"{_kb_prompt_block()}\n\n"
         "Once you have enough signal (usually after the user shares a couple "
         "of preferences), pick the single best-matching category and set "
         "`suggested_category_slug` to its exact slug, and `suggested_filters` "
