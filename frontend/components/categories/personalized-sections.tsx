@@ -133,8 +133,51 @@ export function PersonalizedSections({
  * - disabled entirely under prefers-reduced-motion (manual scrolling only)
  * - pauses while off-screen (IntersectionObserver)
  */
+const AUTO_SCROLL_SPEED = 0.4; // px per frame — a slow, ambient drift (~24px/s)
+const AUTO_SCROLL_RESUME_DELAY = 1800; // ms of no interaction before it resumes
+
 export function AutoScrollRow({ children }: { children: React.ReactNode }) {
   const ref = React.useRef<HTMLUListElement>(null);
+  // Shared across the drift loop and the arrow buttons so a click pauses the
+  // auto-scroll for a beat, then it resumes.
+  const pausedRef = React.useRef(false);
+  const resumeTimerRef = React.useRef(0);
+  const [canLeft, setCanLeft] = React.useState(false);
+  const [canRight, setCanRight] = React.useState(false);
+
+  const updateArrows = React.useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    // setState bails out when the boolean is unchanged, so the auto-scroll's
+    // continuous scroll events don't cause per-frame re-renders.
+    setCanLeft(el.scrollLeft > 1);
+    setCanRight(max > 1 && el.scrollLeft < max - 1);
+  }, []);
+
+  const pause = React.useCallback(() => {
+    pausedRef.current = true;
+    window.clearTimeout(resumeTimerRef.current);
+  }, []);
+  const scheduleResume = React.useCallback(() => {
+    window.clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = window.setTimeout(() => {
+      pausedRef.current = false;
+    }, AUTO_SCROLL_RESUME_DELAY);
+  }, []);
+
+  const scrollByPage = React.useCallback(
+    (dir: 1 | -1) => {
+      const el = ref.current;
+      if (!el) return;
+      pause();
+      scheduleResume();
+      // Advance by roughly a viewport-width of cards per click.
+      const amount = Math.max(el.clientWidth * 0.85, 260);
+      el.scrollBy({ left: dir * amount, behavior: "smooth" });
+    },
+    [pause, scheduleResume],
+  );
 
   React.useEffect(() => {
     const el = ref.current;
@@ -142,21 +185,16 @@ export function AutoScrollRow({ children }: { children: React.ReactNode }) {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    const SPEED = 0.4; // px per frame — a slow, ambient drift (~24px/s)
-    const RESUME_DELAY = 1800; // ms of no interaction before auto-scroll resumes
-
     let raf = 0;
-    let resumeTimer = 0;
-    let paused = false;
     let visible = true;
     let direction = 1;
 
     const step = () => {
       raf = requestAnimationFrame(step);
-      if (paused || !visible) return;
+      if (pausedRef.current || !visible) return;
       const max = el.scrollWidth - el.clientWidth;
       if (max <= 0) return; // content fits — nothing to scroll
-      el.scrollLeft += SPEED * direction;
+      el.scrollLeft += AUTO_SCROLL_SPEED * direction;
       if (el.scrollLeft >= max - 0.5) {
         el.scrollLeft = max;
         direction = -1;
@@ -173,17 +211,6 @@ export function AutoScrollRow({ children }: { children: React.ReactNode }) {
     };
     const stop = () => cancelAnimationFrame(raf);
 
-    const pause = () => {
-      paused = true;
-      window.clearTimeout(resumeTimer);
-    };
-    const scheduleResume = () => {
-      window.clearTimeout(resumeTimer);
-      resumeTimer = window.setTimeout(() => {
-        paused = false;
-      }, RESUME_DELAY);
-    };
-
     const onEnter = () => pause();
     const onLeave = () => scheduleResume();
     const onDown = () => pause();
@@ -196,6 +223,7 @@ export function AutoScrollRow({ children }: { children: React.ReactNode }) {
     };
     const onFocusIn = () => pause();
     const onFocusOut = () => scheduleResume();
+    const onScroll = () => updateArrows();
 
     el.addEventListener("pointerenter", onEnter);
     el.addEventListener("pointerleave", onLeave);
@@ -206,6 +234,7 @@ export function AutoScrollRow({ children }: { children: React.ReactNode }) {
     el.addEventListener("wheel", onWheel, { passive: true });
     el.addEventListener("focusin", onFocusIn);
     el.addEventListener("focusout", onFocusOut);
+    el.addEventListener("scroll", onScroll, { passive: true });
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -215,15 +244,20 @@ export function AutoScrollRow({ children }: { children: React.ReactNode }) {
     );
     io.observe(el);
 
+    const ro = new ResizeObserver(() => updateArrows());
+    ro.observe(el);
+
     const onReduceChange = () => (reduce.matches ? stop() : start());
     reduce.addEventListener?.("change", onReduceChange);
 
+    updateArrows();
     start();
 
     return () => {
       stop();
-      window.clearTimeout(resumeTimer);
+      window.clearTimeout(resumeTimerRef.current);
       io.disconnect();
+      ro.disconnect();
       el.removeEventListener("pointerenter", onEnter);
       el.removeEventListener("pointerleave", onLeave);
       el.removeEventListener("pointerdown", onDown);
@@ -233,17 +267,72 @@ export function AutoScrollRow({ children }: { children: React.ReactNode }) {
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("focusin", onFocusIn);
       el.removeEventListener("focusout", onFocusOut);
+      el.removeEventListener("scroll", onScroll);
       reduce.removeEventListener?.("change", onReduceChange);
     };
-  }, []);
+  }, [pause, scheduleResume, updateArrows]);
 
   return (
-    <ul
-      ref={ref}
-      className="scrollbar-hide flex gap-gutter overflow-x-auto pb-2"
+    <div className="relative">
+      <ScrollButton
+        direction="left"
+        visible={canLeft}
+        onClick={() => scrollByPage(-1)}
+      />
+      <ul
+        ref={ref}
+        className="scrollbar-hide flex gap-gutter overflow-x-auto pb-2"
+      >
+        {children}
+      </ul>
+      <ScrollButton
+        direction="right"
+        visible={canRight}
+        onClick={() => scrollByPage(1)}
+      />
+    </div>
+  );
+}
+
+/** Circular prev/next control overlaid on the carousel edges (sm+ only). */
+function ScrollButton({
+  direction,
+  visible,
+  onClick,
+}: {
+  direction: "left" | "right";
+  visible: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={direction === "left" ? "Scroll left" : "Scroll right"}
+      tabIndex={visible ? 0 : -1}
+      aria-hidden={!visible}
+      onClick={onClick}
+      className={cn(
+        "absolute top-[38%] z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-outline-variant bg-surface/90 text-on-surface shadow-md backdrop-blur transition hover:bg-surface hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary sm:flex",
+        direction === "left" ? "left-2" : "right-2",
+        visible ? "opacity-100" : "pointer-events-none opacity-0",
+      )}
     >
-      {children}
-    </ul>
+      <ChevronIcon className={cn("h-5 w-5", direction === "left" && "rotate-180")} />
+    </button>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <path
+        d="M9 6l6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 

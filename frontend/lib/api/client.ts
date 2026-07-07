@@ -57,7 +57,23 @@ export async function apiFetch<T = unknown>(
     let message = response.statusText;
     try {
       const data = await response.json();
-      if (typeof data?.detail === "string") message = data.detail;
+      if (typeof data?.detail === "string") {
+        message = data.detail;
+      } else if (Array.isArray(data?.detail) && data.detail.length > 0) {
+        // FastAPI/Pydantic validation errors arrive as [{loc, msg, type}, …].
+        // Surface a readable "field: reason" list instead of the opaque
+        // "Unprocessable Content" status text.
+        message = data.detail
+          .map((err: { loc?: unknown[]; msg?: string }) => {
+            const field = Array.isArray(err.loc)
+              ? err.loc[err.loc.length - 1]
+              : undefined;
+            const reason = err.msg ?? "Invalid value";
+            return field && field !== "body" ? `${field}: ${reason}` : reason;
+          })
+          .filter(Boolean)
+          .join("; ");
+      }
     } catch {
       // non-JSON error body; keep statusText
     }

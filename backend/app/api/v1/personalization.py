@@ -146,6 +146,11 @@ def recommendations(
     context = _recommendation_context(db, current_user, profile)
     filter_conditions = _recommendation_filter_conditions(db, request, category_slug)
 
+    # Shared across the experience sections so each row picks fresh items and the
+    # feed's rows never repeat the same experience. Order matters: earlier rows
+    # (Recommended first) get first pick of the best matches.
+    used_experience_ids: set[UUID] = set()
+
     recommended = _experience_section(
         db,
         key="recommended",
@@ -156,6 +161,7 @@ def recommendations(
         filter_conditions=filter_conditions,
         limit=limit,
         mode="personal",
+        exclude_ids=used_experience_ids,
     )
     trending = _experience_section(
         db,
@@ -167,6 +173,7 @@ def recommendations(
         filter_conditions=filter_conditions,
         limit=limit,
         mode="trending",
+        exclude_ids=used_experience_ids,
     )
     hidden = _experience_section(
         db,
@@ -178,6 +185,7 @@ def recommendations(
         filter_conditions=filter_conditions,
         limit=limit,
         mode="hidden",
+        exclude_ids=used_experience_ids,
     )
     discovery = _experience_section(
         db,
@@ -189,6 +197,7 @@ def recommendations(
         filter_conditions=filter_conditions,
         limit=limit,
         mode="discovery",
+        exclude_ids=used_experience_ids,
     )
     events = _event_section(db, context, limit)
     return RecommendationResponse(
@@ -385,7 +394,13 @@ def _experience_section(
     filter_conditions: list,
     limit: int,
     mode: str,
+    exclude_ids: set[UUID] | None = None,
 ) -> RecommendationSection:
+    # Experiences already used by an earlier section this request. Each section
+    # reserves its chosen ids back into this set, so the feed's rows stay
+    # disjoint (e.g. "Recommended For You" and "Discover Hidden Gems" never
+    # surface the same experience).
+    exclude_ids = exclude_ids if exclude_ids is not None else set()
     stmt = (
         select(Experience)
         .options(joinedload(Experience.category))
@@ -395,6 +410,8 @@ def _experience_section(
         stmt = stmt.join(Category).where(Category.slug == category_slug)
     if context.disliked_experience_ids:
         stmt = stmt.where(Experience.id.not_in(context.disliked_experience_ids))
+    if exclude_ids:
+        stmt = stmt.where(Experience.id.not_in(exclude_ids))
     for condition in filter_conditions:
         stmt = stmt.where(condition)
     candidates = list(db.scalars(stmt.limit(80)).all())
@@ -425,6 +442,8 @@ def _experience_section(
         return personal * 2 + popularity + base + timely + cold_start - disliked_penalty
 
     sorted_items = sorted(candidates, key=score, reverse=True)[:limit]
+    # Reserve these so later sections in the same feed don't repeat them.
+    exclude_ids.update(exp.id for exp in sorted_items)
     max_score = max((score(exp) for exp in sorted_items), default=0)
     return RecommendationSection(
         key=key,
