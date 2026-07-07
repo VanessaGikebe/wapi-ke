@@ -221,6 +221,7 @@ def list_experiences(
             or_(
                 Experience.title.ilike(like),
                 Experience.description.ilike(like),
+                Experience.location.ilike(like),
             )
         )
 

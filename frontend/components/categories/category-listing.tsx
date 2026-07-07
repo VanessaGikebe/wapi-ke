@@ -194,15 +194,19 @@ function CategoryListingInner({
             mobileFiltersOpen ? "block" : "hidden",
           )}
         >
-          <div className="flex flex-col gap-4 lg:sticky lg:top-24">
+          <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)]">
             <SidebarSearch value={rawSearch} onChange={setRawSearch} />
-            <FilterSidebar
-              filters={filters}
-              state={state}
-              activeCount={activeCount}
-              onChange={setFilter}
-              onClear={clearAll}
-            />
+            {/* On desktop the filter list scrolls independently so a long set
+                of filters never runs off the bottom of the sticky column. */}
+            <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
+              <FilterSidebar
+                filters={filters}
+                state={state}
+                activeCount={activeCount}
+                onChange={setFilter}
+                onClear={clearAll}
+              />
+            </div>
           </div>
         </aside>
 
