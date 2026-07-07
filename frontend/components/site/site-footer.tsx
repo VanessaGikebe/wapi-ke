@@ -7,7 +7,7 @@ function FooterColumn({
   links,
 }: {
   heading: string;
-  links: string[];
+  links: { label: string; href: string }[];
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -16,12 +16,12 @@ function FooterColumn({
       </h4>
       <ul className="flex flex-col gap-3">
         {links.map((link) => (
-          <li key={link}>
+          <li key={link.href}>
             <Link
-              href="#"
+              href={link.href}
               className="transition-subtle rounded font-body-md text-body-md text-on-surface-variant hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-container-lowest"
             >
-              {link}
+              {link.label}
             </Link>
           </li>
         ))}
@@ -43,11 +43,19 @@ export function SiteFooter() {
         </div>
         <FooterColumn
           heading="Social"
-          links={["Instagram", "Twitter", "TikTok"]}
+          links={[
+            { label: "Instagram", href: "#" },
+            { label: "Twitter", href: "#" },
+            { label: "TikTok", href: "#" },
+          ]}
         />
         <FooterColumn
           heading="Company"
-          links={["Privacy Policy", "Terms", "Newsletter"]}
+          links={[
+            { label: "Privacy Policy", href: "/privacy-policy" },
+            { label: "Terms", href: "/terms" },
+            { label: "Newsletter", href: "/newsletter" },
+          ]}
         />
       </div>
     </footer>
