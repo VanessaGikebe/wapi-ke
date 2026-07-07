@@ -77,6 +77,13 @@ const EMPTY: Form = {
   secondary_category_slug: "",
 };
 
+// Mirror the backend's EmailStr requirement (domain must contain a dot), so a
+// bad email is caught here with a friendly message instead of a 422 on submit.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function isValidEmail(value: string): boolean {
+  return EMAIL_RE.test(value.trim());
+}
+
 export function ApplicationWizard() {
   const categories = useCategories();
   const [step, setStep] = React.useState(0);
@@ -100,13 +107,15 @@ export function ApplicationWizard() {
         if (form.owner_full_name.trim().length < 2) return "Enter the owner's full name.";
         if (form.owner_national_id.trim().length < 3) return "Enter the owner's ID number.";
         if (form.owner_phone.trim().length < 7) return "Enter a valid phone number.";
-        if (!form.owner_email.includes("@")) return "Enter the owner's email.";
+        if (!isValidEmail(form.owner_email))
+          return "Enter a valid owner email (e.g. name@company.co.ke).";
         return null;
       case 3:
         if (!form.primary_category_slug) return "Choose your primary category.";
         return null;
       case 4:
-        if (!form.business_email.includes("@")) return "Enter the business account email.";
+        if (!isValidEmail(form.business_email))
+          return "Enter a valid business account email (e.g. hello@company.co.ke).";
         for (const slot of DOC_SLOTS) {
           const file = files[slot.docType];
           if (slot.required && !file) return `${slot.label} is required.`;

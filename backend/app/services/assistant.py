@@ -21,6 +21,34 @@ settings = get_settings()
 
 MODEL = "gemini-2.5-flash"
 
+# Static knowledge so the assistant can answer common "how does Wapike work"
+# questions (not just recommend experiences). Kept short and factual — grounded
+# in the real product so answers stay accurate.
+WAPIKE_FAQ = (
+    "About Wapike: a platform to discover premium Kenyan experiences across "
+    "nine categories — Cafés, Restaurants, Nightlife, Coastal Experiences, "
+    "Outdoor Activities, Family Activities, Picnics, Museums & Art, and "
+    "Wellness — plus upcoming events. You can browse by category, filter, or "
+    "ask this assistant.\n"
+    "Accounts: browsing is free and needs no account. Sign up (also free) to "
+    "save favourites, make bookings, and get personalised recommendations. "
+    "There are three account types: regular user, business, and admin.\n"
+    "Personalised picks: after signing up, complete the short 'Discover Your "
+    "Vibe' onboarding; the homepage then shows 'Recommended For You' and "
+    "'Discover Hidden Gems' rows tuned to your taste.\n"
+    "Listing a business: in the Business area choose 'List a New Business', "
+    "complete the application, and upload documents — a business registration "
+    "certificate and the owner's National ID/passport are required; a business "
+    "permit, tourism licence, logo, and cover image are optional. An admin "
+    "reviews and verifies it; once approved you get an activation link to set "
+    "up your Business Account.\n"
+    "Claiming an existing listing: in the Business area, search the catalogue, "
+    "select your listing, submit a claim, and upload proof of ownership. An "
+    "admin reviews it before it's transferred to you.\n"
+    "Favourites & bookings: signed-in users can save experiences to favourites "
+    "and make bookings from an experience's page."
+)
+
 # JSON shape the model must return every turn (`suggested_*` stay null until the
 # assistant is confident, so the frontend knows when to show the CTA).
 _RESPONSE_SCHEMA = {
@@ -48,6 +76,13 @@ def build_system_prompt(categories: list[dict[str, Any]]) -> str:
         "more. Through natural, warm conversation, learn the user's mood, "
         "occasion, group size, budget, location, and interests. Ask only one "
         "or two short questions per turn; never interrogate.\n\n"
+        "You can also answer common questions about how Wapike works (accounts, "
+        "listing or claiming a business, favourites, bookings, personalised "
+        "recommendations) using the FAQ below. Answer those directly and "
+        "concisely from the FAQ, and only use facts stated there — don't invent "
+        "policies or details. For a plain question like this, keep "
+        "`suggested_category_slug` and `suggested_filters` null.\n\n"
+        f"Wapike FAQ:\n{WAPIKE_FAQ}\n\n"
         "Once you have enough signal (usually after the user shares a couple "
         "of preferences), pick the single best-matching category and set "
         "`suggested_category_slug` to its exact slug, and `suggested_filters` "

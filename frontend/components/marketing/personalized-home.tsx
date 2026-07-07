@@ -51,24 +51,41 @@ export function RecommendedForYou() {
 export function DiscoverHiddenGems() {
   const { enabled, data, isLoading } = usePersonalizedFeed();
   if (!enabled) return null;
-  const merged = mergeHiddenGems(data);
+  // Exclude anything already shown in "Recommended For You" so the two rows
+  // never surface the same experience — they should feel like distinct picks.
+  const recommendedIds = collectIds(data?.find((s) => s.key === "recommended"));
+  const merged = mergeHiddenGems(data, recommendedIds);
   return <FeedRow loading={isLoading} sections={merged ? [merged] : []} />;
+}
+
+/** Collect the experience/event ids present in a section (skips id-less items). */
+function collectIds(
+  section: RecommendationSection | undefined,
+): Set<string> {
+  const ids = new Set<string>();
+  for (const item of section?.items ?? []) {
+    const id = item.experience?.id ?? item.event?.id;
+    if (id) ids.add(id);
+  }
+  return ids;
 }
 
 /**
  * Combine the backend's separate "hidden_gems" and "discover_new" sections into
- * one "Discover Hidden Gems" carousel (de-duped by experience/event id). This is
- * a presentation-only merge — the scoring/recommendations math is untouched.
+ * one "Discover Hidden Gems" carousel (de-duped by experience/event id, and with
+ * anything already in "Recommended For You" excluded via `exclude`). This is a
+ * presentation-only merge — the scoring/recommendations math is untouched.
  */
 function mergeHiddenGems(
   data: RecommendationSection[] | undefined,
+  exclude: Set<string> = new Set<string>(),
 ): RecommendationSection | null {
   if (!data) return null;
   const combined = [
     ...(data.find((s) => s.key === "hidden_gems")?.items ?? []),
     ...(data.find((s) => s.key === "discover_new")?.items ?? []),
   ];
-  const seen = new Set<string>();
+  const seen = new Set<string>(exclude);
   const items = combined.filter((item) => {
     const id = item.experience?.id ?? item.event?.id;
     if (!id) return true;
