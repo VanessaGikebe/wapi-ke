@@ -5,6 +5,7 @@ import { RangeSlider } from "@/components/ui/range-slider";
 import { Switch } from "@/components/ui/switch";
 import type { FilterValue } from "@/lib/filtering";
 import type { EnumOptions, FilterDefinition, RangeOptions } from "@/lib/types";
+import { priceTierCap } from "@/lib/experience-presentation";
 
 /**
  * Renders ONE filter from its schema definition — the generic core of the
@@ -57,7 +58,7 @@ export function FilterControl({
     const current = typeof value === "number" ? value : options.max;
     const format = (n: number) =>
       options.format === "currency"
-        ? "$".repeat(n)
+        ? priceTierCap(n)
         : `${n}${options.unit ? ` ${options.unit}` : ""}`;
 
     return (

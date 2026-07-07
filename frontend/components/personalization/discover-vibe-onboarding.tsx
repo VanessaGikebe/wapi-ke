@@ -6,12 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import type { PreferenceProfileInput } from "@/lib/api/personalization";
 import {
-  clearAnonAnswers,
-  markAnonCompleted,
-  readAnonOnboarding,
-  type AnonOnboarding,
-} from "@/lib/onboarding";
-import {
   usePreferenceProfile,
   useSavePreferenceProfile,
 } from "@/lib/queries/personalization";
@@ -61,11 +55,16 @@ const VIBE_OPTIONS: Option[] = [
   { value: "relaxed", label: "Relaxed", icon: "self_improvement" },
 ];
 
+// Sentinel tier meaning "no budget preference" — exclusive with the real tiers
+// (1–4) and stripped out before saving, so it persists as an empty budget list.
+const BUDGET_NO_PREFERENCE = 0;
+
 const BUDGET_OPTIONS: Option[] = [
-  { value: "1", label: "$", icon: "payments" },
-  { value: "2", label: "$$", icon: "payments" },
-  { value: "3", label: "$$$", icon: "account_balance_wallet" },
-  { value: "4", label: "$$$$", icon: "diamond" },
+  { value: "1", label: "Under KSh 1,500", icon: "payments" },
+  { value: "2", label: "KSh 1,500–4,000", icon: "payments" },
+  { value: "3", label: "KSh 4,000–8,000", icon: "account_balance_wallet" },
+  { value: "4", label: "Over KSh 8,000", icon: "diamond" },
+  { value: String(BUDGET_NO_PREFERENCE), label: "No preference", icon: "done_all" },
 ];
 
 export function DiscoverVibeOnboarding() {
@@ -76,11 +75,10 @@ export function DiscoverVibeOnboarding() {
   const profileQuery = usePreferenceProfile(isUser);
   const saveProfile = useSavePreferenceProfile();
 
-  // Client-only gate: read localStorage after mount so SSR/hydration match.
+  // Client-only gate so the modal never renders during SSR — auth and profile
+  // state only resolve on the client.
   const [mounted, setMounted] = React.useState(false);
-  const [anon, setAnon] = React.useState<AnonOnboarding>({ completed: false });
   React.useEffect(() => {
-    setAnon(readAnonOnboarding() ?? { completed: false });
     setMounted(true);
   }, []);
 
@@ -92,33 +90,14 @@ export function DiscoverVibeOnboarding() {
   const [vibes, setVibes] = React.useState<string[]>([]);
   const [budgetTiers, setBudgetTiers] = React.useState<number[]>([]);
 
-  // Case B merge: a signed-in account with no preferences yet, whose owner
-  // already answered anonymously in this browser — save those instead of asking.
-  const mergedRef = React.useRef(false);
-  React.useEffect(() => {
-    if (!isUser || !profileQuery.isSuccess) return;
-    if (profileQuery.data.completedOnboarding) return;
-    const stored = readAnonOnboarding();
-    if (stored?.completed && stored.answers && !mergedRef.current) {
-      mergedRef.current = true;
-      saveProfile.mutate(stored.answers, { onSuccess: () => clearAnonAnswers() });
-    }
-  }, [
-    isUser,
-    profileQuery.isSuccess,
-    profileQuery.data?.completedOnboarding,
-    saveProfile,
-  ]);
-
-  const anonHasAnswers = anon.completed && !!anon.answers;
+  // Show once, right after sign-in/sign-up, only if this account has not yet
+  // completed onboarding. Signed-out visitors never see the wizard.
   const open =
     mounted &&
     !dismissed &&
-    (isUser
-      ? profileQuery.isSuccess &&
-        !profileQuery.data.completedOnboarding &&
-        !anonHasAnswers
-      : !anon.completed);
+    isUser &&
+    profileQuery.isSuccess &&
+    !profileQuery.data.completedOnboarding;
 
   const toggleString = (
     value: string,
@@ -133,9 +112,16 @@ export function DiscoverVibeOnboarding() {
   const toggleBudget = (value: string) =>
     setBudgetTiers((current) => {
       const tier = Number(value);
-      return current.includes(tier)
-        ? current.filter((item) => item !== tier)
-        : [...current, tier];
+      // "No preference" is exclusive with the specific KES tiers.
+      if (tier === BUDGET_NO_PREFERENCE) {
+        return current.includes(BUDGET_NO_PREFERENCE) ? [] : [BUDGET_NO_PREFERENCE];
+      }
+      const withoutSentinel = current.filter(
+        (item) => item !== BUDGET_NO_PREFERENCE,
+      );
+      return withoutSentinel.includes(tier)
+        ? withoutSentinel.filter((item) => item !== tier)
+        : [...withoutSentinel, tier];
     });
 
   const steps = [
@@ -175,22 +161,15 @@ export function DiscoverVibeOnboarding() {
       categories,
       interests,
       vibes,
-      budgetTiers,
+      // Drop the "no preference" sentinel — it persists as an empty list.
+      budgetTiers: budgetTiers.filter((tier) => tier !== BUDGET_NO_PREFERENCE),
       preferences: {},
     };
-    if (isUser) {
-      saveProfile.mutate(input, {
-        onSuccess: () => {
-          clearAnonAnswers();
-          setAnon({ completed: true });
-          setDismissed(true);
-        },
-      });
-    } else {
-      markAnonCompleted(input);
-      setAnon({ completed: true, answers: input });
-      setDismissed(true);
-    }
+    // The wizard only opens for a signed-in user, so persist to the account
+    // (the backend flag then gates future sessions) and close.
+    saveProfile.mutate(input, {
+      onSuccess: () => setDismissed(true),
+    });
   };
 
   return (

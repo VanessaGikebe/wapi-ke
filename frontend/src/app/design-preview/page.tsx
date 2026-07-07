@@ -126,10 +126,16 @@ export default function DesignPreviewPage() {
             {[
               {
                 name: "The Savannah Room",
-                meta: "Fine Dining · $$$$ · Nairobi",
+                meta: "Fine Dining · Over KSh 8,000 · Nairobi",
               },
-              { name: "Altitude Lounge", meta: "Rooftop · $$$ · Westlands" },
-              { name: "Ocean Drift", meta: "Seafood · $$$ · Mombasa" },
+              {
+                name: "Altitude Lounge",
+                meta: "Rooftop · KSh 4,000–8,000 · Westlands",
+              },
+              {
+                name: "Ocean Drift",
+                meta: "Seafood · KSh 4,000–8,000 · Mombasa",
+              },
             ].map((item) => (
               <Card key={item.name}>
                 <CardMedia>
@@ -210,7 +216,7 @@ export default function DesignPreviewPage() {
               min={0}
               max={100}
               value={price}
-              formatValue={(v) => `$${v}`}
+              formatValue={(v) => `KSh ${v.toLocaleString()}`}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
           </div>

@@ -13,6 +13,7 @@ import {
   type ListingCreatePayload,
   type ManagerListing,
 } from "@/lib/api/business";
+import { priceLabel } from "@/lib/experience-presentation";
 import { useCategories } from "@/lib/queries/categories";
 import { cn } from "@/lib/utils";
 
@@ -241,7 +242,7 @@ function PriceSelect({ value, onChange }: { value: number; onChange: (v: number)
     >
       {[1, 2, 3, 4].map((n) => (
         <option key={n} value={n}>
-          {"$".repeat(n)}
+          {priceLabel(n)}
         </option>
       ))}
     </select>

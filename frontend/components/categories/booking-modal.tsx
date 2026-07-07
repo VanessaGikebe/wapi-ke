@@ -2,10 +2,13 @@
 
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useCreateBooking } from "@/lib/queries/account";
+import { priceLabel } from "@/lib/experience-presentation";
+import { googleCalendarUrl, icsDataUri } from "@/lib/calendar";
+import { cn } from "@/lib/utils";
 
 interface BookingModalProps {
   experience: {
@@ -13,13 +16,22 @@ interface BookingModalProps {
     title: string;
     location: string;
     priceTier: number;
+    /** Business website, when known (from experience attributes). */
+    website?: string | null;
   };
   open: boolean;
   onClose: () => void;
+  /** Invoked when the user chooses to leave a review from the confirmation. */
+  onLeaveReview?: () => void;
 }
 
 /** Confirmation modal that creates a `requested` booking (no payment yet). */
-export function BookingModal({ experience, open, onClose }: BookingModalProps) {
+export function BookingModal({
+  experience,
+  open,
+  onClose,
+  onLeaveReview,
+}: BookingModalProps) {
   const [date, setDate] = React.useState("");
   const dateId = React.useId();
   const mutation = useCreateBooking();
@@ -58,16 +70,81 @@ export function BookingModal({ experience, open, onClose }: BookingModalProps) {
             <span className="text-primary">{experience.title}</span>. We&apos;ll
             be in touch to confirm — no payment needed yet.
           </p>
-          <Button onClick={handleClose} className="w-full">
-            Done
-          </Button>
+
+          {experience.website && (
+            <a
+              href={experience.website}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={cn(buttonVariants({ variant: "primary" }), "w-full")}
+            >
+              Visit their website ↗
+            </a>
+          )}
+
+          {date && (
+            <div className="flex flex-col gap-2 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+              <span className="font-label-md text-label-md uppercase text-on-surface-variant">
+                Add to your calendar
+              </span>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href={icsDataUri({
+                    title: experience.title,
+                    location: experience.location,
+                    date,
+                    details: `Booking requested via Wapike for ${experience.title}.`,
+                  })}
+                  download={`${experience.title}.ics`}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                  )}
+                >
+                  Download .ics
+                </a>
+                <a
+                  href={googleCalendarUrl({
+                    title: experience.title,
+                    location: experience.location,
+                    date,
+                    details: `Booking requested via Wapike for ${experience.title}.`,
+                  })}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                  )}
+                >
+                  Google Calendar
+                </a>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            {onLeaveReview && (
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  handleClose();
+                  onLeaveReview();
+                }}
+              >
+                Leave a review
+              </Button>
+            )}
+            <Button onClick={handleClose} className="flex-1">
+              Done
+            </Button>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col gap-5">
           <p className="font-body-md text-body-md text-on-surface-variant">
             <span className="text-primary">{experience.title}</span>
             {experience.location ? ` · ${experience.location}` : ""} ·{" "}
-            {"$".repeat(experience.priceTier)}
+            {priceLabel(experience.priceTier)}
           </p>
 
           <div className="flex flex-col gap-2">

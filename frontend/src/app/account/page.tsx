@@ -13,6 +13,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import type { ExperienceSummary } from "@/lib/api/bookings";
+import { priceLabel } from "@/lib/experience-presentation";
 import { useBookings, useFavoritesList } from "@/lib/queries/account";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { cn } from "@/lib/utils";
@@ -210,7 +211,7 @@ function ExperienceRow({
 }) {
   const meta = [
     experience.location,
-    "$".repeat(experience.price_tier),
+    priceLabel(experience.price_tier),
     experience.category_slug.replace(/-/g, " "),
   ]
     .filter(Boolean)

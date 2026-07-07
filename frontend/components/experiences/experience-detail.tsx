@@ -9,6 +9,7 @@ import { BookingModal } from "@/components/categories/booking-modal";
 import { ExperienceCard } from "@/components/categories/experience-card";
 import { BackLink } from "@/components/site/back-link";
 import { ListingActions } from "@/components/experiences/listing-actions";
+import { ReviewForm } from "@/components/experiences/review-form";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,6 +25,7 @@ import { galleryForExperience } from "@/lib/images";
 import { useExperience, useExperiences } from "@/lib/queries/categories";
 import { useToggleFavorite } from "@/lib/queries/favorites";
 import { useRecordInteraction } from "@/lib/queries/personalization";
+import { useReviews } from "@/lib/queries/reviews";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
 import { cn } from "@/lib/utils";
@@ -41,6 +43,8 @@ export function ExperienceDetail({ id }: { id: string }) {
   const setPendingFavorite = useFavoritesStore((s) => s.setPendingFavorite);
   const toggleFavorite = useToggleFavorite();
   const recordInteraction = useRecordInteraction();
+  const reviewsQuery = useReviews(id);
+  const reviewSectionRef = React.useRef<HTMLElement>(null);
   const [bookingOpen, setBookingOpen] = React.useState(false);
   const [activeImage, setActiveImage] = React.useState(0);
 
@@ -83,9 +87,33 @@ export function ExperienceDetail({ id }: { id: string }) {
   const gallery = galleryForExperience(experience);
   const tags = experienceTags(experience);
   const amenities = experienceAmenities(experience);
-  const reviews = experienceReviews(experience);
   const contact = experienceContact(experience);
   const categoryLabel = experience.categorySlug.replace(/-/g, " ");
+
+  // Real first-party reviews from the API, then mock reviews as filler so the
+  // section never looks empty (see experienceReviews).
+  const realReviews = (reviewsQuery.data ?? []).map((review) => ({
+    key: review.id,
+    name: review.author_name,
+    rating: review.rating,
+    text: review.text ?? "",
+    meta: new Date(review.created_at).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }),
+  }));
+  const fillerNeeded = Math.max(0, 3 - realReviews.length);
+  const mockReviews = experienceReviews(experience)
+    .slice(0, fillerNeeded)
+    .map((review, index) => ({
+      key: `mock-${index}`,
+      name: review.name,
+      rating: review.rating,
+      text: review.text,
+      meta: review.date,
+    }));
+  const displayReviews = [...realReviews, ...mockReviews];
 
   const handleBook = () => {
     if (!isAuthenticated) {
@@ -253,14 +281,17 @@ export function ExperienceDetail({ id }: { id: string }) {
             </div>
           </section>
 
-          <section>
+          <section ref={reviewSectionRef} className="scroll-mt-24">
             <h2 className="mb-4 font-headline-sm text-headline-sm text-primary">
               Reviews
             </h2>
+            <div className="mb-6">
+              <ReviewForm experienceId={experience.id} redirectPath={pathname} />
+            </div>
             <ul className="flex flex-col gap-4">
-              {reviews.map((review, index) => (
+              {displayReviews.map((review) => (
                 <li
-                  key={index}
+                  key={review.key}
                   className="rounded-xl border border-outline-variant bg-surface-container-lowest p-5"
                 >
                   <div className="mb-2 flex items-center justify-between gap-3">
@@ -276,7 +307,7 @@ export function ExperienceDetail({ id }: { id: string }) {
                           {review.name}
                         </p>
                         <p className="font-caption text-caption text-on-surface-variant">
-                          {review.date}
+                          {review.meta}
                         </p>
                       </div>
                     </div>
@@ -285,9 +316,11 @@ export function ExperienceDetail({ id }: { id: string }) {
                       {review.rating.toFixed(1)}
                     </span>
                   </div>
-                  <p className="font-body-md text-body-md text-on-surface-variant">
-                    {review.text}
-                  </p>
+                  {review.text && (
+                    <p className="font-body-md text-body-md text-on-surface-variant">
+                      {review.text}
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>
@@ -368,9 +401,13 @@ export function ExperienceDetail({ id }: { id: string }) {
           title: experience.title,
           location: experience.location,
           priceTier: experience.priceTier,
+          website: contact.website,
         }}
         open={bookingOpen}
         onClose={() => setBookingOpen(false)}
+        onLeaveReview={() =>
+          reviewSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+        }
       />
     </div>
   );

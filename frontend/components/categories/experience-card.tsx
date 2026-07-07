@@ -94,7 +94,7 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
           }
           className={cn(
             "transition-subtle absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-lowest/85 backdrop-blur-sm hover:bg-surface-container-lowest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
-            saved ? "text-secondary" : "text-primary",
+            saved ? "text-error" : "text-primary",
           )}
         >
           <HeartIcon className="h-5 w-5" filled={saved} />

@@ -40,7 +40,7 @@ export interface Experience {
   title: string;
   description: string;
   location: string;
-  /** 1–4, rendered as `$`–`$$$$`. */
+  /** 1–4, rendered as a KES band (see `priceLabel`). */
   priceTier: number;
   rating: number;
   /** Real business photos (from the scraped dataset); may be empty. */

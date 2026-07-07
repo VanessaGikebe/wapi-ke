@@ -87,9 +87,9 @@ export function PersonalizedSections({
               </div>
               <Button
                 type="button"
-                variant="ghost"
+                variant="subtle"
                 size="sm"
-                className="shrink-0 px-2"
+                className="shrink-0"
                 onClick={() => markNotInterested(item)}
               >
                 Not Interested

@@ -1,8 +1,28 @@
 import type { Experience } from "@/lib/types";
 
-/** `$`–`$$$$` price indicator. */
+/**
+ * KES price bands per tier (1–4) — the Kenyan-market replacement for the old
+ * `$`–`$$$$` indicator. Aligned with the `priceFromKsh` anchors below.
+ */
+const PRICE_TIER_BANDS = [
+  "", // index 0 unused; tiers are 1–4
+  "Under KSh 1,500",
+  "KSh 1,500–4,000",
+  "KSh 4,000–8,000",
+  "Over KSh 8,000",
+];
+
+/** Short "max spend" cap per tier, for the price range filter. */
+const PRICE_TIER_CAPS = ["", "KSh 1,500", "KSh 4,000", "KSh 8,000", "KSh 8,000+"];
+
+/** KES band label for a price tier (was `$`–`$$$$`). */
 export function priceLabel(tier: number): string {
-  return "$".repeat(Math.max(1, Math.min(4, tier)));
+  return PRICE_TIER_BANDS[Math.max(1, Math.min(4, tier))];
+}
+
+/** Upper-bound "up to" label for a tier, used by the range (budget cap) filter. */
+export function priceTierCap(tier: number): string {
+  return PRICE_TIER_CAPS[Math.max(1, Math.min(4, tier))];
 }
 
 /** Mock "from KSh" anchor price derived from the price tier (no payments yet). */

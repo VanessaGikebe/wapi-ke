@@ -44,6 +44,7 @@ from app.models.personalization import (
     UserInteraction,
     UserPreferenceProfile,
 )
+from app.models.review import Review
 from app.models.user import AccountType, User
 
 __all__ = [
@@ -81,6 +82,7 @@ __all__ = [
     "ModerationActionType",
     "OwnerRole",
     "ReportStatus",
+    "Review",
     "UserInteraction",
     "UserPreferenceProfile",
     "User",
