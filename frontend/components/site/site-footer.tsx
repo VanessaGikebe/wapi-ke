@@ -38,7 +38,7 @@ export function SiteFooter() {
         <div className="md:col-span-2">
           <Brand wordmarkClassName="text-display-lg" />
           <p className="mt-4 font-body-md text-body-md text-on-surface-variant">
-            © 2024 wapiKE. All rights reserved.
+            © 2026 wapiKE. All rights reserved.
           </p>
         </div>
         <FooterColumn

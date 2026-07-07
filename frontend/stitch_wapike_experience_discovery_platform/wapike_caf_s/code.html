@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Wapike - Cafés</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Wapike - Cafés</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -101,229 +109,300 @@
             }
         }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
+
         .filled-icon {
             font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
+
         .soft-shadow {
             box-shadow: 0px 10px 30px rgba(27, 36, 30, 0.04);
         }
     </style>
 </head>
+
 <body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
-<!-- TopNavBar -->
-<nav class="bg-surface/90 dark:bg-primary/90 backdrop-blur-md full-width top-0 sticky z-50 transition-colors duration-300">
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex justify-between items-center h-20">
-<!-- Brand -->
-<a class="font-display-lg text-display-lg text-primary dark:text-primary-fixed" href="#">
+    <!-- TopNavBar -->
+    <nav
+        class="bg-surface/90 dark:bg-primary/90 backdrop-blur-md full-width top-0 sticky z-50 transition-colors duration-300">
+        <div
+            class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex justify-between items-center h-20">
+            <!-- Brand -->
+            <a class="font-display-lg text-display-lg text-primary dark:text-primary-fixed" href="#">
                 Wapike
             </a>
-<!-- Desktop Navigation -->
-<ul class="hidden md:flex gap-8 items-center">
-<li><a class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1 cursor-pointer transition-all active:scale-95 hover:text-secondary dark:hover:text-secondary-fixed-dim duration-300" href="#">Categories</a></li>
-<li><a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container cursor-pointer transition-all active:scale-95 hover:text-secondary dark:hover:text-secondary-fixed-dim duration-300" href="#">AI Assistant</a></li>
-<li><a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container cursor-pointer transition-all active:scale-95 hover:text-secondary dark:hover:text-secondary-fixed-dim duration-300" href="#">About</a></li>
-</ul>
-<!-- Trailing Action -->
-<div class="hidden md:flex items-center gap-4">
-<button class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed border border-primary dark:border-primary-fixed px-6 py-2 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300">
+            <!-- Desktop Navigation -->
+            <ul class="hidden md:flex gap-8 items-center">
+                <li><a class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1 cursor-pointer transition-all active:scale-95 hover:text-secondary dark:hover:text-secondary-fixed-dim duration-300"
+                        href="#">Categories</a></li>
+                <li><a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container cursor-pointer transition-all active:scale-95 hover:text-secondary dark:hover:text-secondary-fixed-dim duration-300"
+                        href="#">AI Assistant</a></li>
+                <li><a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant dark:text-on-tertiary-container cursor-pointer transition-all active:scale-95 hover:text-secondary dark:hover:text-secondary-fixed-dim duration-300"
+                        href="#">About</a></li>
+            </ul>
+            <!-- Trailing Action -->
+            <div class="hidden md:flex items-center gap-4">
+                <button
+                    class="font-label-md text-label-md uppercase tracking-wider text-primary dark:text-primary-fixed border border-primary dark:border-primary-fixed px-6 py-2 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300">
                     Sign In
                 </button>
-</div>
-<!-- Mobile Menu Toggle (Decorative for this scope) -->
-<button class="md:hidden text-primary">
-<span class="material-symbols-outlined">menu</span>
-</button>
-</div>
-</nav>
-<!-- Main Content -->
-<main class="flex-grow flex flex-col">
-<!-- Hero Section -->
-<section class="relative w-full h-[614px] min-h-[400px] flex items-center justify-center bg-surface-container-lowest overflow-hidden">
-<div class="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full opacity-90" data-alt="A highly detailed, cinematic wide shot of a modern, aesthetic specialty coffee shop interior. Natural sunlight streams through large, floor-to-ceiling arched windows, casting soft, elegant shadows on minimalist poured concrete floors. The space features light natural wood furnishings, pristine white marble counters, and lush, curated indoor greenery. A barista is visible in the background pulling an espresso shot from a high-end matte black machine. The overall atmosphere is calm, sophisticated, and premium, perfectly matching a bright, modern light-mode design system with subtle earthy green undertones." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDlZorWA3bwXqfDGuJ8XWWT95kkBgcPJex77fYq5D807zEpRh-MoDbBLnW9QdvRTBJq0BeQS_OTCFXKY1x33fV9S9SLpOKsn_duELevaEbE4u6B1a6dzpqiHTsmMVg5DGujOvF26cWBNwRpp7r3iZh4W_yJ7DTGZ3JlruyVDXb_G9BPKwt3-2V6IB_VZ4NOtUuFC0D4dwF3v1C0jHknLdwRnYoUK_wULj7n5wr6Wq7HOUUt3-inQpqXz6ufEVhmXNh5cbg034it5mc')"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
-<div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center">
-<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-4 drop-shadow-md">Cafés &amp; Coffee Houses</h1>
-<p class="font-body-lg text-body-lg text-primary-fixed-dim max-w-2xl mx-auto drop-shadow-sm">Discover curated spots for specialty roasts, artisanal pastries, and the perfect ambiance for work or leisure.</p>
-</div>
-</section>
-<!-- Filters Section -->
-<section class="w-full bg-surface-container-lowest border-b border-surface-variant sticky top-20 z-40">
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-4">
-<div class="flex overflow-x-auto gap-3 pb-2 scrollbar-hide items-center">
-<span class="material-symbols-outlined text-on-surface-variant mr-2 flex-shrink-0">tune</span>
-<button class="flex-shrink-0 px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-colors border border-primary">All</button>
-<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Specialty Coffee</button>
-<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Brunch</button>
-<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Desserts</button>
-<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Work-Friendly</button>
-<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Outdoor Seating</button>
-<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Aesthetic Cafés</button>
-</div>
-</div>
-</section>
-<!-- Listing Grid -->
-<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-<!-- Card 1 -->
-<article class="bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow group cursor-pointer transition-transform duration-300 hover:-translate-y-1">
-<div class="relative h-64 overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A beautiful close-up shot of a perfectly poured latte art in a handmade ceramic mug, sitting on a raw wood table. Next to it is a freshly baked, flaky almond croissant on a small matte slate plate. Soft, natural morning light creates a warm, inviting atmosphere. In the blurred background, minimalist café decor with subtle sage green accents is visible, conveying a premium, artisanal vibe consistent with a modern light-mode design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXKknzqKd9pQSq4pnqwjcANQkHi5b6MiyjDqAij5wgJYo36R9eZHbOYY66ACHu9YFEn9vaKIRtPrw_EdqwmxsGrXrbMDJrRlwDWjQhN6VvqiXprjQhWZVZ96OtYN1viFZ4PVXKaA2FV7iH6N1KXhbwZzATKqrkVl8J3cCcII_x2K1U5SYd0V1_54CG0GU4PkxcP12UVGhWMQFmksM4fzxlTTfL7U91UW-7dfABdOV9uloRZa9o6vjuwzs0Y4nJdH-atgpaQBrPhVo"/>
-<button class="absolute top-4 right-4 w-10 h-10 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-primary hover:text-error transition-colors">
-<span class="material-symbols-outlined filled-icon">favorite</span>
-</button>
-<div class="absolute bottom-4 left-4 flex gap-2">
-<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Specialty Coffee</span>
-<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Brunch</span>
-</div>
-</div>
-<div class="p-6">
-<div class="flex justify-between items-start mb-2">
-<h2 class="font-headline-sm text-headline-sm text-primary">The Roasted Bean</h2>
-<div class="flex items-center gap-1 text-secondary">
-<span class="material-symbols-outlined filled-icon text-sm">star</span>
-<span class="font-label-md text-label-md">4.9</span>
-</div>
-</div>
-<p class="font-body-md text-body-md text-on-surface-variant mb-4">Artisanal single-origin roasts and French-inspired pastries in a serene, minimalist setting.</p>
-<div class="flex items-center justify-between text-on-surface-variant font-caption text-caption border-t border-surface-variant pt-4">
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">location_on</span>
-<span>Westlands, Nairobi</span>
-</div>
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">wifi</span>
-<span>Fast Wi-Fi</span>
-</div>
-</div>
-</div>
-</article>
-<!-- Card 2 -->
-<article class="bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow group cursor-pointer transition-transform duration-300 hover:-translate-y-1">
-<div class="relative h-64 overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A tranquil outdoor seating area of a boutique café. Wrought iron chairs with soft linen cushions surround small, circular marble tables. Potted olive trees and trailing vines create a natural canopy overhead. Dappled sunlight filters through the leaves, illuminating two iced coffees in tall ribbed glasses. The scene is bright, airy, and sophisticated, reflecting a modern, premium lifestyle aesthetic with subtle earthy tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsFuXBfKIglTseQtvFN87MBUtWeeOXYJ3NyfZkwJXibmdwXYoQd6dlR0n8AbPkzJ_5pIWxIsCLGnA6yky9kL-ZCYY4Z1bulYSbQ1rvx1LlTkzWiiU_UoJ1NOztV9vDbN041Pdu7tUgdMKuTeR4P1TgbgXh9w3vHUi0u_FKtfpzSrJxJTE2CWdY5ZcRatsvZlRBBO8KsmAK1tnNCly1coRavwKCggOKl-IxvRsXSVvPP9TZHYhUwljAhOYw2w1y-tHBX3qk5ng9MqA"/>
-<button class="absolute top-4 right-4 w-10 h-10 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-primary hover:text-error transition-colors">
-<span class="material-symbols-outlined">favorite</span>
-</button>
-<div class="absolute bottom-4 left-4 flex gap-2">
-<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Outdoor Seating</span>
-<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Aesthetic</span>
-</div>
-</div>
-<div class="p-6">
-<div class="flex justify-between items-start mb-2">
-<h2 class="font-headline-sm text-headline-sm text-primary">Verdant Terrace</h2>
-<div class="flex items-center gap-1 text-secondary">
-<span class="material-symbols-outlined filled-icon text-sm">star</span>
-<span class="font-label-md text-label-md">4.8</span>
-</div>
-</div>
-<p class="font-body-md text-body-md text-on-surface-variant mb-4">A hidden botanical oasis offering craft cold brews, light salads, and a tranquil escape from the city.</p>
-<div class="flex items-center justify-between text-on-surface-variant font-caption text-caption border-t border-surface-variant pt-4">
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">location_on</span>
-<span>Karen, Nairobi</span>
-</div>
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">local_florist</span>
-<span>Botanical Vibe</span>
-</div>
-</div>
-</div>
-</article>
-<!-- Card 3 -->
-<article class="bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow group cursor-pointer transition-transform duration-300 hover:-translate-y-1">
-<div class="relative h-64 overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A clean, highly organized, and aesthetic workspace inside a modern café. A sleek silver laptop sits open on a wide, light oak communal table. Next to it is a minimalist pour-over coffee setup, featuring a glass carafe and a matte white gooseneck kettle. The background is slightly blurred, showing a bright, airy room with large windows, white walls, and understated greenery. The lighting is crisp and cool, perfectly suited for a focused, professional, and high-end digital nomad environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdWDPKe9JyzSEG2iwUuUVvQfF4LmtH65DP1TpmKOVEfuv_YHA7ju9EkXFElfH76sFtmeVkCYxd5L7HNz61P747Pxi3yx2L_MlZWZvxJMWHl18InzV9t8iiVCbGAl1IL8uO5oC855OsV6hc4nsCMHp8Yw3p8cY2nPkjAYuzOR4NEj2kQ_LWKYreVCY14LvwzQ-i3jtjH2WChAKYPWCh7RKQ-3qvppTTY0QKlbt89IjDrPYlvkyOsZE2C24SU3pney9VDBWU_0zz5jM"/>
-<button class="absolute top-4 right-4 w-10 h-10 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-primary hover:text-error transition-colors">
-<span class="material-symbols-outlined">favorite</span>
-</button>
-<div class="absolute bottom-4 left-4 flex gap-2">
-<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Work-Friendly</span>
-<span class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Pour-over</span>
-</div>
-</div>
-<div class="p-6">
-<div class="flex justify-between items-start mb-2">
-<h2 class="font-headline-sm text-headline-sm text-primary">Draft &amp; Grind</h2>
-<div class="flex items-center gap-1 text-secondary">
-<span class="material-symbols-outlined filled-icon text-sm">star</span>
-<span class="font-label-md text-label-md">4.7</span>
-</div>
-</div>
-<p class="font-body-md text-body-md text-on-surface-variant mb-4">The ultimate co-working café with ample power outlets, blazing internet, and meticulous pour-over coffees.</p>
-<div class="flex items-center justify-between text-on-surface-variant font-caption text-caption border-t border-surface-variant pt-4">
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">location_on</span>
-<span>Kilimani, Nairobi</span>
-</div>
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">power</span>
-<span>Ample Outlets</span>
-</div>
-</div>
-</div>
-</article>
-</div>
-<!-- Load More -->
-<div class="mt-12 flex justify-center">
-<button class="px-8 py-3 rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors">Load More Cafés</button>
-</div>
-</section>
-</main>
-<!-- Footer -->
-<footer class="bg-surface-container-lowest dark:bg-primary-container full-width py-20 mt-auto border-t border-surface-variant">
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
-<!-- Brand Column -->
-<div class="col-span-1 md:col-span-1 mb-8 md:mb-0">
-<a class="font-display-lg text-display-lg text-primary block mb-4" href="#">
+            </div>
+            <!-- Mobile Menu Toggle (Decorative for this scope) -->
+            <button class="md:hidden text-primary">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col">
+        <!-- Hero Section -->
+        <section
+            class="relative w-full h-[614px] min-h-[400px] flex items-center justify-center bg-surface-container-lowest overflow-hidden">
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full opacity-90"
+                data-alt="A highly detailed, cinematic wide shot of a modern, aesthetic specialty coffee shop interior. Natural sunlight streams through large, floor-to-ceiling arched windows, casting soft, elegant shadows on minimalist poured concrete floors. The space features light natural wood furnishings, pristine white marble counters, and lush, curated indoor greenery. A barista is visible in the background pulling an espresso shot from a high-end matte black machine. The overall atmosphere is calm, sophisticated, and premium, perfectly matching a bright, modern light-mode design system with subtle earthy green undertones."
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDlZorWA3bwXqfDGuJ8XWWT95kkBgcPJex77fYq5D807zEpRh-MoDbBLnW9QdvRTBJq0BeQS_OTCFXKY1x33fV9S9SLpOKsn_duELevaEbE4u6B1a6dzpqiHTsmMVg5DGujOvF26cWBNwRpp7r3iZh4W_yJ7DTGZ3JlruyVDXb_G9BPKwt3-2V6IB_VZ4NOtUuFC0D4dwF3v1C0jHknLdwRnYoUK_wULj7n5wr6Wq7HOUUt3-inQpqXz6ufEVhmXNh5cbg034it5mc')">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+            <div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center">
+                <h1
+                    class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-4 drop-shadow-md">
+                    Cafés &amp; Coffee Houses</h1>
+                <p class="font-body-lg text-body-lg text-primary-fixed-dim max-w-2xl mx-auto drop-shadow-sm">Discover
+                    curated spots for specialty roasts, artisanal pastries, and the perfect ambiance for work or
+                    leisure.</p>
+            </div>
+        </section>
+        <!-- Filters Section -->
+        <section class="w-full bg-surface-container-lowest border-b border-surface-variant sticky top-20 z-40">
+            <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-4">
+                <div class="flex overflow-x-auto gap-3 pb-2 scrollbar-hide items-center">
+                    <span class="material-symbols-outlined text-on-surface-variant mr-2 flex-shrink-0">tune</span>
+                    <button
+                        class="flex-shrink-0 px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-colors border border-primary">All</button>
+                    <button
+                        class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Specialty
+                        Coffee</button>
+                    <button
+                        class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Brunch</button>
+                    <button
+                        class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Desserts</button>
+                    <button
+                        class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Work-Friendly</button>
+                    <button
+                        class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Outdoor
+                        Seating</button>
+                    <button
+                        class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-dim text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors border border-transparent">Aesthetic
+                        Cafés</button>
+                </div>
+            </div>
+        </section>
+        <!-- Listing Grid -->
+        <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                <!-- Card 1 -->
+                <article
+                    class="bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow group cursor-pointer transition-transform duration-300 hover:-translate-y-1">
+                    <div class="relative h-64 overflow-hidden">
+                        <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            data-alt="A beautiful close-up shot of a perfectly poured latte art in a handmade ceramic mug, sitting on a raw wood table. Next to it is a freshly baked, flaky almond croissant on a small matte slate plate. Soft, natural morning light creates a warm, inviting atmosphere. In the blurred background, minimalist café decor with subtle sage green accents is visible, conveying a premium, artisanal vibe consistent with a modern light-mode design system."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXKknzqKd9pQSq4pnqwjcANQkHi5b6MiyjDqAij5wgJYo36R9eZHbOYY66ACHu9YFEn9vaKIRtPrw_EdqwmxsGrXrbMDJrRlwDWjQhN6VvqiXprjQhWZVZ96OtYN1viFZ4PVXKaA2FV7iH6N1KXhbwZzATKqrkVl8J3cCcII_x2K1U5SYd0V1_54CG0GU4PkxcP12UVGhWMQFmksM4fzxlTTfL7U91UW-7dfABdOV9uloRZa9o6vjuwzs0Y4nJdH-atgpaQBrPhVo" />
+                        <button
+                            class="absolute top-4 right-4 w-10 h-10 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-primary hover:text-error transition-colors">
+                            <span class="material-symbols-outlined filled-icon">favorite</span>
+                        </button>
+                        <div class="absolute bottom-4 left-4 flex gap-2">
+                            <span
+                                class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Specialty
+                                Coffee</span>
+                            <span
+                                class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Brunch</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 class="font-headline-sm text-headline-sm text-primary">The Roasted Bean</h2>
+                            <div class="flex items-center gap-1 text-secondary">
+                                <span class="material-symbols-outlined filled-icon text-sm">star</span>
+                                <span class="font-label-md text-label-md">4.9</span>
+                            </div>
+                        </div>
+                        <p class="font-body-md text-body-md text-on-surface-variant mb-4">Artisanal single-origin roasts
+                            and French-inspired pastries in a serene, minimalist setting.</p>
+                        <div
+                            class="flex items-center justify-between text-on-surface-variant font-caption text-caption border-t border-surface-variant pt-4">
+                            <div class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">location_on</span>
+                                <span>Westlands, Nairobi</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">wifi</span>
+                                <span>Fast Wi-Fi</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- Card 2 -->
+                <article
+                    class="bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow group cursor-pointer transition-transform duration-300 hover:-translate-y-1">
+                    <div class="relative h-64 overflow-hidden">
+                        <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            data-alt="A tranquil outdoor seating area of a boutique café. Wrought iron chairs with soft linen cushions surround small, circular marble tables. Potted olive trees and trailing vines create a natural canopy overhead. Dappled sunlight filters through the leaves, illuminating two iced coffees in tall ribbed glasses. The scene is bright, airy, and sophisticated, reflecting a modern, premium lifestyle aesthetic with subtle earthy tones."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsFuXBfKIglTseQtvFN87MBUtWeeOXYJ3NyfZkwJXibmdwXYoQd6dlR0n8AbPkzJ_5pIWxIsCLGnA6yky9kL-ZCYY4Z1bulYSbQ1rvx1LlTkzWiiU_UoJ1NOztV9vDbN041Pdu7tUgdMKuTeR4P1TgbgXh9w3vHUi0u_FKtfpzSrJxJTE2CWdY5ZcRatsvZlRBBO8KsmAK1tnNCly1coRavwKCggOKl-IxvRsXSVvPP9TZHYhUwljAhOYw2w1y-tHBX3qk5ng9MqA" />
+                        <button
+                            class="absolute top-4 right-4 w-10 h-10 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-primary hover:text-error transition-colors">
+                            <span class="material-symbols-outlined">favorite</span>
+                        </button>
+                        <div class="absolute bottom-4 left-4 flex gap-2">
+                            <span
+                                class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Outdoor
+                                Seating</span>
+                            <span
+                                class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Aesthetic</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 class="font-headline-sm text-headline-sm text-primary">Verdant Terrace</h2>
+                            <div class="flex items-center gap-1 text-secondary">
+                                <span class="material-symbols-outlined filled-icon text-sm">star</span>
+                                <span class="font-label-md text-label-md">4.8</span>
+                            </div>
+                        </div>
+                        <p class="font-body-md text-body-md text-on-surface-variant mb-4">A hidden botanical oasis
+                            offering craft cold brews, light salads, and a tranquil escape from the city.</p>
+                        <div
+                            class="flex items-center justify-between text-on-surface-variant font-caption text-caption border-t border-surface-variant pt-4">
+                            <div class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">location_on</span>
+                                <span>Karen, Nairobi</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">local_florist</span>
+                                <span>Botanical Vibe</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- Card 3 -->
+                <article
+                    class="bg-surface-container-lowest rounded-xl overflow-hidden soft-shadow group cursor-pointer transition-transform duration-300 hover:-translate-y-1">
+                    <div class="relative h-64 overflow-hidden">
+                        <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            data-alt="A clean, highly organized, and aesthetic workspace inside a modern café. A sleek silver laptop sits open on a wide, light oak communal table. Next to it is a minimalist pour-over coffee setup, featuring a glass carafe and a matte white gooseneck kettle. The background is slightly blurred, showing a bright, airy room with large windows, white walls, and understated greenery. The lighting is crisp and cool, perfectly suited for a focused, professional, and high-end digital nomad environment."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdWDPKe9JyzSEG2iwUuUVvQfF4LmtH65DP1TpmKOVEfuv_YHA7ju9EkXFElfH76sFtmeVkCYxd5L7HNz61P747Pxi3yx2L_MlZWZvxJMWHl18InzV9t8iiVCbGAl1IL8uO5oC855OsV6hc4nsCMHp8Yw3p8cY2nPkjAYuzOR4NEj2kQ_LWKYreVCY14LvwzQ-i3jtjH2WChAKYPWCh7RKQ-3qvppTTY0QKlbt89IjDrPYlvkyOsZE2C24SU3pney9VDBWU_0zz5jM" />
+                        <button
+                            class="absolute top-4 right-4 w-10 h-10 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-primary hover:text-error transition-colors">
+                            <span class="material-symbols-outlined">favorite</span>
+                        </button>
+                        <div class="absolute bottom-4 left-4 flex gap-2">
+                            <span
+                                class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Work-Friendly</span>
+                            <span
+                                class="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-sm rounded-full font-caption text-caption text-primary">Pour-over</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 class="font-headline-sm text-headline-sm text-primary">Draft &amp; Grind</h2>
+                            <div class="flex items-center gap-1 text-secondary">
+                                <span class="material-symbols-outlined filled-icon text-sm">star</span>
+                                <span class="font-label-md text-label-md">4.7</span>
+                            </div>
+                        </div>
+                        <p class="font-body-md text-body-md text-on-surface-variant mb-4">The ultimate co-working café
+                            with ample power outlets, blazing internet, and meticulous pour-over coffees.</p>
+                        <div
+                            class="flex items-center justify-between text-on-surface-variant font-caption text-caption border-t border-surface-variant pt-4">
+                            <div class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">location_on</span>
+                                <span>Kilimani, Nairobi</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">power</span>
+                                <span>Ample Outlets</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <!-- Load More -->
+            <div class="mt-12 flex justify-center">
+                <button
+                    class="px-8 py-3 rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors">Load
+                    More Cafés</button>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer
+        class="bg-surface-container-lowest dark:bg-primary-container full-width py-20 mt-auto border-t border-surface-variant">
+        <div
+            class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter">
+            <!-- Brand Column -->
+            <div class="col-span-1 md:col-span-1 mb-8 md:mb-0">
+                <a class="font-display-lg text-display-lg text-primary block mb-4" href="#">
                     Wapike
                 </a>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">Curating the finest experiences for the discerning traveler.</p>
-<div class="flex gap-4">
-<!-- Social Links -->
-<a aria-label="Instagram" class="text-primary hover:text-secondary transition-colors" href="#">
-<span class="material-symbols-outlined">photo_camera</span>
-</a>
-<a aria-label="Twitter" class="text-primary hover:text-secondary transition-colors" href="#">
-<span class="material-symbols-outlined">chat</span>
-</a>
-<a aria-label="TikTok" class="text-primary hover:text-secondary transition-colors" href="#">
-<span class="material-symbols-outlined">smart_display</span>
-</a>
-</div>
-</div>
-<!-- Links Columns -->
-<div class="col-span-1">
-<h3 class="font-label-md text-label-md text-primary mb-4 uppercase tracking-wider">Explore</h3>
-<ul class="space-y-3">
-<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300" href="#">Cafés</a></li>
-<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300" href="#">Fine Dining</a></li>
-<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300" href="#">Safaris</a></li>
-</ul>
-</div>
-<div class="col-span-1">
-<h3 class="font-label-md text-label-md text-primary mb-4 uppercase tracking-wider">Legal</h3>
-<ul class="space-y-3">
-<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300" href="#">Privacy Policy</a></li>
-<li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300" href="#">Terms</a></li>
-</ul>
-</div>
-<!-- Newsletter -->
-<div class="col-span-1 md:col-span-1">
-<h3 class="font-label-md text-label-md text-primary mb-4 uppercase tracking-wider">Newsletter Signup</h3>
-<form class="flex flex-col gap-3">
-<input class="w-full px-4 py-2 bg-surface border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Your email address" type="email"/>
-<button class="w-full px-4 py-2 bg-primary text-on-primary rounded-md font-label-md text-label-md hover:bg-surface-tint transition-colors" type="submit">Subscribe</button>
-</form>
-</div>
-</div>
-<!-- Copyright -->
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mt-16 pt-8 border-t border-surface-variant flex justify-center text-center">
-<p class="font-caption text-caption text-on-surface-variant">© 2024 Wapike. All rights reserved.</p>
-</div>
-</footer>
-</body></html>
+                <p class="font-body-md text-body-md text-on-surface-variant mb-6">Curating the finest experiences for
+                    the discerning traveler.</p>
+                <div class="flex gap-4">
+                    <!-- Social Links -->
+                    <a aria-label="Instagram" class="text-primary hover:text-secondary transition-colors" href="#">
+                        <span class="material-symbols-outlined">photo_camera</span>
+                    </a>
+                    <a aria-label="Twitter" class="text-primary hover:text-secondary transition-colors" href="#">
+                        <span class="material-symbols-outlined">chat</span>
+                    </a>
+                    <a aria-label="TikTok" class="text-primary hover:text-secondary transition-colors" href="#">
+                        <span class="material-symbols-outlined">smart_display</span>
+                    </a>
+                </div>
+            </div>
+            <!-- Links Columns -->
+            <div class="col-span-1">
+                <h3 class="font-label-md text-label-md text-primary mb-4 uppercase tracking-wider">Explore</h3>
+                <ul class="space-y-3">
+                    <li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300"
+                            href="#">Cafés</a></li>
+                    <li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300"
+                            href="#">Fine Dining</a></li>
+                    <li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300"
+                            href="#">Safaris</a></li>
+                </ul>
+            </div>
+            <div class="col-span-1">
+                <h3 class="font-label-md text-label-md text-primary mb-4 uppercase tracking-wider">Legal</h3>
+                <ul class="space-y-3">
+                    <li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300"
+                            href="#">Privacy Policy</a></li>
+                    <li><a class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary transition-colors duration-300"
+                            href="#">Terms</a></li>
+                </ul>
+            </div>
+            <!-- Newsletter -->
+            <div class="col-span-1 md:col-span-1">
+                <h3 class="font-label-md text-label-md text-primary mb-4 uppercase tracking-wider">Newsletter Signup
+                </h3>
+                <form class="flex flex-col gap-3">
+                    <input
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                        placeholder="Your email address" type="email" />
+                    <button
+                        class="w-full px-4 py-2 bg-primary text-on-primary rounded-md font-label-md text-label-md hover:bg-surface-tint transition-colors"
+                        type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <!-- Copyright -->
+        <div
+            class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mt-16 pt-8 border-t border-surface-variant flex justify-center text-center">
+            <p class="font-caption text-caption text-on-surface-variant">© 2026 Wapike. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
