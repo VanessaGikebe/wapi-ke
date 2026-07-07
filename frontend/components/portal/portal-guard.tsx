@@ -17,17 +17,18 @@ import { useAuthStore, type AccountType, type AuthStatus } from "@/lib/stores/au
  * unauthenticated visitor to a protected area is sent to that portal's login.
  * (Data access is independently enforced server-side by the API's RBAC.)
  *
- * This is a **wrapper**: while a confinement redirect is pending — or while an
- * authenticated session's account type is still being resolved from /auth/me —
- * it withholds the requested page instead of rendering it. That closes the
- * window where an admin/business account would otherwise briefly see (and be
- * able to interact with) the consumer site before the redirect lands.
+ * This is a **wrapper**: when the current account is confirmed to be in the
+ * wrong portal it withholds the mismatched page while the redirect lands. It
+ * deliberately does NOT blank the page while the account type is still being
+ * resolved from /auth/me — doing so would white-screen the whole app for every
+ * logged-in user whenever the API is slow or unreachable. The worst case here
+ * is a brief flash of the public page for an admin/business account before the
+ * redirect fires, which is far preferable to an unavailable app.
  */
 export function PortalGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "/";
   const router = useRouter();
   const status = useAuthStore((s) => s.status);
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const accountType = useAuthStore((s) => s.accountType);
 
   const redirectTo = confinementRedirect(pathname, status, accountType);
@@ -36,16 +37,11 @@ export function PortalGuard({ children }: { children: React.ReactNode }) {
     if (redirectTo) router.replace(redirectTo);
   }, [redirectTo, router]);
 
-  // A confinement redirect is in flight — don't paint the mismatched page.
+  // Only withhold the page when we KNOW the account is in the wrong portal and
+  // a redirect is in flight (confinementRedirect returns non-null only once the
+  // account type is resolved). Otherwise always render — never block on an
+  // unresolved account type.
   if (redirectTo) return null;
-
-  // Authenticated, but we don't yet know which portal this account belongs to
-  // (/auth/me still in flight). Withhold content until the type resolves so a
-  // portal account is never shown the public site in the meantime. Anonymous
-  // sessions never reach this branch (isAuthenticated stays false for them),
-  // and the initial render is unaffected (status is "idle"), so SSR/hydration
-  // stay in sync.
-  if (isAuthenticated && accountType === null) return null;
 
   return <>{children}</>;
 }
