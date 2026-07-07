@@ -139,39 +139,6 @@ function AssistantSection() {
   );
 }
 
-function UpcomingEventsSection() {
-  return (
-    <section className="bg-surface px-margin-mobile pb-section-mobile md:px-margin-desktop md:pb-section">
-      <div className="mx-auto max-w-container-max">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4 md:mb-10">
-          <div>
-            <Badge variant="accent" className="mb-3">
-              What&apos;s on
-            </Badge>
-            <h2 className="font-headline-md text-headline-md text-primary">
-              Upcoming Events
-            </h2>
-            <p className="mt-2 max-w-xl font-body-md text-body-md text-on-surface-variant">
-              A fresh line-up at Kenya&apos;s top-rated venues — updated every
-              week.
-            </p>
-          </div>
-          <Link
-            href="/events"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "shrink-0",
-            )}
-          >
-            All Events
-          </Link>
-        </div>
-        <UpcomingEvents />
-      </div>
-    </section>
-  );
-}
-
 function TestimonialsSection() {
   return (
     <section className="bg-surface px-margin-mobile pb-section-mobile md:px-margin-desktop md:pb-section">
@@ -214,7 +181,7 @@ export default function LandingPage() {
         <PersonalizedHome />
         <ExploreCategories />
         <AssistantSection />
-        <UpcomingEventsSection />
+        <UpcomingEvents />
         <TestimonialsSection />
       </main>
       <SiteFooter />

@@ -3,32 +3,41 @@
 import Link from "next/link";
 
 import { PersonalizedSections } from "@/components/categories/personalized-sections";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { RecommendationSection } from "@/lib/api/personalization";
 import { useRecommendations } from "@/lib/queries/personalization";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { cn } from "@/lib/utils";
 
+// The homepage feed rows, in display order. "Trending Near You"
+// (trending_near_you) is intentionally excluded. The personalized "Upcoming
+// Events You'll Love" (upcoming_events) is also excluded here — the standalone
+// Upcoming Events section renders below Explore Categories instead.
+const SECTION_ORDER = ["recommended", "hidden_gems", "discover_new"] as const;
+
 export function PersonalizedHome() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const accountType = useAuthStore((s) => s.accountType);
-  const user = useAuthStore((s) => s.user);
   const enabled = isAuthenticated && accountType === "user";
   const recommendations = useRecommendations("", "", enabled);
 
   if (!enabled) return null;
 
+  const data = recommendations.data;
+  const sections = data
+    ? SECTION_ORDER.map((key) => data.find((s) => s.key === key)).filter(
+        (s): s is RecommendationSection => Boolean(s),
+      )
+    : undefined;
+
   return (
-    <section className="bg-surface px-margin-mobile py-section-mobile md:px-margin-desktop md:py-section">
+    <section className="bg-surface px-margin-mobile pt-section-mobile md:px-margin-desktop md:pt-section">
       <div className="mx-auto max-w-container-max">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4 md:mb-10">
           <div>
-            <Badge variant="accent" className="mb-3">
-              For you
-            </Badge>
             <h2 className="font-headline-md text-headline-md text-primary">
-              {user?.name ? `${user.name}'s WapiKE` : "Your WapiKE"}
+              For You
             </h2>
             <p className="mt-2 max-w-2xl font-body-md text-body-md text-on-surface-variant">
               Personalized picks that adapt to your vibe, saves, searches, time
@@ -54,7 +63,7 @@ export function PersonalizedHome() {
           </div>
         ) : (
           <PersonalizedSections
-            sections={recommendations.data}
+            sections={sections}
             loading={recommendations.isLoading}
             autoScroll
           />
