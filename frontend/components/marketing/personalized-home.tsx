@@ -56,6 +56,7 @@ export function PersonalizedHome() {
           <PersonalizedSections
             sections={recommendations.data}
             loading={recommendations.isLoading}
+            autoScroll
           />
         )}
       </div>
