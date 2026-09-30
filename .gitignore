@@ -3,7 +3,6 @@
 Thumbs.db
 *.swp
 .idea/
-.vscode/
 
 # Env files (each app also ignores its own)
 
